@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Contracts/Contracts.csproj" />
+  <Project Path="Core/Core.csproj" />
+  <Project Path="Repo/Repo.csproj" />
+  <Project Path="SaleCarWebPage_Project/SaleCarWebPage_Project.csproj" />
+  <Project Path="Services/Services.csproj" />
+</Solution>
