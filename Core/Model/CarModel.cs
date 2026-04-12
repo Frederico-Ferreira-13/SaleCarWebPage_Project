@@ -5,21 +5,22 @@ using System.Text;
 
 namespace Core.Model
 {
-    public class Model : IEntity
+    public class CarModel : IEntity
     {
         public int ModelId { get; private set; }
         public int BrandId { get; private set; }
         public string ModelName { get; private set; } = string.Empty;
+        public virtual Brand Brand { get; private set; }
 
-        public Model() { }
+        public CarModel() { }
 
-        public Model(string modelName)
+        public CarModel(string modelName)
         {
             ValidateModelName(modelName);
             ModelName = modelName;
         }
 
-        public Model(int id, string modelName)
+        public CarModel(int id, string modelName)
         {
             BrandId = id;
             ModelName = modelName;

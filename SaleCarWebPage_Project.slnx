@@ -1,7 +1,17 @@
 <Solution>
-  <Project Path="Contracts/Contracts.csproj" />
+  <Project Path="Contracts/Contracts.csproj">
+    <BuildDependency Project="Core/Core.csproj" />
+  </Project>
   <Project Path="Core/Core.csproj" />
-  <Project Path="Repo/Repo.csproj" />
-  <Project Path="SaleCarWebPage_Project/SaleCarWebPage_Project.csproj" />
+  <Project Path="Repo/Repo.csproj">
+    <BuildDependency Project="Contracts/Contracts.csproj" />
+    <BuildDependency Project="Core/Core.csproj" />
+  </Project>
+  <Project Path="SaleCarWebPage_Project/SaleCarWebPage_Project.csproj">
+    <BuildDependency Project="Contracts/Contracts.csproj" />
+    <BuildDependency Project="Core/Core.csproj" />
+    <BuildDependency Project="Repo/Repo.csproj" />
+    <BuildDependency Project="Services/Services.csproj" />
+  </Project>
   <Project Path="Services/Services.csproj" />
 </Solution>
