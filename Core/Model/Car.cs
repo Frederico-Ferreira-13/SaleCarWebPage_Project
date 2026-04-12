@@ -33,7 +33,7 @@ namespace Core.Model
         public bool IsFavorite { get; private set; }
         public double AverageRating { get; private set; } = 0.0;
 
-        public virtual Model? Model { get; private set; }
+        public virtual CarModel? Model { get; private set; }
         public virtual Provider? Provider { get; private set; }
 
         public virtual Users? User { get; private set; }
