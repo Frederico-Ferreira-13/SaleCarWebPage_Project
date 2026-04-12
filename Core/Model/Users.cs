@@ -23,8 +23,8 @@ namespace Core.Model
         public DateTime CreatedAt { get; private set; }
         public DateTime? LastUpdatedAt { get; private set; }
 
-        public Contact? Contact { get; protected set; }
-        public UsersRole? Role { get; private set; }
+        public virtual Contact? Contact { get; protected set; }
+        public virtual UsersRole? Role { get; private set; }
        
         public string Name { get => _name; private set => _name = value; }
         public string UserName { get => _userName; private set => _userName = value; }
@@ -221,7 +221,7 @@ namespace Core.Model
             {
                 throw new ArgumentException($"O nome de utilizador não pode ser vazio ou nulo ({paramName}).");
             }
-            if (name.Length > 100)
+            if (name.Length > 255)
             {
                 throw new ArgumentException("O nome de utilizador não pode exceder 100 caracteres.", paramName);
             }
@@ -232,7 +232,7 @@ namespace Core.Model
             if (string.IsNullOrWhiteSpace(userName))
                 throw new ArgumentException($"O nome de utilizador não pode ser vazio ou nulo ({paramName}).");
 
-            if (userName.Length > 100)
+            if (userName.Length > 255)
                 throw new ArgumentException("O nome de utilizador não pode exceder 100 caracteres.", paramName);
         }
 
