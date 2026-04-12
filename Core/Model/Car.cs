@@ -57,7 +57,7 @@ namespace Core.Model
 
         public Car() { }
 
-        public Car(int modelId, int providerId, string typeOfFuel, string carColor, decimal engineCapacity,
+        public Car(int modelId, int providerId, string typeOfFuel, string carColor, int engineCapacity,
                    decimal carTare, decimal carPrice, string plateNumber, int year, int kilometers)
         {
             Validate(modelId, providerId, typeOfFuel, carColor, engineCapacity, carTare, carPrice, plateNumber, year, kilometers);
@@ -79,7 +79,7 @@ namespace Core.Model
             CreatedAt = DateTime.UtcNow;
         }
 
-        public Car(int carId, int modelId, int providerId, string typeOfFuel, string carColor, decimal engineCapacity,
+        public Car(int carId, int modelId, int providerId, string typeOfFuel, string carColor, int engineCapacity,
                     decimal carTare, decimal carPrice, bool isAvailable, string plateNumber, int year, int kilometers,
                     string? imageUrl, DateTime createdAt, DateTime? lastUpdatedAt, bool isActive, bool isApproved)
         {
