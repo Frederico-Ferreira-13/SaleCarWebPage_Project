@@ -15,7 +15,7 @@ namespace Core.Model
         public int ProviderId { get; private set; }
         public string TypeOfFuel { get; private set; } = string.Empty;
         public string CarColor { get; private set; } = string.Empty;
-        public decimal EngineCapacity { get; private set; }
+        public int EngineCapacity { get; private set; }
         public decimal CarTare { get; private set; }
         public decimal CarPrice { get; private set; }
         public bool IsAvailable { get; private set; }
@@ -43,7 +43,7 @@ namespace Core.Model
         private const int MaxFuelTypeLength = 50;
         private const int MinYear = 1886; // O ano do primeiro carro
         private static readonly int MaxYear = DateTime.Now.Year + 1; // Permitir carros do próximo ano
-        private const decimal MaxEngineCapacity = 100.0m; // Capacidade máxima do motor em litros
+        private const int MaxEngineCapacity = 100; // Capacidade máxima do motor em litros
         private const decimal MaxCarTare = 100000.0m; // Peso máximo do carro em kg
         private const decimal MaxCarPrice = 10000000.0m; // Preço máximo do carro em moeda local
         private const int MaxKilometers = 1000000; // Quilometragem máxima
