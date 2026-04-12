@@ -11,6 +11,7 @@ namespace Core.Model
         public int ContactId { get; protected set; }
         public int UsersRoleId { get; private set; }
         public bool IsActive { get; private set; } = true;
+        public bool IsApproved { get; private set; } = false;
 
         private string _name = string.Empty;
         private string _userName = string.Empty;
@@ -18,14 +19,12 @@ namespace Core.Model
         private string? _profilePicture;
         private string _passwordHash = string.Empty;
         private string _salt = string.Empty;
-
-        public bool IsApproved { get; private set; } = false;
+        
         public DateTime CreatedAt { get; private set; }
         public DateTime? LastUpdatedAt { get; private set; }
 
         public Contact? Contact { get; protected set; }
         public UsersRole? Role { get; private set; }
-
        
         public string Name { get => _name; private set => _name = value; }
         public string UserName { get => _userName; private set => _userName = value; }
@@ -36,7 +35,7 @@ namespace Core.Model
 
         private Users()
         {
-            // Futuramente para EF core ou para Reconstituição via reflection
+            
         }
 
         public Users(string name, string userName, string email, int usersRoleId, bool isApproved, int contactId)
