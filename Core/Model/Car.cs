@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using Core.Common;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -7,7 +8,7 @@ using static System.Net.WebRequestMethods;
 
 namespace Core.Model
 {
-    public class Car
+    public class Car : IEntity
     {
         public int CarId { get; private set; }
         public int ModelId { get; private set; }
