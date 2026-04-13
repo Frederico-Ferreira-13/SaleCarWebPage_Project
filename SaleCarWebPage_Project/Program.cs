@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SaleCarWebPage_Project.Repo;
-using SaleCarWebPage_Project.Contracts;
 using Core.Model;
+using Contracts.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,7 +1,6 @@
 ﻿using Core.Model;
-using SaleCarWebPage_Project.Contracts;
 
-namespace SaleCarWebPage_Project.Contracts
+namespace Contracts.Repositories
 {
     public interface IProviderRepository : IGenericRepository<Provider>
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SaleCarWebPage_Project.Contracts
+namespace Contracts.Repositories
 {
     public interface ICarRepository
     {

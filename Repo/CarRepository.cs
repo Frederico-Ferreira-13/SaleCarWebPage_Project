@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SaleCarWebPage_Project.Contracts; // Importante referenciar
 using Core.Model;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Contracts.Repositories;
 
 namespace SaleCarWebPage_Project.Repo
 {

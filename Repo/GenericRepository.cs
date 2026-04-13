@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SaleCarWebPage_Project.Contracts; 
+using Contracts.Repositories;
 
 namespace SaleCarWebPage_Project.Repo
 {

@@ -1,5 +1,5 @@
-﻿using Core.Model;
-using SaleCarWebPage_Project.Contracts;
+﻿using Contracts.Repositories;
+using Core.Model;
 
 namespace SaleCarWebPage_Project.Repo
 {
