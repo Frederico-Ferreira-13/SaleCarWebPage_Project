@@ -5,13 +5,14 @@ using System.Text;
 
 namespace Core.Model
 {
-    public class Provider : IEntity
+    public class Provider : IEntity, ISoftDeletable
     {
         public int ProviderId { get; private set; }
         public int UserId { get; private set; }
         public int AddressId { get; private set; }
         public string NameProvider { get; private set; } = string.Empty;        
         public string NIF { get; private set; } = string.Empty;
+        public bool IsActive { get; private set; } = true;
 
         public virtual Users? User { get; private set; }
         public virtual Address? Address { get; private set; }
@@ -46,6 +47,14 @@ namespace Core.Model
             NIF = newNif;
             UserId = newUserId;
             AddressId = newAddressId;
+        }
+
+        public void Deactivate()
+        {
+            if (IsActive)
+            {
+                IsActive = false;
+            }
         }
 
         private static void ValidateProviderData(string nameProvider, string nif, int userId, int addressId)

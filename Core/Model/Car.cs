@@ -8,7 +8,7 @@ using static System.Net.WebRequestMethods;
 
 namespace Core.Model
 {
-    public class Car : IEntity
+    public class Car : IEntity, ISoftDeletable
     {
         public int CarId { get; private set; }
         public int ModelId { get; private set; }

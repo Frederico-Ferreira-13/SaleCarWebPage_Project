@@ -56,7 +56,7 @@ CREATE TABLE Users(
     UserName NVARCHAR(255) NOT NULL UNIQUE,
     Email NVARCHAR(255) NOT NULL UNIQUE,
     ProfilePicture NVARCHAR(MAX) NULL,
-    PasswordHash NVARCHAR(255) NOT NULL,
+    PasswordHash NVARCHAR(MAX) NOT NULL,
     Salt NVARCHAR(64) NOT NULL,
     IsApproved BIT NOT NULL DEFAULT 0,
     CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
@@ -67,12 +67,23 @@ CREATE TABLE Users(
 );
 GO
 
+CREATE TABLE UserSetting (
+    UserSettingId INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    UserId INT NOT NULL,
+    Theme NVARCHAR(50) NOT NULL DEFAULT 'Light',
+    [Language] NVARCHAR(50) NOT NULL DEFAULT 'pt-PT',
+    ReceiveNotifications BIT NOT NULL DEFAULT 1,
+    CONSTRAINT FK_UserSetting_User FOREIGN KEY (UserId) REFERENCES Users(UserId)
+);
+GO
+
 CREATE TABLE Provider (
     ProviderId INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     UserId INT NOT NULL,
     AddressId INT NOT NULL,
     NameProvider NVARCHAR(200) NOT NULL,
     NIF NVARCHAR(9) NOT NULL UNIQUE,
+    IsActive BIT NOT NULL DEFAULT 1,
     CONSTRAINT FK_Provider_User FOREIGN KEY (UserId) REFERENCES Users(UserId),
     CONSTRAINT FK_Provider_Address FOREIGN KEY (AddressId) REFERENCES [Address](AddressId)
 );
@@ -85,6 +96,7 @@ CREATE TABLE Client (
     AddressId INT NOT NULL,
     ClientName NVARCHAR(200) NOT NULL,
     NIF NVARCHAR(9) NOT NULL UNIQUE,
+    IsActive BIT NOT NULL DEFAULT 1,
     CONSTRAINT FK_Client_User FOREIGN KEY (UserId) REFERENCES Users(UserId),
     CONSTRAINT FK_Client_Contact FOREIGN KEY (ContactId) REFERENCES Contact(ContactId),
     CONSTRAINT FK_Client_Address FOREIGN KEY (AddressId) REFERENCES [Address](AddressId)
@@ -114,6 +126,16 @@ CREATE TABLE Car (
 );
 GO
 
+CREATE TABLE Favorites (
+    FavoritesId INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    UserId INT NOT NULL,
+    CarId INT NOT NULL,
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT FK_Favorites_User FOREIGN KEY (UserId) REFERENCES Users(UserId),
+    CONSTRAINT FK_Favorites_Car FOREIGN KEY (CarId) REFERENCES Car(CarId)
+);
+GO
+
 CREATE TABLE MessageBox (
     MessageBoxId INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     SenderId INT NOT NULL,
@@ -122,8 +144,10 @@ CREATE TABLE MessageBox (
     Subject NVARCHAR(200) NOT NULL,
     MessageText NVARCHAR(MAX) NOT NULL,
     SentDate DATETIME2 NOT NULL DEFAULT GETDATE(),
+    LastUpdatedAt DATETIME2 NULL,
     IsRead BIT NOT NULL DEFAULT 0,
     IsDeleted BIT NOT NULL DEFAULT 0,
+    IsEdited BIT NOT NULL DEFAULT 0,
     CONSTRAINT FK_Message_Sender FOREIGN KEY (SenderId) REFERENCES Users(UserId),
     CONSTRAINT FK_Message_Receiver FOREIGN KEY (ReceiverId) REFERENCES Users(UserId),
     CONSTRAINT FK_Message_Car FOREIGN KEY (CarId) REFERENCES Car(CarId)
@@ -135,6 +159,7 @@ CREATE TABLE Sale (
     CarId INT NOT NULL,
     ClientId INT NOT NULL,
     SaleDate DATETIME2 NOT NULL DEFAULT GETDATE(),
+    PurchaseDate DATETIME2 NOT NULL DEFAULT GETDATE(),
     FinalPrice DECIMAL(18,2) NOT NULL,
     PaymentMethod NVARCHAR(100) NOT NULL,
     CONSTRAINT FK_Sale_Car FOREIGN KEY (CarId) REFERENCES Car(CarId),

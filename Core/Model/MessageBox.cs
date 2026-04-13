@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Core.Model
 {
-    public class MessageBox : IEntity
+    public class MessageBox : IEntity, ISoftDeletable
     {
         public int MessageBoxId { get; private set; }
         public int SenderId { get; private set; }
@@ -17,6 +17,7 @@ namespace Core.Model
         public DateTime? LastUpdatedAt { get; protected set; }
         public bool IsEdited { get; protected set; } = false;
         public bool IsDeleted { get; private set; } = false;
+        public bool IsActive => !IsDeleted;
         public bool IsRead { get; private set; } = true;
 
         private MessageBox() { }
@@ -86,6 +87,11 @@ namespace Core.Model
 
             Subject = newSubject;
             MessageText = newMessageText;
+        }
+
+        public void Deactivate()
+        {
+            Delete();
         }
 
         public void Delete()

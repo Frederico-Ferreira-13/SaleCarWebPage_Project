@@ -1,12 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Contracts.Repositories;
+using Core.Common;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Contracts.Repositories;
 
 namespace SaleCarWebPage_Project.Repo
 {
     
-    public class GenericRepository<T> : IGenericRepository<T> where T : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class, IEntity
     {
         protected readonly ApplicationDbContext _context;
 
@@ -15,19 +16,19 @@ namespace SaleCarWebPage_Project.Repo
             _context = context;
         }
 
-        public async Task<T> GetByIdAsync(int id) => await _context.Set<T>().FindAsync(id);
+        public async Task<TEntity> GetByIdAsync(int id) => await _context.Set<TEntity>().FindAsync(id);
 
-        public async Task<List<T>> GetAllAsync() => await _context.Set<T>().ToListAsync();
+        public async Task<List<TEntity>> GetAllAsync() => await _context.Set<TEntity>().ToListAsync();
 
-        public async Task AddAsync(T entity)
+        public async Task AddAsync(TEntity entity)
         {
-            await _context.Set<T>().AddAsync(entity);
+            await _context.Set<TEntity>().AddAsync(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task UpdateAsync(TEntity entity)
         {
-            _context.Set<T>().Update(entity);
+            _context.Set<TEntity>().Update(entity);
             await _context.SaveChangesAsync();
         }
 
@@ -36,7 +37,7 @@ namespace SaleCarWebPage_Project.Repo
             var entity = await GetByIdAsync(id);
             if (entity != null)
             {
-                _context.Set<T>().Remove(entity);
+                _context.Set<TEntity>().Remove(entity);
                 await _context.SaveChangesAsync();
             }
         }

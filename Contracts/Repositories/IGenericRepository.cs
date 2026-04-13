@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using Core.Common;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Contracts.Repositories
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<TEntity> where TEntity : class, IEntity
     {
-        Task<T> GetByIdAsync(int id);
-        Task<List<T>> GetAllAsync();
-        Task AddAsync(T entity);
-        Task UpdateAsync(T entity);
+        Task<TEntity> GetByIdAsync(int id);
+        Task<List<TEntity>> GetAllAsync();
+        Task AddAsync(TEntity entity);
+        Task UpdateAsync(TEntity entity);
         Task DeleteAsync(int id);
     }
 }

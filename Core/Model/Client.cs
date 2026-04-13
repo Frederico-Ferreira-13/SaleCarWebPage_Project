@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Core.Model
 {
-    public class Client : IEntity
+    public class Client : IEntity, ISoftDeletable
     {
         public int ClientId { get; private set; }
         public int UserId { get; private set; }
@@ -13,6 +13,9 @@ namespace Core.Model
         public int AddressId { get; private set; }
         public string ClientName { get; private set; } = string.Empty;
         public string NIF { get; private set; } = string.Empty;
+
+        public bool IsActive { get; private set; } = true;
+
         public virtual Address? Address { get; private set; }
         public virtual Contact? Contact { get; private set; }
         public virtual Users? User { get; private set; }
@@ -27,6 +30,7 @@ namespace Core.Model
             UserId = userId;
             ContactId = contactId;
             AddressId = addressId;
+            IsActive = true;
         }
 
         public Client(int clientId, int userId, string clientName, string nif, int contactId, int addressId)
@@ -54,6 +58,14 @@ namespace Core.Model
             AddressId = newAddressId;
         }
 
+        public void Deactivate()
+        {
+            if (IsActive)
+            {
+                IsActive = false;
+            }
+        }
+
         private static void ValidateClientData(string clientName, string nif, int userId, int contactId, int addressId)
         {
             if (string.IsNullOrWhiteSpace(clientName))
@@ -76,7 +88,8 @@ namespace Core.Model
             {
                 throw new ArgumentException("O AddressId deve ser positivo.", nameof(addressId));
             }
-        }      
+        }
+        
 
         public int GetId() => ClientId;
 
