@@ -28,7 +28,7 @@ namespace Repo
         public ISaleRepository Sales { get; }
         public IUsersRepository Users { get; }
         public IUserSettingRepository UserSettings { get; }
-        public IUserRoleRepository UserRoles { get; }
+        public IUserRoleRepository UsersRole { get; }
 
         public UnitOfWork(IAddressRepository addressRepository, IBrandRepository brandRepository, ICarRepository carRepository, 
             ICarModelRepository carModelRepository, IClientRepository clientRepository, 
@@ -51,7 +51,7 @@ namespace Repo
             Sales = saleRepository ?? throw new ArgumentNullException(nameof(saleRepository));
             Users = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
             UserSettings = userSettingRepository ?? throw new ArgumentNullException(nameof(userSettingRepository));
-            UserRoles = userRoleRepository ?? throw new ArgumentNullException(nameof(userRoleRepository));
+            UsersRole = userRoleRepository ?? throw new ArgumentNullException(nameof(userRoleRepository));
         }
 
         public async Task BeginTransactionAsync()

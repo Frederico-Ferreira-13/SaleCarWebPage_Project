@@ -20,7 +20,7 @@ namespace Contracts.Repositories
         public ISaleRepository Sales { get; }
         public IUsersRepository Users { get; }
         public IUserSettingRepository UserSettings { get; }
-        public IUserRoleRepository UserRoles { get; }
+        public IUserRoleRepository UsersRole { get; }
 
         Task BeginTransactionAsync();
         Task<int> CommitAsync();

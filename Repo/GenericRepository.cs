@@ -16,9 +16,11 @@ namespace SaleCarWebPage_Project.Repo
             _context = context;
         }
 
+        public async Task CreateAddAsync(TEntity entity) => await AddAsync(entity);
+
         public async Task<TEntity> GetByIdAsync(int id) => await _context.Set<TEntity>().FindAsync(id);
 
-        public async Task<List<TEntity>> GetAllAsync() => await _context.Set<TEntity>().ToListAsync();
+        public async Task<IEnumerable<TEntity>> GetAllAsync() => await _context.Set<TEntity>().ToListAsync();
 
         public async Task AddAsync(TEntity entity)
         {
