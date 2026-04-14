@@ -22,20 +22,20 @@ namespace Repo
         public ICarModelRepository Models { get; }
         public IClientRepository Clients { get; }
         public IContactRepository Contacts { get; }
-        public IFavoritsRepository Favorits { get; }
-        public IMassageBoxRepository MessageBoox { get; }
+        public IFavoritesRepository Favorites { get; }
+        public IMessageBoxRepository MessageBox { get; }
         public IProviderRepository Providers { get; }
         public ISaleRepository Sales { get; }
         public IUsersRepository Users { get; }
         public IUserSettingRepository UserSettings { get; }
-        public IUserRoleRepository UsersRole { get; }
+        public IUsersRoleRepository UsersRole { get; }
 
         public UnitOfWork(IAddressRepository addressRepository, IBrandRepository brandRepository, ICarRepository carRepository, 
             ICarModelRepository carModelRepository, IClientRepository clientRepository, 
-            IContactRepository contactRepository, IFavoritsRepository favoritsRepository, 
-            IMassageBoxRepository massageBoxRepository, IProviderRepository providerRepository, 
+            IContactRepository contactRepository, IFavoritesRepository favoritesRepository,
+            IMessageBoxRepository messageBoxRepository, IProviderRepository providerRepository, 
             ISaleRepository saleRepository, IUsersRepository usersRepository, 
-            IUserSettingRepository userSettingRepository, IUserRoleRepository userRoleRepository, IConfiguration configuration)
+            IUserSettingRepository userSettingRepository, IUsersRoleRepository userRoleRepository, IConfiguration configuration)
         {
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
@@ -45,8 +45,8 @@ namespace Repo
             Models = carModelRepository ?? throw new ArgumentNullException(nameof(carModelRepository));
             Clients = clientRepository ?? throw new ArgumentNullException(nameof(clientRepository));
             Contacts = contactRepository ?? throw new ArgumentNullException(nameof(contactRepository));
-            Favorits = favoritsRepository ?? throw new ArgumentNullException(nameof(favoritsRepository));
-            MessageBoox = massageBoxRepository ?? throw new ArgumentNullException(nameof(massageBoxRepository));
+            Favorites = favoritesRepository ?? throw new ArgumentNullException(nameof(favoritesRepository));
+            MessageBox = messageBoxRepository ?? throw new ArgumentNullException(nameof(messageBoxRepository));
             Providers = providerRepository ?? throw new ArgumentNullException(nameof(providerRepository));
             Sales = saleRepository ?? throw new ArgumentNullException(nameof(saleRepository));
             Users = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));

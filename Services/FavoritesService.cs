@@ -62,7 +62,7 @@ namespace Services
                         $"Receita com ID {favorite.CarId} não encontrada ou inativa."));
             }
 
-            var existing = await _unitOfWork.Favorits.GetByUserAndRecipeAsync(currentUserId, favorite.CarId);
+            var existing = await _unitOfWork.Favorites.GetByUserAndRecipeAsync(currentUserId, favorite.CarId);
             if (existing != null)
             {
                 return Result.Success("Receita já está nos favoritos");
@@ -73,7 +73,7 @@ namespace Services
             try
             {
                 var favoriteToAdd = new Favorites(currentUserId, favorite.CarId);
-                await _unitOfWork.Favorits.CreateAddAsync(favoriteToAdd);
+                await _unitOfWork.Favorites.CreateAddAsync(favoriteToAdd);
                 await _unitOfWork.CommitAsync();
 
                 return Result.Success("Favorito adicionado com sucesso.");
@@ -106,7 +106,7 @@ namespace Services
                 );
             }
 
-            var favorites = await _unitOfWork.Favorits.GetByUserIdAsync(userId);
+            var favorites = await _unitOfWork.Favorites.GetByUserIdAsync(userId);
             return Result<IEnumerable<Favorites>>.Success(favorites);
         }
 
@@ -120,7 +120,7 @@ namespace Services
 
             int currentUserId = currentUserIdResult.Value;
 
-            var favorite = await _unitOfWork.Favorits.ReadByIdAsync(favoriteId);
+            var favorite = await _unitOfWork.Favorites.GetByIdAsync(favoriteId);
             if (favorite == null)
             {
                 return Result.Success("Favorito já removido.");
@@ -138,7 +138,7 @@ namespace Services
 
             try
             {
-                await _unitOfWork.Favorits.RemoveAsync(favorite);
+                await _unitOfWork.Favorites.DeleteAsync(favorite);
                 await _unitOfWork.CommitAsync();
                 return Result.Success("Favorito removido com sucesso.");
             }
@@ -160,7 +160,7 @@ namespace Services
 
             int currentUserId = currentUserIdResult.Value;
 
-            var car = await _unitOfWork.Cars.ReadByIdAsync(carId);
+            var car = await _unitOfWork.Cars.GetByIdAsync(carId);
             if (car == null || !car.IsActive)
             {
                 return Result<bool>.Failure(
@@ -173,18 +173,18 @@ namespace Services
 
             try
             {
-                var existing = await _unitOfWork.Favorits.GetByUserAndRecipeAsync(currentUserId, carId);
+                var existing = await _unitOfWork.Favorites.GetByUserAndRecipeAsync(currentUserId, carId);
                 bool isNowFavorite;
 
                 if (existing != null)
                 {
-                    await _unitOfWork.Favorits.RemoveAsync(existing);
+                    await _unitOfWork.Favorites.DeleteAsync(existing);
                     isNowFavorite = false;
                 }
                 else
                 {
                     var newFavorite = new Favorites(currentUserId, carId);
-                    await _unitOfWork.Favorits.CreateAddAsync(newFavorite);
+                    await _unitOfWork.Favorites.CreateAddAsync(newFavorite);
                     isNowFavorite = true;
                 }
 

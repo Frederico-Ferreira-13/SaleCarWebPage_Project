@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Contracts.Repositories
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         public IAddressRepository Address { get; }
         public IBrandRepository Brands { get; }
@@ -14,13 +14,13 @@ namespace Contracts.Repositories
         public ICarModelRepository Models { get; }
         public IClientRepository Clients { get; }
         public IContactRepository Contacts { get; }
-        public IFavoritsRepository Favorits { get; }
-        public IMassageBoxRepository MessageBoox { get; }
+        public IFavoritesRepository Favorites { get; }
+        public IMessageBoxRepository MessageBox { get; }
         public IProviderRepository Providers { get; }
         public ISaleRepository Sales { get; }
         public IUsersRepository Users { get; }
         public IUserSettingRepository UserSettings { get; }
-        public IUserRoleRepository UsersRole { get; }
+        public IUsersRoleRepository UsersRole { get; }
 
         Task BeginTransactionAsync();
         Task<int> CommitAsync();

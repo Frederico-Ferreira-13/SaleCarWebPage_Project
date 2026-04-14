@@ -15,9 +15,28 @@ namespace Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAddressRepository _addressRepository;
 
+        public AddressService(IUnitOfWork unitOfWork, IAddressRepository addressRepository)
+        {
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            _addressRepository = addressRepository ?? throw new ArgumentNullException(nameof(addressRepository));
+        }
+
         public async Task<Result<Address>> GeAddressByIdAsync(int addressId)
         {
+            var addressResul = await _addressRepository.GetAllAsync();
+            if(!addressResul.IsSuccessful)
+            {
+                return Result<int>.Failure(addressResul.Error);
+            }
 
+            var address = addressResul.Value;
+            if(address == null)
+            {
+                return Result<int>.Failure(
+                    Error.Unauthorized(
+                        ErrorCodes.AuthUnauthorized,
+                        "Dados de Morada não encontrados."));
+            }
         }
 
         public async Task<Result<IEnumerable<Address>>> GetAllAddressesAsync()

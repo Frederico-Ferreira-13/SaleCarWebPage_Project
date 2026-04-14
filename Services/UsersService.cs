@@ -166,7 +166,7 @@ namespace Services
                 return Result<Users>.Failure(authResult.Error);
             }
 
-            var user = await _unitOfWork.Users.ReadByIdAsync(authResult.Value!.UserId);
+            var user = await _unitOfWork.Users.GetByIdAsync(authResult.Value!.UserId);
             if (user == null || !user.IsActive)
             {
                 return Result<Users>.Failure(
@@ -192,7 +192,7 @@ namespace Services
                 );
             }
 
-            var user = await _unitOfWork.Users.ReadByIdAsync(userId);
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
             if (user == null)
             {
                 return Result<Users>.Failure(
@@ -233,7 +233,7 @@ namespace Services
 
         public async Task<Result> UpdateUserProfileAsync(Users userToUpdate)
         {
-            var existingUser = await _unitOfWork.Users.ReadByIdAsync(userToUpdate.UserId);
+            var existingUser = await _unitOfWork.Users.GetByIdAsync(userToUpdate.UserId);
             if (existingUser == null)
             {
                 return Result.Failure(
@@ -338,7 +338,7 @@ namespace Services
                 );
             }
 
-            var user = await _unitOfWork.Users.ReadByIdAsync(userId);
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
             if (user == null || !user.IsActive)
             {
                 return Result.Failure(
@@ -405,7 +405,7 @@ namespace Services
                 );
             }
 
-            var user = await _unitOfWork.Users.ReadByIdAsync(userId);
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
             if (user == null)
             {
                 return Result.Success("Utilizador não encontrado.");
@@ -437,7 +437,7 @@ namespace Services
                 return Result.Failure(Error.Unauthorized(ErrorCodes.AuthUnauthorized, "Não autenticado."));
             }
 
-            var currentUser = await _unitOfWork.Users.ReadByIdAsync(currentUserIdResult.Value);
+            var currentUser = await _unitOfWork.Users.GetByIdAsync(currentUserIdResult.Value);
             if (currentUser == null || currentUser.UsersRoleId != 1) // 1 = Admin
             {
                 return Result.Failure(
@@ -448,7 +448,7 @@ namespace Services
                 );
             }
 
-            var user = await _unitOfWork.Users.ReadByIdAsync(userId);
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
             if (user == null)
             {
                 return Result.Success("Utilizador não encontrado (idempotente).");
@@ -481,7 +481,7 @@ namespace Services
                 return Result.Failure(Error.Unauthorized(ErrorCodes.AuthUnauthorized, "Não autenticado."));
             }
 
-            var currentUser = await _unitOfWork.Users.ReadByIdAsync(currentUserIdResult.Value);
+            var currentUser = await _unitOfWork.Users.GetByIdAsync(currentUserIdResult.Value);
             if (currentUser == null || (currentUserIdResult.Value != userId && currentUser.UsersRoleId != 1))
             {
                 return Result.Failure(
@@ -492,7 +492,7 @@ namespace Services
                 );
             }
 
-            var user = await _unitOfWork.Users.ReadByIdAsync(userId);
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
             if (user == null)
             {
                 return Result.Success("Utilizador não encontrado ou já eliminado.");
@@ -502,7 +502,7 @@ namespace Services
 
             try
             {
-                await _unitOfWork.Users.RemoveAsync(user);
+                await _unitOfWork.Users.DeleteAsync(user);
                 await _unitOfWork.CommitAsync();
 
                 return Result.Success("Utilizador eliminado com sucesso.");
@@ -570,7 +570,7 @@ namespace Services
             {
                 return false;
             }
-            return await _unitOfWork.Users.ReadByIdAsync(userId) != null;
+            return await _unitOfWork.Users.GetByIdAsync(userId) != null;
         }
 
         public async Task<Result<int>> GetCurrentUserIdAsync()
@@ -610,7 +610,7 @@ namespace Services
                 );
             }
 
-            var settings = await _unitOfWork.UserSettings.GetByUserId(userId);
+            var settings = await _unitOfWork.UserSettings.GetByIdAsync(userId);
             if (settings == null)
             {
                 return Result<UserSettings>.Failure(
@@ -642,7 +642,7 @@ namespace Services
                 );
             }
 
-            var existingSettings = await _unitOfWork.UserSettings.GetByUserId(settings.UserId);
+            var existingSettings = await _unitOfWork.UserSettings.GetByIdAsync(settings.UserId);
             if (existingSettings == null)
             {
                 return Result.Failure(
@@ -695,7 +695,7 @@ namespace Services
                 );
             }
 
-            var userExists = await _unitOfWork.Users.ReadByIdAsync(userId) != null;
+            var userExists = await _unitOfWork.Users.GetByIdAsync(userId) != null;
             if (!userExists)
             {
                 return Result<UserSettings>.Failure(
@@ -704,7 +704,7 @@ namespace Services
                         $"Utilizador com ID {userId} não existe. Não é possível criar configurações."));
             }
 
-            var existing = await _unitOfWork.UserSettings.GetByUserId(userId);
+            var existing = await _unitOfWork.UserSettings.GetByIdAsync(userId);
             if (existing != null)
             {
                 return Result<UserSettings>.Failure(
@@ -786,7 +786,7 @@ namespace Services
                 );
             }
 
-            var role = await _unitOfWork.UsersRole.ReadByIdAsync(id);
+            var role = await _unitOfWork.UsersRole.GetByIdAsync(id);
             if (role == null)
             {
                 return Result<UsersRole>.Failure(
@@ -820,13 +820,13 @@ namespace Services
 
         public async Task<Result<IEnumerable<UsersRole>>> GetAllUsersRolesAsync()
         {
-            var roles = await _unitOfWork.UsersRole.ReadAllAsync();
+            var roles = await _unitOfWork.UsersRole.GetAllAsync();
             return Result<IEnumerable<UsersRole>>.Success(roles);
         }
 
         public async Task<Result> UpdateUsersRoleAsync(UsersRole updateRole)
         {
-            var existingRole = await _unitOfWork.UsersRole.ReadByIdAsync(updateRole.UsersRoleId);
+            var existingRole = await _unitOfWork.UsersRole.GetByIdAsync(updateRole.UsersRoleId);
             if (existingRole == null)
             {
                 return Result.Failure(
@@ -879,7 +879,7 @@ namespace Services
 
         public async Task<Result> DeleteUsersRoleAsync(int id)
         {
-            var existingRole = await _unitOfWork.UsersRole.ReadByIdAsync(id);
+            var existingRole = await _unitOfWork.UsersRole.GetByIdAsync(id);
             if (existingRole == null)
             {
                 return Result.Success($"Nível de Acesso com ID {id} não encontrado (idempotente).");
@@ -889,7 +889,7 @@ namespace Services
 
             try
             {
-                await _unitOfWork.UsersRole.RemoveAsync(existingRole);
+                await _unitOfWork.UsersRole.DeleteAsync(id);
                 await _unitOfWork.CommitAsync();
 
                 return Result.Success("Nível de Acesso eliminado com sucesso.");
