@@ -1,4 +1,5 @@
-﻿using Contracts.Services;
+﻿using Contracts.Repositories;
+using Contracts.Services;
 using Core.Common;
 using Core.Model;
 using System;
@@ -11,7 +12,8 @@ namespace Services
 {
     public class AddressService : IAddressService
     {
-
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IAddressRepository _addressRepository;
 
         public async Task<Result<Address>> GeAddressByIdAsync(int addressId)
         {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Core.Common;
+using Core.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,8 @@ namespace Contracts.Services
 {
     public interface ISaleService
     {
+        Task<Result> MarkAsSoldAsync(int carId, int clientId, decimal finalPrice);
+
+        Task<Result<IEnumerable<Car>>> GetSoldInventoryAsync(int providerId);
     }
 }

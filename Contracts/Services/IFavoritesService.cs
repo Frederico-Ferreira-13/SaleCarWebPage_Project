@@ -14,6 +14,6 @@ namespace Contracts.Services
         Task<Result> AddFavoriteAsync(Favorites favorite);
         Task<Result<IEnumerable<Favorites>>> GetUserFavoritesAsync(int userId);
         Task<Result> RemoveFavoriteAsync(int favoriteId);
-        Task<Result<bool>> ToggleFavoriteAsync(int recipeId);
+        Task<Result<bool>> ToggleFavoriteAsync(int carId);
     }
 }
