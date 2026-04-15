@@ -19,7 +19,7 @@ namespace Repo
         public IAddressRepository Address { get; }
         public IBrandRepository Brands { get; }
         public ICarRepository Cars { get; }
-        public ICarModelRepository Models { get; }
+        public ICarModelRepository CarModels { get; }
         public IClientRepository Clients { get; }
         public IContactRepository Contacts { get; }
         public IFavoritesRepository Favorites { get; }
@@ -42,7 +42,7 @@ namespace Repo
             Address = addressRepository ?? throw new ArgumentNullException(nameof(addressRepository));
             Brands = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
             Cars = carRepository ?? throw new ArgumentNullException(nameof(carRepository));
-            Models = carModelRepository ?? throw new ArgumentNullException(nameof(carModelRepository));
+            CarModels = carModelRepository ?? throw new ArgumentNullException(nameof(carModelRepository));
             Clients = clientRepository ?? throw new ArgumentNullException(nameof(clientRepository));
             Contacts = contactRepository ?? throw new ArgumentNullException(nameof(contactRepository));
             Favorites = favoritesRepository ?? throw new ArgumentNullException(nameof(favoritesRepository));
