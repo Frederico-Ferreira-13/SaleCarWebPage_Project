@@ -9,7 +9,7 @@ namespace Core.Model
     public class CarModel : IEntity
     {
         [Key]
-        public int Id { get; set; } 
+        public int CarModelId { get; set; } 
 
         public int BrandId { get; private set; }
         public string ModelName { get; private set; } = string.Empty;

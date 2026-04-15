@@ -50,7 +50,7 @@ namespace SaleCarWebPage_Project.Repo
             Address = addressRepository;
             Brands = brandRepository;
             Cars = carRepository;
-            Models = carModelRepository;
+            CarModels = carModelRepository;
             Clients = clientRepository;
             Contacts = contactRepository;
             Favorites = favoritesRepository;
