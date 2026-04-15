@@ -10,11 +10,11 @@ namespace Contracts.Services
 {
     public interface ICarModelService
     {
-        Task<Result<CarModel>> GetBrandIdAsync(int modelIdd);
+        Task<Result<CarModel>> GetCarModelIdAsync(int modelIdd);
         Task<Result<CarModel>> GetByNameAsync(string modelName);
-        Task<Result<IEnumerable<CarModel>>> GetAllBrandsAsync();
-        Task<Result<CarModel>> CreateBrandAsync(CarModel carModel);
-        Task<Result<CarModel>> UpdateBrandAsync(CarModel updateModel);
-        Task<Result> DeleteBrandAsync(int modelId);
+        Task<Result<IEnumerable<CarModel>>> GetAllCarModelAsync();
+        Task<Result<CarModel>> CreateCarModelAsync(CarModel carModel);
+        Task<Result<CarModel>> UpdateCarModelAsync(CarModel updateModel);
+        Task<Result> DeleteCarModelAsync(int modelId);
     }
 }

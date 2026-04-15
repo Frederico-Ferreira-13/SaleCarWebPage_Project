@@ -16,7 +16,7 @@ namespace SaleCarWebPage_Project.Repo
         public IAddressRepository Address { get; }
         public IBrandRepository Brands { get; }
         public ICarRepository Cars { get; }
-        public ICarModelRepository Models { get; }
+        public ICarModelRepository CarModels { get; }
         public IClientRepository Clients { get; }
         public IContactRepository Contacts { get; }
         public IFavoritesRepository Favorites { get; }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Services
 {
@@ -44,6 +45,17 @@ namespace Services
             await _unitOfWork.Address.AddAsync(newAddress);
             await _unitOfWork.CommitAsync();
             return Result<Address>.Success(newAddress);
+            try
+            {
+                await _unitOfWork.Address.AddAsync(newAddress);
+                await _unitOfWork.CommitAsync();
+                return Result<Address>.Success(newAddress);                
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return Result<Address>.Failure(Error.InternalServer($"Erro ao criar morada: {ex.Message}"));
+            }            
         }
 
         public async Task<Result> UpdateAddressAsync(Address addressToUpdate)
@@ -51,6 +63,12 @@ namespace Services
             await _unitOfWork.Address.UpdateAsync(addressToUpdate);
             await _unitOfWork.CommitAsync();
             return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return Result.Failure(Error.InternalServer($"Erro ao atualizar morada: {ex.Message}"));
+            }
         }
 
         public async Task<Result> DeleteAddressAsync(int addressId)
