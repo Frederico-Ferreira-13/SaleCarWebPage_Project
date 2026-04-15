@@ -62,8 +62,8 @@ namespace Services
                         $"Receita com ID {favorite.CarId} não encontrada ou inativa."));
             }
 
-            var existing = await _unitOfWork.Favorites.GetByUserAndRecipeAsync(currentUserId, favorite.CarId);
-            if (existing != null)
+            var existing = await _unitOfWork.Favorites.ExistsAsync(currentUserId, favorite.CarId);
+            if (existing)
             {
                 return Result.Success("Receita já está nos favoritos");
             }
@@ -110,7 +110,7 @@ namespace Services
             return Result<IEnumerable<Favorites>>.Success(favorites);
         }
 
-        public async Task<Result> RemoveFavoriteAsync(int favoriteId)
+        public async Task<Result> RemoveFavoriteAsync(int carId)
         {
             var currentUserIdResult = await GetCurrentUserIdAsync();
             if (!currentUserIdResult.IsSuccessful)
@@ -120,25 +120,17 @@ namespace Services
 
             int currentUserId = currentUserIdResult.Value;
 
-            var favorite = await _unitOfWork.Favorites.GetByIdAsync(favoriteId);
-            if (favorite == null)
+            var exists = await _unitOfWork.Favorites.ExistsAsync(carId, currentUserId);
+            if (!exists)
             {
                 return Result.Success("Favorito já removido.");
             }
-
-            if (favorite.UserId != currentUserId)
-            {
-                return Result.Failure(
-                    Error.Forbidden(
-                        ErrorCodes.AuthForbidden,
-                        "Não pode remover favorito de outro utilizador"));
-            }
-
+            
             await _unitOfWork.BeginTransactionAsync();
 
             try
             {
-                await _unitOfWork.Favorites.DeleteAsync(favorite);
+                await _unitOfWork.Favorites.DeleteAsync(carId, currentUserId);
                 await _unitOfWork.CommitAsync();
                 return Result.Success("Favorito removido com sucesso.");
             }
@@ -173,12 +165,12 @@ namespace Services
 
             try
             {
-                var existing = await _unitOfWork.Favorites.GetByUserAndRecipeAsync(currentUserId, carId);
+                bool alreadyFavorite = await _unitOfWork.Favorites.ExistsAsync(carId, currentUserId);
                 bool isNowFavorite;
 
-                if (existing != null)
+                if (alreadyFavorite)
                 {
-                    await _unitOfWork.Favorites.DeleteAsync(existing);
+                    await _unitOfWork.Favorites.DeleteAsync(carId, currentUserId);
                     isNowFavorite = false;
                 }
                 else

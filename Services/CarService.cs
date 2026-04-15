@@ -44,7 +44,6 @@ namespace Services
             }
 
             car.FavoriteCount = await _unitOfWork.Favorites.GetCountByCarIdAsync(carId);
-
             car.SetImageUrl(car.ImageUrl ?? "");
 
             if (currentUserId.HasValue)
@@ -53,6 +52,21 @@ namespace Services
             }
 
             return Result<Car>.Success(car);
+        }
+
+        public async Task<bool> ExistsAsync(int carId) =>
+            carId > 0 && (await _unitOfWork.Cars.GetByIdAsync(carId) != null);
+
+        public async Task<Result<IEnumerable<Car>>> GetPendingApprovalAsync()
+        {
+            var cars = await _unitOfWork.Cars.GetAllAsync();
+            return Result<IEnumerable<Car>>.Success(cars.Where(c => !c.IsApproved && c.IsActive));
+        }
+
+        public async Task<Result<IEnumerable<Car>>> GetFavoriteCarByUserIdAsync(int userId)
+        {
+            var favs = await _unitOfWork.Favorites.GetFavoriteCarsByUserIdAsync(userId);
+            return Result<IEnumerable<Car>>.Success(favs);
         }
 
         public async Task<Result<Car>> GetCarDetailsAsync(int carId)
@@ -108,13 +122,11 @@ namespace Services
             {
                 return Result<Car>.Failure(
                     Error.Validation(
-                        "O modelo de carro selecionado não existe."));
-                    )
-                );
+                        "O modelo de carro selecionado não existe."));                
+                
             }            
 
             await _unitOfWork.BeginTransactionAsync();
-
             try
             {
                 var carToCreate = new Car(
@@ -220,6 +232,8 @@ namespace Services
             return cars.Any(c => c.ModelId == modelId && c.IsActive);
         }
 
+        public async Task<bool> IsCarFavoriteAsync(int carId, int userId) => await _unitOfWork.Favorites.ExistsAsync(carId, userId);
+
         public async Task<Result<bool>> ToggleFavoriteAsync(int carId)
         {
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
@@ -236,7 +250,7 @@ namespace Services
                 if (isAlreadyFavorite)
                 {
                     // Se já é favorito, removemos (passamos o ID se o Delete for por ID)
-                    await _unitOfWork.Favorites.DeleteFavoriteAsync(carId, userId);
+                    await _unitOfWork.Favorites.DeleteAsync(carId, userId);
                 }
                 else
                 {
@@ -254,5 +268,8 @@ namespace Services
                 return Result<bool>.Failure(Error.InternalServer(ex.Message));
             }
         }
+
+        public async Task<Result> UpsertCarRatingAsync(int carId, int userId, int rating) => Result.Success();
+        public async Task<Result<double>> GetAverageRatingAsync(int carId) => Result<double>.Success(0.0);
     }
 }

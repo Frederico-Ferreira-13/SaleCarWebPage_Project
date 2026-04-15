@@ -29,5 +29,61 @@ namespace SaleCarWebPage_Project.Repo
                 .Include(c => c.Provider)
                 .FirstOrDefaultAsync(c => c.CarId == id);
         }
+
+        public async Task<IEnumerable<Car>> GetCarsByUserIdAsync(int userId)
+        {
+            // Assume que o ProviderId na tabela Car corresponde ao UserId ou está ligado a ele
+            return await _context.Cars
+                .Include(c => c.Model)
+                .ThenInclude(m => m.Brand)
+                .Where(c => c.ProviderId == userId && c.IsActive)
+                .ToListAsync();
+        }
+
+        public async Task<(IEnumerable<Car> Items, int TotalCount)> SearchCarsAsync(
+            string? searchTerm,
+            int? brandId,
+            int? modelId,
+            string? fuelType,
+            int page,
+            int pageSize)
+        {
+            var query = _context.Cars
+                .Include(c => c.Model)
+                .ThenInclude(m => m.Brand)
+                .Where(c => c.IsAvailable && c.IsActive)
+                .AsQueryable();           
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(c => c.Model.ModelName.Contains(searchTerm) ||
+                                         c.Model.Brand.BrandName.Contains(searchTerm));
+            }
+
+            if (brandId.HasValue)
+            {
+                query = query.Where(c => c.Model.BrandId == brandId.Value);
+            }
+
+            if (modelId.HasValue)
+            {
+                query = query.Where(c => c.ModelId == modelId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(fuelType))
+            {
+                query = query.Where(c => c.TypeOfFuel == fuelType);
+            }            
+
+            int totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(c => c.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
     }
 }

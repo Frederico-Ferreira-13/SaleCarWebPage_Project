@@ -29,9 +29,9 @@ namespace Core.Model
         public bool IsActive { get; private set; }
         public bool IsApproved { get; private set; }
 
-        public int FavoriteCount { get; private set; } = 0;
-        public bool IsFavorite { get; private set; }
-        public double AverageRating { get; private set; } = 0.0;
+        public int FavoriteCount { get; set; } = 0;
+        public bool IsFavorite { get; set; }
+        public double AverageRating { get; set; } = 0.0;
 
         public virtual CarModel? Model { get; private set; }
         public virtual Provider? Provider { get; private set; }
