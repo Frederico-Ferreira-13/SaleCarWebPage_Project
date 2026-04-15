@@ -10,7 +10,7 @@ namespace Contracts.Services
 {
     public interface ICarService
     {
-        Task<Result<Car>> GetCarByIdAsync(int carId);
+        Task<Result<Car>> GetCarByIdAsync(int carId, int? currentUserId);
         Task<Result<IEnumerable<Car>>> GetCarsByUserIdAsync(int userId);
         Task<Result<Car>> GetCarDetailsAsync(int carId);
 
@@ -31,5 +31,7 @@ namespace Contracts.Services
 
         Task<Result> UpsertCarRatingAsync(int carId, int userId, int rating);
         Task<Result<double>> GetAverageRatingAsync(int carId);
+        Task<Result<IEnumerable<Car>>> GetFavoriteCarByUserIdAsync(int userId);
+        Task<bool> IsCarFavoriteAsync(int carId, int userId);
     }
 }

@@ -1,0 +1,258 @@
+﻿using Contracts.Repositories;
+using Contracts.Services;
+using Core.Common;
+using Core.Model;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Services
+{
+    public class CarService : ICarService
+    {
+        private readonly IUnitOfWork _unitOfWork;        
+        private readonly ITokenService _tokenService;       
+
+        public CarService(IUnitOfWork unitOfWork, ITokenService tokenService)
+        {
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));           
+            _tokenService = tokenService ?? throw new ArgumentNullException(nameof(tokenService));            
+        }
+
+        public async Task<Result<Car>> GetCarByIdAsync(int carId, int? currentUserId)
+        {
+            if (carId <= 0)
+            {
+                return Result<Car>.Failure(
+                    Error.Validation(
+                        "ID do carro inválido.",
+                        new Dictionary<string, string[]> { { nameof(carId), new[] { "Deve ser maior que zero" } } }
+                    )
+                );
+            }
+
+            var car = await _unitOfWork.Cars.GetByIdAsync(carId);
+            if (car == null)
+            {
+                return Result<Car>.Failure(
+                    Error.NotFound(
+                    ErrorCodes.NotFound,
+                    $"Carro com ID {carId} não encontrado.")
+                );
+            }
+
+            car.FavoriteCount = await _unitOfWork.Favorites.GetCountByCarIdAsync(carId);
+
+            car.SetImageUrl(car.ImageUrl ?? "");
+
+            if (currentUserId.HasValue)
+            {
+                car.IsFavorite = await _unitOfWork.Favorites.ExistsAsync(carId, currentUserId.Value);
+            }
+
+            return Result<Car>.Success(car);
+        }
+
+        public async Task<Result<Car>> GetCarDetailsAsync(int carId)
+        {
+            return await GetCarByIdAsync(carId, null);
+        }
+
+        public async Task<Result<IEnumerable<Car>>> GetCarsByUserIdAsync(int userId)
+        {
+            if (userId <= 0)
+            {
+                return Result<IEnumerable<Car>>.Failure(
+                    Error.Validation(
+                        "ID do utilizador inválido.",
+                        new Dictionary<string, string[]> { { nameof(userId), new[] { "Deve ser maior que zero" } } }
+                    )
+                );
+            }
+
+            var userCars = await _unitOfWork.Cars.GetCarsByUserIdAsync(userId);
+            return Result<IEnumerable<Car>>.Success(userCars);
+        }        
+
+        public async Task<(IEnumerable<Car> Items, int TotalCount)> SearchCarsAsync(string? searchTerm, int? brandId,
+            int? modelId, string? fuelType, int page, int pageSize)
+        {
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            if (pageSize < 1 || pageSize > 100)
+            {
+                page = 20;
+            }
+
+            return await _unitOfWork.Cars.SearchCarsAsync(searchTerm, brandId, modelId, fuelType, page, pageSize);
+        }        
+
+        public async Task<Result<Car>> CreateCarAsync(Car newCar)
+        {
+            var userIdResult = await _tokenService.GetUserIdFromContextAsync();
+            if (!userIdResult.IsSuccessful)
+            {
+                return Result<Car>.Failure(
+                    Error.Unauthorized(
+                        ErrorCodes.AuthUnauthorized,
+                        "O utilizador deve estar autenticado para criar um carro."));
+            }
+
+            var modelExists = await _unitOfWork.CarModels.GetByIdAsync(newCar.ModelId);
+            if (modelExists == null)
+            {
+                return Result<Car>.Failure(
+                    Error.Validation(
+                        "O modelo de carro selecionado não existe."));
+                    )
+                );
+            }            
+
+            await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                var carToCreate = new Car(
+                    newCar.ModelId,
+                    newCar.ProviderId,
+                    newCar.TypeOfFuel,
+                    newCar.CarColor,
+                    newCar.EngineCapacity,
+                    newCar.CarTare,
+                    newCar.CarPrice,
+                    newCar.PlateNumber,
+                    newCar.Year,
+                    newCar.Kilometers
+                );
+
+                var user = await _unitOfWork.Users.GetByIdAsync(userIdResult.Value);
+                if (user != null && user.UsersRoleId == 1) // 1 = Admin
+                {
+                    carToCreate.Approve();
+                }
+
+                await _unitOfWork.Cars.AddAsync(carToCreate);
+                await _unitOfWork.CommitAsync();
+
+                return Result<Car>.Success(carToCreate);
+            }
+            catch (ArgumentException ex)
+            {
+                _unitOfWork.Rollback();
+                return Result<Car>.Failure(Error.Validation(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return Result<Car>.Failure(
+                    Error.InternalServer($"Erro ao criar receita: {ex.Message}"));
+            }
+        }
+
+        public async Task<Result> ApproveCarAsync(int carId)
+        {
+            var car = await _unitOfWork.Cars.GetByIdAsync(carId);
+            if (car == null)
+            {
+                return Result.Failure(
+                    Error.NotFound(
+                        ErrorCodes.NotFound, "Carro não encontrado."));
+            }
+
+            car.Approve();
+
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.Cars.UpdateAsync(car);
+            await _unitOfWork.CommitAsync();
+
+            return Result.Success();
+        }
+
+        public async Task<Result> UpdateAvailabilityAsync(int carId, bool isAvailable)
+        {
+            var car = await _unitOfWork.Cars.GetByIdAsync(carId);
+            if (car == null)
+            {
+                return Result.Failure(
+                    Error.NotFound(
+                        ErrorCodes.NotFound, "Carro não encontrado."));
+            }
+
+            if (!isAvailable)
+            {
+                car.MarkAsSold();
+            }
+
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.Cars.UpdateAsync(car);
+            await _unitOfWork.CommitAsync();
+
+            return Result.Success();
+        }        
+
+        public async Task<Result> DeleteCarAsync(int carId)
+        {
+            var car = await _unitOfWork.Cars.GetByIdAsync(carId);
+            if (car == null)
+            {
+                return Result.Failure(
+                    Error.NotFound(
+                        ErrorCodes.NotFound, "Carro não encontrado."));
+            }
+
+            car.Deactivate();
+
+            await _unitOfWork.BeginTransactionAsync();
+            await _unitOfWork.Cars.UpdateAsync(car);
+            await _unitOfWork.CommitAsync();
+
+            return Result.Success();
+        }
+
+        public async Task<bool> AnyCarsWithModelIdAsync(int modelId)
+        {
+            var cars = await _unitOfWork.Cars.GetAllAsync();
+            return cars.Any(c => c.ModelId == modelId && c.IsActive);
+        }
+
+        public async Task<Result<bool>> ToggleFavoriteAsync(int carId)
+        {
+            var userIdResult = await _tokenService.GetUserIdFromContextAsync();
+            if (!userIdResult.IsSuccessful)
+                return Result<bool>.Failure(Error.Unauthorized(ErrorCodes.AuthUnauthorized, "Login necessário."));
+
+            int userId = userIdResult.Value;
+
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                bool isAlreadyFavorite = await _unitOfWork.Favorites.ExistsAsync(carId, userId);
+
+                if (isAlreadyFavorite)
+                {
+                    // Se já é favorito, removemos (passamos o ID se o Delete for por ID)
+                    await _unitOfWork.Favorites.DeleteFavoriteAsync(carId, userId);
+                }
+                else
+                {
+                    // Se não é, adicionamos
+                    var favorite = new Favorites(userId, carId);
+                    await _unitOfWork.Favorites.AddAsync(favorite);
+                }
+
+                await _unitOfWork.CommitAsync();
+                return Result<bool>.Success(!isAlreadyFavorite); // Devolve o novo estado
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return Result<bool>.Failure(Error.InternalServer(ex.Message));
+            }
+        }
+    }
+}
