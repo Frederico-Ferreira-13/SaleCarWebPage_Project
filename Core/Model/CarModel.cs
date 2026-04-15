@@ -45,8 +45,8 @@ namespace Core.Model
         }
 
         // Métodos obrigatórios da IEntity
-        public int GetId() => Id;
-        public void SetId(int id) => Id = id;
+        public int GetId() => CarModelId;
+        public void SetId(int id) => CarModelId = id;
         public bool GetIsActive() => true;
     }
 }
