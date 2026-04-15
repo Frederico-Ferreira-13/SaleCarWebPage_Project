@@ -12,7 +12,8 @@ namespace Core.Model
         public int ContactId { get; private set; }
         public int AddressId { get; private set; }
         public string ClientName { get; private set; } = string.Empty;
-        public string NIF { get; private set; } = string.Empty;
+        public string Email { get; private set; } = string.Empty;
+        public string Nif { get; private set; } = string.Empty;
 
         public bool IsActive { get; private set; } = true;
 
@@ -26,7 +27,7 @@ namespace Core.Model
         {
             ValidateClientData(clientName, nif, userId, contactId, addressId);
             ClientName = clientName;
-            NIF = nif;
+            Nif = nif;
             UserId = userId;
             ContactId = contactId;
             AddressId = addressId;
@@ -52,7 +53,7 @@ namespace Core.Model
         {
             ValidateClientData(newClientName, newNif, newUserId, newContactId, newAddressId);
             ClientName = newClientName;
-            NIF = newNif;
+            Nif = newNif;
             UserId = newUserId;
             ContactId = newContactId;
             AddressId = newAddressId;

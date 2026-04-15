@@ -1,20 +1,17 @@
 ﻿using Contracts.Repositories;
 using Microsoft.Extensions.Configuration;
-using SaleCarWebPage_Project.Repo;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 
-namespace Repo
+namespace SaleCarWebPage_Project.Repo
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private TransactionScope? _scope;
         private bool _disposed = false;
         private readonly IConfiguration _configuration;
+        private readonly ApplicationDbContext _context; // ADICIONADO: Necessário para salvar no DB
 
         public IAddressRepository Address { get; }
         public IBrandRepository Brands { get; }
@@ -30,71 +27,56 @@ namespace Repo
         public IUserSettingRepository UserSettings { get; }
         public IUsersRoleRepository UsersRole { get; }
 
-        public UnitOfWork(IAddressRepository addressRepository, IBrandRepository brandRepository, ICarRepository carRepository, 
-            ICarModelRepository carModelRepository, IClientRepository clientRepository, 
-            IContactRepository contactRepository, IFavoritesRepository favoritesRepository,
-            IMessageBoxRepository messageBoxRepository, IProviderRepository providerRepository, 
-            ISaleRepository saleRepository, IUsersRepository usersRepository, 
-            IUserSettingRepository userSettingRepository, IUsersRoleRepository userRoleRepository, IConfiguration configuration)
+        public UnitOfWork(
+            ApplicationDbContext context, // Injetar o contexto aqui
+            IAddressRepository addressRepository,
+            IBrandRepository brandRepository,
+            ICarRepository carRepository,
+            ICarModelRepository carModelRepository,
+            IClientRepository clientRepository,
+            IContactRepository contactRepository,
+            IFavoritesRepository favoritesRepository,
+            IMessageBoxRepository messageBoxRepository,
+            IProviderRepository providerRepository,
+            ISaleRepository saleRepository,
+            IUsersRepository usersRepository,
+            IUserSettingRepository userSettingRepository,
+            IUsersRoleRepository userRoleRepository,
+            IConfiguration configuration)
         {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
-            Address = addressRepository ?? throw new ArgumentNullException(nameof(addressRepository));
-            Brands = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
-            Cars = carRepository ?? throw new ArgumentNullException(nameof(carRepository));
-            Models = carModelRepository ?? throw new ArgumentNullException(nameof(carModelRepository));
-            Clients = clientRepository ?? throw new ArgumentNullException(nameof(clientRepository));
-            Contacts = contactRepository ?? throw new ArgumentNullException(nameof(contactRepository));
-            Favorites = favoritesRepository ?? throw new ArgumentNullException(nameof(favoritesRepository));
-            MessageBox = messageBoxRepository ?? throw new ArgumentNullException(nameof(messageBoxRepository));
-            Providers = providerRepository ?? throw new ArgumentNullException(nameof(providerRepository));
-            Sales = saleRepository ?? throw new ArgumentNullException(nameof(saleRepository));
-            Users = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
-            UserSettings = userSettingRepository ?? throw new ArgumentNullException(nameof(userSettingRepository));
-            UsersRole = userRoleRepository ?? throw new ArgumentNullException(nameof(userRoleRepository));
+            Address = addressRepository;
+            Brands = brandRepository;
+            Cars = carRepository;
+            Models = carModelRepository;
+            Clients = clientRepository;
+            Contacts = contactRepository;
+            Favorites = favoritesRepository;
+            MessageBox = messageBoxRepository;
+            Providers = providerRepository;
+            Sales = saleRepository;
+            Users = usersRepository;
+            UserSettings = userSettingRepository;
+            UsersRole = userRoleRepository;
         }
 
         public async Task BeginTransactionAsync()
         {
-            // Vou comentar para que o UnitOfWork não bloquear o ADO.NET
-            /*if (_scope != null)
-            {
-                throw new InvalidOperationException("Já existe uma transação ativa.");
-            }
-
-            var options = new TransactionOptions
-            {
-                IsolationLevel = IsolationLevel.ReadCommitted, // Padrão bom para leitura/escrita consistente
-                Timeout = TimeSpan.FromSeconds(30) // Ajustar se necessitar de mais tempo
-            };
-
-            _scope = new TransactionScope(
-                TransactionScopeOption.Required,
-                options,
-                TransactionScopeAsyncFlowOption.Enabled //Para Async
-            );*/
-
+            // Mantido comentário do colega, mas deixo a estrutura preparada
             await Task.CompletedTask;
         }
 
         public async Task<int> CommitAsync()
         {
-            // Como não abro o scope acima, não precisamos de dar Complete()
-            /*if(_scope == null)
-            {
-                return 0;
-            }
-
-            _scope.Complete();*/
-
-            await Task.CompletedTask;
-            return 1;
+            // CORREÇÃO: Chama o SaveChangesAsync do contexto para gravar os dados
+            return await _context.SaveChangesAsync();
         }
 
         public void Rollback()
         {
-            //_scope?.Dispose();
-            //_scope = null;
+            // Implementação futura de rollback se necessário
         }
 
         public void Dispose()
@@ -102,6 +84,7 @@ namespace Repo
             if (!_disposed)
             {
                 _scope?.Dispose();
+                _context.Dispose(); // Garante que o contexto é libertado
                 _disposed = true;
             }
             GC.SuppressFinalize(this);

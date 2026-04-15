@@ -1,13 +1,12 @@
-﻿using System;
-using Core.Model;
+﻿using Core.Model;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Contracts.Repositories
 {
     public interface IContactRepository : IGenericRepository<Contact>
     {
+        // Útil para ver os contactos de um cliente específico
+        Task<IEnumerable<Contact>> GetByClientIdAsync(int clientId);
     }
 }

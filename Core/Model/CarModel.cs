@@ -1,13 +1,16 @@
 ﻿using Core.Common;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Model
 {
+    [Table("Model")]
     public class CarModel : IEntity
     {
-        public int ModelId { get; private set; }
+        [Key]
+        public int Id { get; set; } 
+
         public int BrandId { get; private set; }
         public string ModelName { get; private set; } = string.Empty;
         public virtual Brand Brand { get; private set; }
@@ -20,9 +23,9 @@ namespace Core.Model
             ModelName = modelName;
         }
 
-        public CarModel(int id, string modelName)
+        public CarModel(int brandId, string modelName)
         {
-            BrandId = id;
+            BrandId = brandId;
             ModelName = modelName;
         }
 
@@ -38,30 +41,12 @@ namespace Core.Model
         public void ValidateModelName(string modelName)
         {
             if (string.IsNullOrWhiteSpace(modelName))
-            {
                 throw new ArgumentException("O nome do Modelo é obrigatório.", nameof(modelName));
-            }
-            if (modelName.Length > 100)
-            {
-                throw new ArgumentException("O nome do Modelo não pode exceder 100 caracteres.", nameof(modelName));
-            }
         }
 
-        public int GetId() => ModelId;
-
-        public void SetId(int id)
-        {
-            if (ModelId != 0)
-            {
-                throw new InvalidOperationException("Não é permitido alterar o ID de uma Entidade já persistida.");
-            }
-            if (id <= 0)
-            {
-                throw new ArgumentException("O ID deve ser positivo.", nameof(id));
-            }
-            ModelId = id;
-        }
-
+        // Métodos obrigatórios da IEntity
+        public int GetId() => Id;
+        public void SetId(int id) => Id = id;
         public bool GetIsActive() => true;
     }
 }

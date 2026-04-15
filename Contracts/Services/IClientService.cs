@@ -1,5 +1,5 @@
 ﻿using Core.Common;
-using Core.Model
+using Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

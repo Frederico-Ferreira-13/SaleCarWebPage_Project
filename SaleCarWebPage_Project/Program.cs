@@ -13,15 +13,23 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 3. Injeção de Dependência dos Repositórios
-// IMPORTANTE: Registamos a Interface ligada à Implementação
-builder.Services.AddScoped<ICarRepository, CarRepository>();
+// Interface ligada à Implementação para as 13 tabelas
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IBrandRepository, BrandRepository>();
-builder.Services.AddScoped<IProviderRepository, ProviderRepository>();
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<ICarModelRepository, CarModelRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IContactRepository, ContactRepository>();
+builder.Services.AddScoped<IFavoritesRepository, FavoritesRepository>();
+builder.Services.AddScoped<IMessageBoxRepository, MessageBoxRepository>();
+builder.Services.AddScoped<IProviderRepository, ProviderRepository>();
+builder.Services.AddScoped<ISaleRepository, SaleRepository>();
+builder.Services.AddScoped<IUsersRepository, UserRepository>();
+builder.Services.AddScoped<IUserSettingRepository, UserSettingRepository>();
+builder.Services.AddScoped<IUsersRoleRepository, UsersRoleRepository>();
 
-// Aqui podes já deixar preparado para o futuro:
-// builder.Services.AddScoped<IUserRepository, UserRepository>();
-// builder.Services.AddScoped<ISaleRepository, SaleRepository>();
+// Registro da Unit of Work (Centraliza todos os repositórios acima)
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 var app = builder.Build();
 

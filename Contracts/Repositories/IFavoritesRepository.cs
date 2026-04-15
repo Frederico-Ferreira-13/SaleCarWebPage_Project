@@ -1,13 +1,12 @@
 ﻿using Core.Model;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Contracts.Repositories
 {
     public interface IFavoritesRepository : IGenericRepository<Favorites>
     {
+        // Útil para saber quais os carros favoritos de um utilizador específico
+        Task<IEnumerable<Favorites>> GetByUserIdAsync(int userId);
     }
 }
