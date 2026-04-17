@@ -34,7 +34,7 @@ namespace Services
             var user = await _unitOfWork.Users.GetByEmailAsync(identifier);
             if (user == null)
             {
-                user = await _unitOfWork.Users.GetUserByUserNameAsync(identifier);
+                user = await _unitOfWork.Users.GetByUserNameAsync(identifier);
             }
 
             if (user == null || !user.IsActive)
@@ -86,7 +86,7 @@ namespace Services
                 );
             }
 
-            var user = await _unitOfWork.Users.ReadByIdAsync(userId);
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
 
             if (user == null)
             {

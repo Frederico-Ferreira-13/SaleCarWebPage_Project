@@ -75,7 +75,7 @@ namespace Services
                 );
             }
 
-            if (await _unitOfWork.Users.GetUserByUserNameAsync(userName) != null)
+            if (await _unitOfWork.Users.GetByUserNameAsync(userName) != null)
             {
                 return Result<Users>.Failure(
                     Error.Conflict(
@@ -257,7 +257,7 @@ namespace Services
 
             if (!string.IsNullOrWhiteSpace(userToUpdate.UserName) && userToUpdate.UserName != existingUser.UserName)
             {
-                if (await _unitOfWork.Users.GetUserByUserNameAsync(userToUpdate.UserName) != null)
+                if (await _unitOfWork.Users.GetByUserNameAsync(userToUpdate.UserName) != null)
                 {
                     return Result.Failure(
                         Error.Conflict(
@@ -502,7 +502,7 @@ namespace Services
 
             try
             {
-                await _unitOfWork.Users.DeleteAsync(user);
+                await _unitOfWork.Users.DeleteAsync(user.UsersRoleId);
                 await _unitOfWork.CommitAsync();
 
                 return Result.Success("Utilizador eliminado com sucesso.");
@@ -531,7 +531,7 @@ namespace Services
             var user = await _unitOfWork.Users.GetByEmailAsync(normalized);
             if (user == null)
             {
-                user = await _unitOfWork.Users.GetUserByUserNameAsync(normalized);
+                user = await _unitOfWork.Users.GetByUserNameAsync(normalized);
             }
 
             if (user == null)
@@ -561,7 +561,7 @@ namespace Services
             {
                 return false;
             }
-            return await _unitOfWork.Users.GetUserByUserNameAsync(userName) == null;
+            return await _unitOfWork.Users.GetByUserNameAsync(userName) == null;
         }
 
         public async Task<bool> UserExistsAsync(int userId)

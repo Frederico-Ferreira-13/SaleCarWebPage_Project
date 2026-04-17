@@ -26,13 +26,13 @@ namespace Services
 
         public async Task<Result<CarModel>> GetCarModelIdAsync(int modelIdd)
         {
-            var modelIdResult = await GetAllBrandsAsync();
+            var modelIdResult = await GetAllCarModelAsync();
             if (!modelIdResult.IsSuccessful)
             {
-                return Result<Brand>.Failure(modelIdResult.Error);
+                return Result<CarModel>.Failure(modelIdResult.Error);
             }
 
-            var carModel = await _carModelRepository.GetByIdAsync(modelIdd, modelIdResult.Value);
+            var carModel = await _unitOfWork.CarModels.GetByIdAsync(modelIdd);
             if (carModel == null)
             {
                 return Result<CarModel>.Failure(
@@ -40,7 +40,7 @@ namespace Services
                 );
             }
 
-            return Result<Brand>.Success(carModel);
+            return Result<CarModel>.Success(carModel);
         }
 
         public async Task<Result<CarModel>> GetByNameAsync(string modelName)
@@ -65,7 +65,7 @@ namespace Services
                 );
             }
 
-            return Result<Brand>.Success(carModel);
+            return Result<CarModel>.Success(carModel);
         }
 
         public async Task<Result<IEnumerable<CarModel>>> GetAllCarModelAsync()
@@ -136,11 +136,11 @@ namespace Services
 
         public async Task<Result<CarModel>> UpdateCarModelAsync(CarModel updateModel)
         {
-            var existingCarModel = await _unitOfWork.CarModels.GetByIdAsync(updateModel.ModelId);
+            var existingCarModel = await _unitOfWork.CarModels.GetByIdAsync(updateModel.CarModelId);
             if (existingCarModel == null)
             {
                 return Result<CarModel>.Failure(
-                    Error.NotFound(ErrorCodes.NotFound, $"Modelo com ID {updateModel.ModelId} não encontrado.")
+                    Error.NotFound(ErrorCodes.NotFound, $"Modelo com ID {updateModel.CarModelId} não encontrado.")
                 );
             }
 
@@ -196,7 +196,7 @@ namespace Services
 
             try
             {
-                await _unitOfWork.CarModels.DeleteAsync(existingCarModel);
+                await _unitOfWork.CarModels.DeleteAsync(existingCarModel.CarModelId);
                 await _unitOfWork.CommitAsync();
                 return Result.Success("Modelo excluído com sucesso.");
             }

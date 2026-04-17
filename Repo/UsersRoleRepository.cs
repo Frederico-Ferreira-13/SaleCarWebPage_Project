@@ -19,5 +19,13 @@ namespace SaleCarWebPage_Project.Repo
                                  .Where(x => x.UsersRoleId == roleId)
                                  .ToListAsync();
         }
+
+        public async Task<UsersRole> GetByNameAsync(string roleName)
+        {
+            if (string.IsNullOrWhiteSpace(roleName)) return null;
+
+            return await _context.Set<UsersRole>()
+                                 .FirstOrDefaultAsync(x => x.RoleName.ToLower() == roleName.ToLower());
+        }
     }
 }

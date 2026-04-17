@@ -4,6 +4,7 @@ namespace Contracts.Repositories
 {
     public interface IBrandRepository : IGenericRepository<Brand>
     {
-        // Aqui podes adicionar métodos específicos para Marcas no futuro
+        Task<Brand> ReadByIdAndBrandAsync(int id, IEnumerable<Brand> allowedBrands);
+        Task<Brand> GetByNameAsync(string brandName);
     }
 }

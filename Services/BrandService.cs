@@ -195,7 +195,7 @@ namespace Services
 
             try
             {
-                await _unitOfWork.Brands.DeleteAsync(existingBrand);
+                await _unitOfWork.Brands.DeleteAsync(existingBrand.BrandId);
                 await _unitOfWork.CommitAsync();
                 return Result.Success("Brand excluída com sucesso.");
             }
