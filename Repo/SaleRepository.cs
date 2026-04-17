@@ -22,7 +22,7 @@ namespace SaleCarWebPage_Project.Repo
         }
 
         // Busca a venda de um carro específico
-        public async Task<Sale> GetByCarIdAsync(int carId)
+        public async Task<Sale?> GetByCarIdAsync(int carId)
         {
             return await _context.Set<Sale>()
                                  .FirstOrDefaultAsync(x => x.CarId == carId);

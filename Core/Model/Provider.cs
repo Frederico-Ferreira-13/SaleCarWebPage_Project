@@ -9,7 +9,7 @@ namespace Core.Model
     {
         public int ProviderId { get; private set; }
         public int UserId { get; private set; }
-        public string CompanyName { get; set; }
+        public string? CompanyName { get; set; }
         public int AddressId { get; private set; }
         public string NameProvider { get; private set; } = string.Empty;        
         public string NIF { get; private set; } = string.Empty;

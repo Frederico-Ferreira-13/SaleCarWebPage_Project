@@ -8,6 +8,6 @@ namespace Contracts.Repositories
     {
         Task<IEnumerable<UsersRole>> GetUsersByRoleIdAsync(int roleId);
 
-        Task<UsersRole> GetByNameAsync(string roleName);
+        Task<UsersRole?> GetByNameAsync(string roleName);
     }
 }

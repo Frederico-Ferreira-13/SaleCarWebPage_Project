@@ -12,7 +12,7 @@ namespace SaleCarWebPage_Project.Repo
         {
         }
 
-        public async Task<Provider> GetByCompanyNameAsync(string companyName)
+        public async Task<Provider?> GetByCompanyNameAsync(string companyName)
         {
             return await _context.Set<Provider>()
                                  .FirstOrDefaultAsync(x => x.CompanyName == companyName);

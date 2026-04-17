@@ -12,7 +12,7 @@ namespace SaleCarWebPage_Project.Repo
         {
         }
 
-        public async Task<UserSettings> GetByUserIdAsync(int userId)
+        public async Task<UserSettings?> GetByUserIdAsync(int userId)
         {
             return await _context.Set<UserSettings>()
                                  .FirstOrDefaultAsync(x => x.UserId == userId);

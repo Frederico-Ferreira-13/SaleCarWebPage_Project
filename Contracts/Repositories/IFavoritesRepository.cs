@@ -10,7 +10,7 @@ namespace Contracts.Repositories
         Task<IEnumerable<Favorites>> GetByUserIdAsync(int userId);
         Task<bool> ExistsAsync(int carId, int userId);
         Task<int> GetCountByCarIdAsync(int carId);
-        Task<IEnumerable<Car>> GetFavoriteCarsByUserIdAsync(int userId);
+        Task<IEnumerable<Car?>> GetFavoriteCarsByUserIdAsync(int userId);
         Task DeleteAsync(int carId, int userId);
     }
 }

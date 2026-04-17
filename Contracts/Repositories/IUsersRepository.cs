@@ -6,7 +6,7 @@ namespace Contracts.Repositories
     public interface IUsersRepository : IGenericRepository<Users>
     {
         
-        Task<Users> GetByEmailAsync(string email);
-        Task<Users> GetByUserNameAsync(string userName);
+        Task<Users?> GetByEmailAsync(string email);
+        Task<Users?> GetByUserNameAsync(string userName);
     }
 }

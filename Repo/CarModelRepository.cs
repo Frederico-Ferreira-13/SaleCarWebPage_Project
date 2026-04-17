@@ -21,7 +21,7 @@ namespace SaleCarWebPage_Project.Repo
                                  .ToListAsync();
         }
 
-        public async Task<CarModel> GetByNameAsync(string modelName)
+        public async Task<CarModel?> GetByNameAsync(string modelName)
         {
             if (string.IsNullOrWhiteSpace(modelName)) return null;
 

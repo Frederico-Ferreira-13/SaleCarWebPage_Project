@@ -13,7 +13,7 @@ namespace Core.Model
 
         public int BrandId { get; private set; }
         public string ModelName { get; private set; } = string.Empty;
-        public virtual Brand Brand { get; private set; }
+        public virtual Brand? Brand { get; private set; }
 
         public CarModel() { }
 

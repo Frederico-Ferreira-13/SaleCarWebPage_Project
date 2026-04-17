@@ -56,7 +56,7 @@ namespace Core.Common
             return new Result<T>(true, value, Error.None(), message);
         }
 
-        public static Result<T> Failure(Error error)
+        public new static Result<T> Failure(Error error)
         {
             return new Result<T>(false, default(T), error);
         }

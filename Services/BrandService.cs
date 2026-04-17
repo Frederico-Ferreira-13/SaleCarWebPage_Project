@@ -31,7 +31,7 @@ namespace Services
                 return Result<Brand>.Failure(brandIdResult.Error);
             }
 
-            var brand = await _brandRepository.ReadByIdAndBrandAsync(brandId, brandIdResult.Value);
+            var brand = await _brandRepository.ReadByIdAndBrandAsync(brandId, brandIdResult.Value!);
             if (brand == null)
             {
                 return Result<Brand>.Failure(

@@ -12,14 +12,14 @@ namespace SaleCarWebPage_Project.Repo
         }
 
         // Método para procurar por Email
-        public async Task<Client> GetByEmailAsync(string email)
+        public async Task<Client?> GetByEmailAsync(string email)
         {
             return await _context.Set<Client>()
                                  .FirstOrDefaultAsync(x => x.Email == email);
         }
 
         // Método para procurar por NIF
-        public async Task<Client> GetByNifAsync(string nif)
+        public async Task<Client?> GetByNifAsync(string nif)
         {
             return await _context.Set<Client>()
                                  .FirstOrDefaultAsync(x => x.Nif == nif);

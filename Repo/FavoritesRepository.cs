@@ -32,7 +32,7 @@ namespace SaleCarWebPage_Project.Repo
                                  .CountAsync(x => x.CarId == carId);
         }
 
-        public async Task<IEnumerable<Car>> GetFavoriteCarsByUserIdAsync(int userId)
+        public async Task<IEnumerable<Car?>> GetFavoriteCarsByUserIdAsync(int userId)
         {
             // Aqui fazemos o Join para trazer a lista de objetos Car diretamente
             return await _context.Set<Favorites>()

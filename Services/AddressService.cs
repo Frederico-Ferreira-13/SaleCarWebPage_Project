@@ -94,7 +94,7 @@ namespace Services
         public async Task<Result> UpdateAddressAsync(Address addressToUpdate)
         {
             var existing = await _unitOfWork.Address.GetByIdAsync(addressToUpdate.AddressId);
-            if (existing != null)
+            if (existing == null)
             {
                 return Result.Failure(Error.NotFound(
                     ErrorCodes.NotFound,
@@ -115,7 +115,7 @@ namespace Services
                     addressToUpdate.Country,
                     addressToUpdate.Locate);
 
-                _unitOfWork.Address.UpdateAsync(existing);
+                await _unitOfWork.Address.UpdateAsync(existing);
                 await _unitOfWork.CommitAsync();
                 return Result.Success("Morada atualizada com sucesso.");
 

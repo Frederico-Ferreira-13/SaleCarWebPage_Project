@@ -20,7 +20,7 @@ namespace SaleCarWebPage_Project.Repo
                                  .ToListAsync();
         }
 
-        public async Task<UsersRole> GetByNameAsync(string roleName)
+        public async Task<UsersRole?> GetByNameAsync(string roleName)
         {
             if (string.IsNullOrWhiteSpace(roleName)) return null;
 

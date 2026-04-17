@@ -8,6 +8,6 @@ namespace Contracts.Repositories
     {
         // Útil para ver o histórico de vendas de um cliente ou de um carro
         Task<IEnumerable<Sale>> GetByClientIdAsync(int clientId);
-        Task<Sale> GetByCarIdAsync(int carId);
+        Task<Sale?> GetByCarIdAsync(int carId);
     }
 }

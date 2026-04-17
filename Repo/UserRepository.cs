@@ -13,13 +13,13 @@ namespace SaleCarWebPage_Project.Repo
         {
         }
 
-        public async Task<Users> GetByEmailAsync(string email)
+        public async Task<Users?> GetByEmailAsync(string email)
         {
             return await _context.Set<Users>()
                                  .FirstOrDefaultAsync(x => x.Email == email);
         }
 
-        public async Task<Users> GetByUserNameAsync(string userName)
+        public async Task<Users?> GetByUserNameAsync(string userName)
         {
             return await _context.Set<Users>()
                                  .FirstOrDefaultAsync(x => x.UserName == userName);

@@ -8,7 +8,8 @@ namespace SaleCarWebPage_Project.Repo
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private TransactionScope? _scope;
+        private TransactionScope? _scope = null!;
+
         private bool _disposed = false;
         private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _context; // ADICIONADO: Necessário para salvar no DB
