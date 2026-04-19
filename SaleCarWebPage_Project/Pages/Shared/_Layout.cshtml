@@ -1,52 +1,80 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@functions {    
+    public string IsActive(string page)
+    {
+        var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+        return string.Equals(currentPage, page, StringComparison.OrdinalIgnoreCase) ? "active" : "";
+    }
+}
+<!DOCTYPE html>
+<html lang="pt-pt">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SaleCarWebPage_Project</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SaleCarWebPage_Project.styles.css" asp-append-version="true" />
+    <title>@ViewData["Title"] - Luxury Cars</title>
+    <link rel="stylesheet" href="~/css/global/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/global/styles.css" asp-append-version="true" />
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">SaleCarWebPage_Project</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+<body class="luxury-theme">
+
+    <nav class="navigation">
+        <ul>
+            <li class="list @IsActive("/Index")">
+                <b></b><b></b>
+                <a asp-page="/Index">
+                    <span class="icon"><ion-icon name="compass-outline"></ion-icon></span>
+                    <span class="title">Explorar</span>
+                </a>
+            </li>
+            <li class="list @IsActive("/Anunciar")">
+                <b></b><b></b>
+                <a asp-page="/Anunciar">
+                    <span class="icon"><ion-icon name="add-circle-outline"></ion-icon></span>
+                    <span class="title">Vender Carro</span>
+                </a>
+            </li>
+            <li class="list @IsActive("/Favoritos")">
+                <b></b><b></b>
+                <a asp-page="/Favoritos">
+                    <span class="icon"><ion-icon name="heart-outline"></ion-icon></span>
+                    <span class="title">Favoritos</span>
+                </a>
+            </li>
+            <li class="list @IsActive("/Messages/Index")">
+                <b></b><b></b>
+                <a asp-page="/Messages/Index">
+                    <span class="icon"><ion-icon name="chatbubbles-outline"></ion-icon></span>
+                    <span class="title">Mensagens</span>
+                </a>
+            </li>
+        </ul>
+
+        <ul class="nav-bottom" style="margin-bottom: 20px;">
+            <li class="list @IsActive("/login")">
+                <b></b><b></b>
+                <a asp-page="/login">
+                    <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
+                    <span class="title">Entrar / Perfil</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <header style="display:flex; justify-content: space-between; padding: 20px; align-items:center;">
+            <div class="toggle" style="font-size: 2em; cursor: pointer;">
+                <ion-icon name="menu-outline"></ion-icon>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+            <div class="user-info">
+                <span>Luxury Admin</span>
+            </div>
+        </header>
+        
+        <main role="main" class="container" style="padding: 20px;">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - SaleCarWebPage_Project - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

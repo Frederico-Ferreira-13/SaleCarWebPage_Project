@@ -1,0 +1,54 @@
+﻿@page
+@model SaleCarWebPage_Project.Pages.loginModel
+@{
+    ViewData["Title"] = "Autenticação Premium";
+    Layout = "_LayoutNoSidebar"; // Um layout limpo, sem o menu lateral para focar no login
+}
+
+<div class="auth-container" id="auth-container">
+    
+    <div class="form-container sign-up-container">
+        <form method="post" asp-page-handler="Register">
+            <h1>Criar Conta</h1>
+            <div class="social-container">
+                <a href="#" class="social"><ion-icon name="logo-google"></ion-icon></a>
+                <a href="#" class="social"><ion-icon name="logo-apple"></ion-icon></a>
+            </div>
+            <span>ou use o seu email para registo</span>
+            <input type="text" placeholder="Nome Completo" name="RegisterName" required />
+            <input type="email" placeholder="Email Premium" name="RegisterEmail" required />
+            <input type="password" placeholder="Palavra-passe" name="RegisterPassword" required />
+            <button type="submit" class="btn-silver">Registar-me</button>
+        </form>
+    </div>
+
+    <div class="form-container sign-in-container">
+        <form method="post" asp-page-handler="Login">
+            <h1>Entrar</h1>
+            <div class="social-container">
+                <a href="#" class="social"><ion-icon name="logo-google"></ion-icon></a>
+                <a href="#" class="social"><ion-icon name="logo-apple"></ion-icon></a>
+            </div>
+            <span>ou use a sua conta Luxury</span>
+            <input type="email" placeholder="Email" name="LoginEmail" required />
+            <input type="password" placeholder="Palavra-passe" name="LoginPassword" required />
+            <a href="#" class="forgot-password">Esqueceu a palavra-passe?</a>
+            <button type="submit" class="btn-silver">Entrar</button>
+        </form>
+    </div>
+
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Bem-vindo de volta!</h1>
+                <p>Para manter-se ligado à nossa coleção exclusiva, por favor faça login com os seus dados.</p>
+                <button class="btn-transparent" id="signIn">Entrar</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>Olá, Entusiasta!</h1>
+                <p>Registe-se para começar a explorar a maior montra de carros de luxo de Portugal.</p>
+                <button class="btn-transparent" id="signUp">Criar Conta</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,1 +1,53 @@
-﻿
+﻿/* --- styles.css --- */
+:root {
+    --black: #0d0d0d;
+    --black-card: #151515;
+    --black-deep: #050505;
+    --sidebar-bg: #151515;
+    --silver: #c0c0c0;
+    --silver-bright: #e0e0e0;
+    --white: #fff;
+    --transition-speed: 0.6s;
+}
+
+/* --- ESTILOS DE BASE --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--black);
+    color: var(--silver);
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* --- ELEMENTOS REUTILIZÁVEIS --- */
+.btn-premium, .btn-silver {
+    background: var(--silver);
+    color: var(--black-deep);
+    border-radius: 20px;
+    padding: 12px 45px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: 0.3s;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-premium:hover, .btn-silver:hover {
+    background: var(--silver-bright);
+    transform: translateY(-2px);
+}
+
+/* Inputs padrão para o tema Luxury */
+input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(192, 192, 192, 0.2);
+    color: var(--white);
+    padding: 12px 15px;
+    border-radius: 8px;
+    outline: none;
+}
+
+

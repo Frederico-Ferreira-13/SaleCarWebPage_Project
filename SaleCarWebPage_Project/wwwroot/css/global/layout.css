@@ -1,1 +1,129 @@
-﻿
+﻿/* --- layout.css --- */
+/* --- NAVBAR AUTOMÁTICA --- */
+.navigation {
+    position: fixed;
+    width: 70px;
+    height: 100vh;
+    background: var(--sidebar-bg);
+    border-right: 1px solid rgba(192, 192, 192, 0.1);
+    transition: 0.5s;
+    overflow: hidden;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.navigation:hover {
+    width: 250px;
+}
+
+.navigation ul {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 40px 0 0 5px;
+    margin: 0;
+}
+
+/* Itens da Lista e Links */
+.navigation ul li {
+    position: relative;
+    list-style: none;
+    width: 100%;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+
+.navigation ul li a {
+    position: relative;
+    display: flex;
+    width: 100%;
+    text-decoration: none;
+    color: var(--silver);
+    z-index: 1001;
+}
+
+/* Efeito Ativo e Curvas Invertidas (O teu truque visual) */
+.navigation ul li.active {
+    background: var(--black);
+}
+
+.navigation ul li.active a {
+    color: var(--silver-bright);
+}
+
+/* Pseudo-elementos b para a curva */
+.navigation ul li.active b:nth-child(1),
+.navigation ul li.active b:nth-child(2) {
+    position: absolute;
+    width: 100%;
+    height: 20px;
+    background: var(--black);
+    display: block;
+}
+
+.navigation ul li.active b:nth-child(1) {
+    top: -20px;
+}
+
+.navigation ul li.active b:nth-child(2) {
+    bottom: -20px;
+}
+
+.navigation ul li.active b:nth-child(1)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--sidebar-bg);
+    border-bottom-right-radius: 20px;
+}
+
+.navigation ul li.active b:nth-child(2)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--sidebar-bg);
+    border-top-right-radius: 20px;
+}
+
+/* Ícones e Títulos */
+.navigation ul li a .icon {
+    min-width: 60px;
+    height: 60px;
+    line-height: 70px;
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.navigation ul li a .title {
+    line-height: 60px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: 0.5s;
+}
+
+.navigation:hover ul li a .title {
+    opacity: 1;
+}
+
+/* --- CONTEÚDO PRINCIPAL (Main Content) --- */
+.main-content {
+    position: absolute;
+    width: calc(100% - 70px);
+    left: 70px;
+    min-height: 100vh;
+    transition: 0.5s;
+}
+
+.navigation:hover ~ .main-content {
+    left: 250px;
+    width: calc(100% - 250px);
+}
