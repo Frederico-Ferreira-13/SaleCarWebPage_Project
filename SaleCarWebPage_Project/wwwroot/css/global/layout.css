@@ -5,13 +5,14 @@
     width: 70px;
     height: 100vh;
     background: var(--sidebar-bg);
-    border-right: 1px solid rgba(192, 192, 192, 0.1);
-    transition: 0.5s;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     overflow: hidden;
     z-index: 1000;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
 }
 
 .navigation:hover {
@@ -38,6 +39,7 @@
     width: 100%;
     border-top-left-radius: 30px;
     border-bottom-left-radius: 30px;
+    transition: 0.3s;
 }
 
 .navigation ul li a {
@@ -45,9 +47,15 @@
     display: flex;
     width: 100%;
     text-decoration: none;
-    color: var(--silver);
+    color: rgba(255, 255, 255, 0.5); /* Cinza suave quando inativo */
     z-index: 1001;
     align-items: center;
+    transition: color 0.3s;
+}
+
+/* Efeito Hover nos itens não ativos */
+.navigation ul li:hover:not(.active) a {
+    color: var(--white);
 }
 
 /* Efeito Ativo e Curvas Invertidas (O teu truque visual) */
@@ -56,7 +64,12 @@
 }
 
 .navigation ul li.active a {
-    color: var(--silver-bright);
+    color: var(--silver-main);
+    text-shadow: 0 0 10px rgba(255,255,255,0.2);
+}
+
+.navigation ul li.active a .icon {
+    color: var(--white);
 }
 
 /* Pseudo-elementos b para a curva */
@@ -105,15 +118,17 @@
     height: 60px;
     line-height: 70px;
     text-align: center;
-    font-size: 1.5em;
+    font-size: 1.6em;
 }
 
 .navigation ul li a .title {
+    font-weight: 500;
     line-height: 60px;
     white-space: nowrap;
     opacity: 0;
-    transition: 0.5s;
+    transition: 0.4s;
     padding-left: 10px;
+    letter-spacing: 0.5px;
 }
 
 .navigation:hover ul li a .title {
@@ -126,10 +141,16 @@
     width: calc(100% - 70px);
     left: 70px;
     min-height: 100vh;
-    transition: 0.5s;
+    background: var(--black);
+    transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .navigation:hover ~ .main-content {
     left: 250px;
     width: calc(100% - 250px);
+}
+
+.main-content header {
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.02));
+    border-bottom: 1px solid rgba(255,255,255,0.05);
 }

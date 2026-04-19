@@ -7,6 +7,7 @@ body.auth-page {
     height: 100vh;
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
 }
 
 .auth-container {
@@ -26,7 +27,7 @@ body.auth-page {
     position: absolute;
     top: 0;
     height: 100%;
-    transition: all var(--transition-speed) ease-in-out;
+    transition: all var(--transition-speed) cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 .form-container form {
@@ -41,94 +42,21 @@ body.auth-page {
 }
 
 .form-container h1 {
-    color: var(--silver-bright);
-    font-weight: bold;
+    color: var(--white);
+    font-weight: 800;
     margin: 0 0 10px;
+    letter-spacing: -0.5px;
 }
 
 .form-container span {
-    color: var(--silver);
+    color: rgba(255, 255, 255, 0.5);
     font-size: 12px;
     margin-bottom: 15px;
-}
-
-/* Inputs Estilizados */
-.form-container input {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(192, 192, 192, 0.2);
-    color: var(--white);
-    padding: 12px 15px;
-    margin: 8px 0;
-    width: 100%;
-    border-radius: 8px;
-    outline: none;
-}
-
-.form-container input:focus {
-    border-color: var(--silver);
-}
-
-/* Botão Prata */
-.btn-silver {
-    background: var(--silver);
-    color: var(--black-deep);
-    border-radius: 20px;
-    border: none;
-    padding: 12px 45px;
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 1px;
     text-transform: uppercase;
-    cursor: pointer;
-    margin-top: 15px;
-    transition: 0.3s;
+    letter-spacing: 1px;
 }
 
-.btn-silver:hover {
-    background: var(--silver-bright);
-    transform: scale(1.05);
-}
-
-/* --- Lógica de Posicionamento --- */
-.sign-in-container {
-    left: 0;
-    width: 50%;
-    z-index: 2;
-}
-
-.sign-up-container {
-    left: 0;
-    width: 50%;
-    opacity: 0;
-    z-index: 1;
-}
-
-/* Quando clicamos em Registar (Painel Ativo) */
-.auth-container.right-panel-active .sign-in-container {
-    transform: translateX(100%);
-    opacity: 0;
-}
-
-.auth-container.right-panel-active .sign-up-container {
-    transform: translateX(100%);
-    opacity: 1;
-    z-index: 5;
-    animation: show var(--transition-speed);
-}
-
-@keyframes show {
-    0%, 49.99% {
-        opacity: 0;
-        z-index: 1;
-    }
-
-    50%, 100% {
-        opacity: 1;
-        z-index: 5;
-    }
-}
-
-/* --- Overlay (Painel que desliza) --- */
+/* --- Overlay (O Painel que desliza) --- */
 .overlay-container {
     position: absolute;
     top: 0;
@@ -145,7 +73,8 @@ body.auth-page {
 }
 
 .overlay {
-    background: linear-gradient(to right, #252525, #000000);
+    /* Gradiente Metálico Escuro para o Painel */
+    background: linear-gradient(135deg, #1a1a1a 0%, #333333 50%, #0d0d0d 100%);
     color: var(--white);
     position: relative;
     left: -100%;
@@ -153,6 +82,18 @@ body.auth-page {
     width: 200%;
     transform: translateX(0);
     transition: transform var(--transition-speed) ease-in-out;
+}
+
+/* Adicionar um brilho metálico suave ao overlay */
+.overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
+    opacity: 0.1;
 }
 
 .auth-container.right-panel-active .overlay {
@@ -173,48 +114,86 @@ body.auth-page {
     transition: transform var(--transition-speed) ease-in-out;
 }
 
-.overlay-left {
-    transform: translateX(-20%);
+.overlay-panel h1 {
+    color: var(--white);
 }
 
-.auth-container.right-panel-active .overlay-left {
-    transform: translateX(0);
+.overlay-panel p {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.3px;
+    margin: 20px 0 30px;
+    color: rgba(255, 255, 255, 0.8);
 }
 
-.overlay-right {
-    right: 0;
-    transform: translateX(0);
-}
-
-.auth-container.right-panel-active .overlay-right {
-    transform: translateX(20%);
-}
-
+/* --- Botão Transparente (Prata outline) --- */
 .btn-transparent {
     background: transparent;
-    border: 1px solid var(--white);
-    color: var(--white);
+    border: 1px solid var(--silver-main);
+    color: var(--silver-main);
     border-radius: 20px;
-    padding: 10px 30px;
+    padding: 10px 35px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
     text-transform: uppercase;
-    margin-top: 10px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
 }
 
+.btn-transparent:hover {
+    background: var(--silver-gradient);
+    color: var(--black-deep);
+    border-color: transparent;
+}
+
+/* --- Social Icons --- */
 .social-container {
     margin: 20px 0;
 }
 
 .social-container a {
-    border: 1px solid rgba(192, 192, 192, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     margin: 0 5px;
-    height: 40px;
-    width: 40px;
-    color: var(--silver);
-    text-decoration: none;
+    height: 45px;
+    width: 45px;
+    color: var(--white);
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+}
+
+.social-container a:hover {
+    background: var(--silver-gradient);
+    color: var(--black-deep);
+    transform: translateY(-3px);
+}
+
+/* Lógica de animação mantida igual */
+.sign-in-container {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+}
+
+.sign-up-container {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+}
+
+.auth-container.right-panel-active .sign-in-container {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.auth-container.right-panel-active .sign-up-container {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    animation: show var(--transition-speed);
 }

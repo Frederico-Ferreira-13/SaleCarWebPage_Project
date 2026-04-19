@@ -4,50 +4,63 @@
     --black-card: #151515;
     --black-deep: #050505;
     --sidebar-bg: #151515;
-    --silver: #c0c0c0;
-    --silver-bright: #e0e0e0;
+    --silver-main: #e8e9eb;
+    --silver-gradient: linear-gradient(135deg, #cfd1d3 0%, #ffffff 50%, #b8babd 100%);
+    --silver-hover: linear-gradient(135deg, #ffffff 0%, #e8e9eb 50%, #d1d3d5 100%);
     --white: #fff;
     --transition-speed: 0.6s;
+    --gold-glow: rgba(255, 255, 255, 0.15);
 }
 
 /* --- ESTILOS DE BASE --- */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--black);
-    color: var(--silver);
+    color: var(--silver-main);
     margin: 0;
     overflow-x: hidden;
 }
 
 /* --- ELEMENTOS REUTILIZÁVEIS --- */
 .btn-premium, .btn-silver {
-    background: var(--silver);
-    color: var(--black-deep);
+    background: var(--silver-gradient);
+    color: #1a1a1a; /* Texto bem escuro para contraste no metal */
     border-radius: 20px;
     padding: 12px 45px;
-    font-weight: bold;
+    font-weight: 700;
     text-transform: uppercase;
-    transition: 0.3s;
+    transition: all 0.4s ease;
     cursor: pointer;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.4); /* Borda de brilho */
     display: inline-block;
     text-align: center;
     text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    letter-spacing: 1px;
 }
 
 .btn-premium:hover, .btn-silver:hover {
-    background: var(--silver-bright);
-    transform: translateY(-2px);
+    background: var(--silver-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+    border-color: #ffffff;
 }
 
 /* Inputs padrão para o tema Luxury */
 input {
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(192, 192, 192, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--white);
     padding: 12px 15px;
     border-radius: 8px;
     outline: none;
+    transition: 0.3s;
+}
+
+input:focus {
+    border-color: var(--silver-main);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 10px rgba(232, 233, 235, 0.1);
 }
 
 

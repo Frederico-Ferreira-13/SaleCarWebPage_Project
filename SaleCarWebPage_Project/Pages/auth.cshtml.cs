@@ -65,13 +65,15 @@ namespace SaleCarWebPage_Project.Pages
                 return Page();
             }
 
+            // CORREÇÃO: Primeiro declaramos a variável, depois validamos
+            var user = authResult.Value;
+
             if (!user.IsApproved)
             {
                 ModelState.AddModelError(string.Empty, "A sua conta aguarda aprovação de um administrador.");
                 return Page();
             }
 
-            var user = authResult.Value;
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
@@ -82,7 +84,7 @@ namespace SaleCarWebPage_Project.Pages
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme, 
+                CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity));
 
             return LocalRedirect(returnUrl ?? "/Index");
@@ -101,7 +103,7 @@ namespace SaleCarWebPage_Project.Pages
             if (result.IsSuccessful)
             {
                 TempData["Success"] = "Conta criada! Faça login agora.";
-                return RedirectToPage("/login"); // Recarrega para limpar os campos
+                return RedirectToPage("/auth");
             }
 
             ModelState.AddModelError(string.Empty, result.Message ?? "Erro ao registar.");
