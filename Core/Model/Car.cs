@@ -2,6 +2,7 @@
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using static System.Net.WebRequestMethods;
@@ -10,6 +11,7 @@ namespace Core.Model
 {
     public class Car : IEntity, ISoftDeletable
     {
+        [Key]
         public int CarId { get; private set; }
         public int ModelId { get; private set; }
         public int ProviderId { get; private set; }

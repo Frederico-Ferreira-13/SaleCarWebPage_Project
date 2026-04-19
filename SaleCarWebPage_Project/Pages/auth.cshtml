@@ -1,5 +1,5 @@
 ﻿@page
-@model SaleCarWebPage_Project.Pages.loginModel
+@model SaleCarWebPage_Project.Pages.authModel
 @{
     ViewData["Title"] = "Autenticação Premium";
     Layout = "_LayoutNoSidebar"; // Um layout limpo, sem o menu lateral para focar no login
@@ -15,9 +15,12 @@
                 <a href="#" class="social"><ion-icon name="logo-apple"></ion-icon></a>
             </div>
             <span>ou use o seu email para registo</span>
-            <input type="text" placeholder="Nome Completo" name="RegisterName" required />
-            <input type="email" placeholder="Email Premium" name="RegisterEmail" required />
-            <input type="password" placeholder="Palavra-passe" name="RegisterPassword" required />
+
+            <input type="text" placeholder="Nome Completo" name="RegisterInput.Name" required />
+            <input type="text" placeholder="Nome de Utilizador" name="RegisterInput.UserName" required />
+            <input type="email" placeholder="Email Premium" name="RegisterInput.Email" required />
+            <input type="password" placeholder="Palavra-passe" name="RegisterInput.Password" required />
+            
             <button type="submit" class="btn-silver">Registar-me</button>
         </form>
     </div>
@@ -30,9 +33,11 @@
                 <a href="#" class="social"><ion-icon name="logo-apple"></ion-icon></a>
             </div>
             <span>ou use a sua conta Luxury</span>
-            <input type="email" placeholder="Email" name="LoginEmail" required />
-            <input type="password" placeholder="Palavra-passe" name="LoginPassword" required />
-            <a href="#" class="forgot-password">Esqueceu a palavra-passe?</a>
+
+            <input type="email" placeholder="Email" name="LoginInput.Email" required />
+            <input type="password" placeholder="Palavra-passe" name="LoginInput.Password" required />
+            
+            <div asp-validation-summary="All" class="text-danger" style="font-size: 0.8em; list-style: none; color: #ff4d4d; margin-top: 10px;"></div>
             <button type="submit" class="btn-silver">Entrar</button>
         </form>
     </div>

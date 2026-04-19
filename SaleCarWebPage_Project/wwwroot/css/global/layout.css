@@ -19,12 +19,16 @@
 }
 
 .navigation ul {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     padding: 40px 0 0 5px;
     margin: 0;
+    list-style: none;
+}
+
+/* Ajuste específico para a lista de baixo */
+.navigation ul.nav-bottom {
+    padding-top: 0;
+    padding-bottom: 20px;
 }
 
 /* Itens da Lista e Links */
@@ -43,6 +47,7 @@
     text-decoration: none;
     color: var(--silver);
     z-index: 1001;
+    align-items: center;
 }
 
 /* Efeito Ativo e Curvas Invertidas (O teu truque visual) */
@@ -108,6 +113,7 @@
     white-space: nowrap;
     opacity: 0;
     transition: 0.5s;
+    padding-left: 10px;
 }
 
 .navigation:hover ul li a .title {

@@ -1,12 +1,14 @@
 ﻿using Core.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Core.Model
 {
     public class Brand : IEntity
     {
+        [Key]
         public int BrandId { get; private set; }
         public string BrandName { get; private set; } = string.Empty;
 

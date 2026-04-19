@@ -1,12 +1,14 @@
 ﻿using Core.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
 namespace Core.Model
 {
     public class Users : IEntity, ISoftDeletable
     {
+        [Key]
         public int UserId { get; private set; }
         public int ContactId { get; protected set; }
         public int UsersRoleId { get; private set; }

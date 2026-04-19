@@ -1,6 +1,7 @@
 ﻿using Core.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
@@ -8,6 +9,7 @@ namespace Core.Model
 {
     public class UserSettings : IEntity
     {
+        [Key]
         public int UserSettingId { get; private set; }
 
         public int UserId { get; protected set; }

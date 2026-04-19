@@ -1,12 +1,14 @@
 ﻿using Core.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Core.Model
 {
     public class Contact : IEntity
     {
+        [Key]
         public int ContactId { get; private set; }
         public int ClientId { get; set; }
         public string FirstName { get; private set; } = string.Empty;

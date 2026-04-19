@@ -1,12 +1,14 @@
 ﻿using Core.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Core.Model
 {
     public class MessageBox : IEntity, ISoftDeletable
     {
+        [Key]
         public int MessageBoxId { get; private set; }
         public int SenderId { get; private set; }
         public int ReceiverId { get; private set; }

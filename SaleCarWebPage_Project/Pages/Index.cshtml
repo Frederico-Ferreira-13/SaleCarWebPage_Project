@@ -1,10 +1,96 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Explorar Coleção";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/global/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/global/styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/index.css" asp-append-version="true" />
+}
+
+<div class="home-container">
+    
+    <section class="search-section">
+        <div class="search-container">
+            <div class="main-search">
+                <ion-icon name="search-outline"></ion-icon>
+                <input type="text" placeholder="Pesquise por modelo (ex: Ferrari 488)..." />
+                <button class="btn-premium">Procurar</button>
+            </div>
+
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label>Localização</label>
+                    <select>
+                        <option>Portugal Inteiro</option>
+                        <option>Lisboa</option>
+                        <option>Porto</option>
+                        <option>Faro</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Marca</label>
+                    <select>
+                        <option>Todas as Marcas</option>
+                        <option>Ferrari</option>
+                        <option>Porsche</option>
+                        <option>Lamborghini</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Tipo</label>
+                    <select>
+                        <option>Todos os Tipos</option>
+                        <option>Desportivo</option>
+                        <option>SUV</option>
+                        <option>Clássico</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cars-display">
+        <h2 class="section-title">Destaques Premium</h2>
+        
+        <div class="cars-grid">
+            <div class="car-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&w=800&q=80" alt="Ferrari">
+                </div>
+                <div class="card-info">
+                    <div class="card-header">
+                        <h3>Ferrari F8 Tributo</h3>
+                        <span class="price">340.000€</span>
+                    </div>
+                    
+                    <div class="card-details">
+                        <p><ion-icon name="location-outline"></ion-icon> Lisboa, Portugal</p>
+                        <p><ion-icon name="speedometer-outline"></ion-icon> 2.500 km • 720 cv</p>
+                        <a href="#" class="btn-view">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="car-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80" alt="Porsche">
+                </div>
+                <div class="card-info">
+                    <div class="card-header">
+                        <h3>Porsche 911 GT3</h3>
+                        <span class="price">215.000€</span>
+                    </div>
+                    <div class="card-details">
+                        <p><ion-icon name="location-outline"></ion-icon> Porto, Portugal</p>
+                        <p><ion-icon name="speedometer-outline"></ion-icon> 1.200 km • 510 cv</p>
+                        <a href="#" class="btn-view">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
 </div>

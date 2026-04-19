@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace SaleCarWebPage_Project.Pages
 {
-    public class loginModel : PageModel
+    public class authModel : PageModel
     {
         private readonly IUsersService _usersService;
         private readonly ITokenService _tokenService;
 
-        public loginModel(IUsersService usersService, ITokenService tokenService)
+        public authModel(IUsersService usersService, ITokenService tokenService)
         {
             _usersService = usersService;
             _tokenService = tokenService;

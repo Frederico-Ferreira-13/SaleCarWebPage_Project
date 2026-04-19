@@ -1,6 +1,7 @@
 ﻿using Core.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -8,6 +9,7 @@ namespace Core.Model
 {
     public class Address : IEntity
     {
+        [Key]
         public int AddressId { get; private set; }
         public string Street { get; private set; } = string.Empty;
         public string? Street2 { get; private set; }

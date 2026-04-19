@@ -1,12 +1,14 @@
 ﻿using Core.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Core.Model
 {
     public class Client : IEntity, ISoftDeletable
     {
+        [Key]
         public int ClientId { get; private set; }
         public int UserId { get; private set; }
         public int ContactId { get; private set; }

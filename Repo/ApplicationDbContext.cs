@@ -11,20 +11,47 @@ namespace SaleCarWebPage_Project.Repo
         {
         }
 
-        // Define aqui os DataSets correspondentes às tuas tabelas
-        public DbSet<Car> Cars { get; set; }
+        public DbSet<Address> Addresses { get; set; }
         public DbSet<Brand> Brands { get; set; }
-        public DbSet<CarModel> Models { get; set; }
+        public DbSet<Car> Cars { get; set; }        
+        public DbSet<CarModel> CarModels { get; set; }
         public DbSet<Client> Clients { get; set; }
-        public DbSet<Provider> Providers { get; set; }
-        public DbSet<Users> Users { get; set; }
-        public DbSet<Sale> Sales { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
+        public DbSet<Favorites> Favorites { get; set; }
         public DbSet<MessageBox> MessageBoxes { get; set; }
+        public DbSet<Provider> Providers { get; set; }
+        public DbSet<Sale> Sales { get; set; }
+        public DbSet<Users> Users { get; set; }
+        public DbSet<UserSettings> UserSettings { get; set; }
+        public DbSet<UsersRole> UsersRoles { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Aqui podes configurar chaves compostas ou regras específicas se necessário
+
+            modelBuilder.Entity<Address>().ToTable("Address");
+            modelBuilder.Entity<Brand>().ToTable("Brand");
+            modelBuilder.Entity<Car>().ToTable("Car");
+            modelBuilder.Entity<CarModel>().ToTable("Model");
+            modelBuilder.Entity<Client>().ToTable("Client");
+            modelBuilder.Entity<Contact>().ToTable("Contact");
+            modelBuilder.Entity<Favorites>().ToTable("Favorites");
+            modelBuilder.Entity<MessageBox>().ToTable("MessageBox");
+            modelBuilder.Entity<Provider>().ToTable("Provider");
+            modelBuilder.Entity<Sale>().ToTable("Sale");
+            modelBuilder.Entity<Users>().ToTable("Users");
+            modelBuilder.Entity<UserSettings>().ToTable("UserSetting");
+            modelBuilder.Entity<UsersRole>().ToTable("UsersRole");
+
+            modelBuilder.Entity<Users>()
+                .HasKey(u => u.UserId);
+
+            modelBuilder.Entity<Client>()
+                .HasOne(c => c.Contact)
+                .WithOne(con => con.Client)
+                .HasForeignKey<Client>(c => c.ContactId);
         }
     }
 }
