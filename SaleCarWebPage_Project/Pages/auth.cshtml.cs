@@ -65,17 +65,25 @@ namespace SaleCarWebPage_Project.Pages
                 return Page();
             }
 
+            if (!user.IsApproved)
+            {
+                ModelState.AddModelError(string.Empty, "A sua conta aguarda aprovação de um administrador.");
+                return Page();
+            }
+
             var user = authResult.Value;
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.UsersRoleId == 1 ? "Admin" : "User")
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme, 
+                new ClaimsPrincipal(claimsIdentity));
 
             return LocalRedirect(returnUrl ?? "/Index");
         }
