@@ -1,0 +1,119 @@
+﻿@page
+@model SaleCarWebPage_Project.Pages.dashboardModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+@section Styles {
+    @* Importação da fonte Orbitron para os números, se quiseres aquele aspeto de cockpit de luxo *@
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/pages/dashboard.css" asp-append-version="true" />
+}
+
+<div class="dashboard-container">
+    <header class="dashboard-header" style="margin-bottom: 40px;">
+        <h1 style="font-size: 2.5rem; font-weight: 800; margin: 0;">
+            Dashboard <span class="silver-text">Premium</span>
+        </h1>
+        <p style="color: rgba(255,255,255,0.6); letter-spacing: 1px; margin-top: 5px;">
+            Bem-vindo ao centro de controlo, **@User.Identity.Name**
+        </p>
+    </header>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <section class="admin-section">
+            <h2 class="section-subtitle" style="color: var(--silver-main); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;">
+                Estatísticas Globais de Mercado
+            </h2>
+            
+            <div class="stats-grid">
+                @* Cartão 1: Vendas Totais *@
+                <div class="stat-card">
+                    <div class="card-icon-wrapper">
+                        <ion-icon name="cart-outline"></ion-icon>
+                    </div>
+                    <h3>Total Vendidos</h3>
+                    <p>@Model.AdminData.TotalCarsSold</p>
+                </div>
+
+                @* Cartão 2: Marca Líder *@
+                <div class="stat-card">
+                    <div class="card-icon-wrapper">
+                        <ion-icon name="ribbon-outline"></ion-icon>
+                    </div>
+                    <h3>Marca Mais Popular</h3>
+                    <p>@Model.AdminData.TopBrand</p>
+                </div>
+
+                @* Cartão 3: Modelo Líder *@
+                <div class="stat-card">
+                    <div class="card-icon-wrapper">
+                        <ion-icon name="trending-up-outline"></ion-icon>
+                    </div>
+                    <h3>Modelo Mais Procurado</h3>
+                    <p>@Model.AdminData.TopModel</p>
+                </div>
+            </div>
+        </section>
+    }
+    else
+    {
+        @* --- VISÃO DO UTILIZADOR / VENDEDOR --- *@
+        <section class="user-section">
+            <h2 class="section-subtitle" style="color: var(--silver-main); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px;">
+                O Meu Inventário Exclusivo
+            </h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="card-icon-wrapper">
+                        <ion-icon name="checkmark-done-circle-outline"></ion-icon>
+                    </div>
+                    <h3>Meus Vendidos</h3>
+                    <p>@Model.UserData.CarsSoldByUser</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="card-icon-wrapper">
+                        <ion-icon name="car-sport-outline"></ion-icon>
+                    </div>
+                    <h3>Atualmente à Venda</h3>
+                    <p>@Model.UserData.CarsForSaleByUser</p>
+                </div>
+            </div>
+
+            @* --- TABELA DE PROPOSTAS COM EFEITO DE VIDRO --- *@
+            <div class="proposals-container">
+                <div class="table-header" style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                    <ion-icon name="mail-unread-outline" style="font-size: 1.8rem; color: var(--silver-main);"></ion-icon>
+                    <h3 style="margin: 0; font-size: 1.2rem; font-weight: 700;">Propostas Recebidas</h3>
+                </div>
+
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Veículo</th>
+                            <th style="text-align: center;">Nº de Propostas</th>
+                            <th style="text-align: right;">Gestão</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.UserData.CarProposals)
+                        {
+                            <tr>
+                                <td style="font-weight: 600;">@item.CarName</td>
+                                <td style="text-align: center;">
+                                    <span class="proposal-badge">@item.ProposalCount</span>
+                                </td>
+                                <td style="text-align: right;">
+                                    <a href="#" class="btn-silver" style="padding: 8px 20px; font-size: 0.7rem;">Ver Detalhes</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    }
+</div>
