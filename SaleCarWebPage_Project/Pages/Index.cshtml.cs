@@ -16,8 +16,7 @@ namespace SaleCarWebPage_Project.Pages
         private readonly ITokenService _tokenService;
         private readonly IBrandService _brandService;
 
-        public IndexModel(ILogger<IndexModel> logger, ICarService carService, ITokenService tokenService,
-            IBrandService brandService)
+        public IndexModel(ILogger<IndexModel> logger, ICarService carService, ITokenService tokenService, IBrandService brandService)
         {
             _logger = logger;
             _carService = carService;
@@ -25,49 +24,33 @@ namespace SaleCarWebPage_Project.Pages
             _brandService = brandService;
         }
 
-        [BindProperty(SupportsGet = true)]
-        public string? SearchTerm { get; set; }
-
-        [BindProperty(SupportsGet = true)]
-        public int? BrandId { get; set; }
-
-        [BindProperty(SupportsGet = true)]
-        public string? Location { get; set; }
+        [BindProperty(SupportsGet = true)] public string? SearchTerm { get; set; }
+        [BindProperty(SupportsGet = true)] public int? BrandId { get; set; }
+        [BindProperty(SupportsGet = true)] public string? Location { get; set; }
 
         public SelectList BrandList { get; set; }
         public SelectList TypeList { get; set; }
-        public List<Car> CarList { get; set; } = new List<Car>();
-
+        public List<Car> Cars { get; set; } = new List<Car>();
 
         public async Task OnGetAsync()
         {
-            // --- 1. CARREGAR MARCAS COM FALLBACK ---
+            // 1. Carregar Marcas e Tipos
             try
             {
                 var brandsResult = await _brandService.GetAllBrandsAsync();
-                if (brandsResult.IsSuccessful && brandsResult.Value != null && brandsResult.Value.Any())
-                {
-                    BrandList = new SelectList(brandsResult.Value, "BrandId", "BrandName", BrandId);
-                }
-                else
-                {
-                    BrandList = GerarMarcasMock();
-                }
+                BrandList = (brandsResult.IsSuccessful && brandsResult.Value != null)
+                    ? new SelectList(brandsResult.Value, "BrandId", "BrandName", BrandId)
+                    : GerarMarcasMock();
             }
-            catch
-            {
-                // Se a base de dados der erro (como no teu print), usamos marcas fictícias
-                BrandList = GerarMarcasMock();
-            }
+            catch { BrandList = GerarMarcasMock(); }
 
-            // --- 2. CARREGAR TIPOS (MANUAL) ---
-            var tiposVeiculo = new List<string> { "Citadino", "Desportivo", "SUV", "Sedan", "Carrinha", "Cabriolet" };
-            TypeList = new SelectList(tiposVeiculo);
+            TypeList = new SelectList(new List<string> { "Citadino", "Desportivo", "SUV", "Sedan", "Carrinha", "Cabriolet" });
 
-            // --- 3. CARREGAR DADOS DE UTILIZADOR E CARROS ---
+            // 2. Carregar Carros e Favoritos
             try
             {
                 var userIdResult = await _tokenService.GetUserIdFromContextAsync();
+                int currentUserId = userIdResult.IsSuccessful ? userIdResult.Value : 0;
 
                 if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
                 {
@@ -75,7 +58,6 @@ namespace SaleCarWebPage_Project.Pages
                     ViewData["PendingCount"] = pendingResult.IsSuccessful ? pendingResult.Value!.Count() : 0;
                 }
 
-                // Tenta carregar carros da BD
                 var searchResult = await _carService.SearchCarsAsync(
                     searchTerm: SearchTerm,
                     brandId: BrandId,
@@ -87,29 +69,39 @@ namespace SaleCarWebPage_Project.Pages
 
                 if (searchResult.Items != null)
                 {
-                    CarList = searchResult.Items
+                    var tempCars = searchResult.Items
                         .Where(c => c.IsApproved)
                         .OrderByDescending(c => c.CreatedAt)
                         .ToList();
+
+                    // 3. Lógica de Favoritos corrigida (O método retorna bool diretamente)
+                    if (currentUserId > 0)
+                    {
+                        foreach (var car in tempCars)
+                        {
+                            // CORREÇÃO: Removido .IsSuccessful e .Value pois o retorno é bool
+                            bool isFav = await _carService.IsCarFavoriteAsync(car.CarId, currentUserId);
+
+                            // Define a propriedade (Certifica-te que 'IsFavorite' existe no teu Car.cs)
+                            car.IsFavorite = isFav;
+                        }
+                    }
+                    Cars = tempCars;
                 }
             }
             catch (Exception ex)
             {
-                // O erro "Invalid column name" que aparece na tua consola será registado aqui
-                _logger.LogError(ex, "Erro de base de dados ao carregar carros. Usando apenas estáticos.");
+                _logger.LogError(ex, "Erro ao carregar coleção.");
+                Cars = new List<Car>();
             }
         }
 
-        // Método auxiliar para criar marcas quando a BD falha
         private SelectList GerarMarcasMock()
         {
-            var marcasFake = new List<object>
-            {
+            var marcasFake = new List<object> {
                 new { BrandId = 1, BrandName = "Ferrari" },
                 new { BrandId = 2, BrandName = "Porsche" },
-                new { BrandId = 3, BrandName = "Lamborghini" },
-                new { BrandId = 4, BrandName = "Aston Martin" },
-                new { BrandId = 5, BrandName = "Bentley" }
+                new { BrandId = 3, BrandName = "Lamborghini" }
             };
             return new SelectList(marcasFake, "BrandId", "BrandName", BrandId);
         }

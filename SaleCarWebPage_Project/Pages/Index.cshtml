@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="~/css/global/styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pages/index.css" asp-append-version="true" />
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         body, .luxury-theme, .main-content, .home-container {
             background: transparent !important;
@@ -19,6 +21,9 @@
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
         }
 
         .car-card {
@@ -26,10 +31,19 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
         }
 
+            .car-card:hover {
+                transform: translateY(-5px);
+                border-color: rgba(212, 175, 55, 0.4) !important;
+            }
+
         .card-info {
-            background: linear-gradient(transparent, rgba(0,0,0,0.8) 70%) !important;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9) 70%) !important;
         }
 
         .section-title, .card-header h3 {
@@ -39,18 +53,60 @@
 
         .filter-group label {
             color: #d4af37 !important;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
         }
+
+        /* --- DESIGN BOTÃO DE GARAGEM PREMIUM --- */
+        .premium-garage-wrapper {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 20;
+        }
+
+        .btn-garage {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+            .btn-garage.is-in-garage {
+                background: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
+                color: #000;
+                box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+                border: none;
+            }
+
+            .btn-garage:hover {
+                transform: scale(1.1);
+                border-color: #fff;
+            }
+
+            .btn-garage i {
+                font-size: 1.2rem;
+            }
     </style>
 }
 
 <div class="home-container">
     <form method="get">
-        @* Adicionado formulário para a busca funcionar *@
         <section class="search-section">
             <div class="search-container">
                 <div class="main-search">
                     <ion-icon name="search-outline" style="color: white;"></ion-icon>
-                    <input type="text" asp-for="SearchTerm" placeholder="Pesquise por modelo (ex: Ferrari 488)..." style="color: white;" />
+                    <input type="text" asp-for="SearchTerm" placeholder="Pesquise por modelo (ex: Ferrari 488)..." style="color: white; background: transparent; border: none; outline: none; width: 100%;" />
                     <button type="submit" class="btn-premium">Procurar</button>
                 </div>
 
@@ -84,8 +140,44 @@
         <h2 class="section-title">Destaques Premium</h2>
 
         <div class="cars-grid">
-            @* CARROS ESTÁTICOS (MANUTENÇÃO DE DESIGN) *@
+
+            @* --- LOOP DA BASE DE DADOS --- *@
+            @if (Model.Cars != null)
+            {
+                @foreach (var car in Model.Cars)
+                {
+                    <div class="car-card">
+                        <div class="premium-garage-wrapper">
+                            <button class="btn-garage @(car.IsFavorite ? "is-in-garage" : "")"
+                                    onclick="toggleGarage(@car.CarId, this)">
+                                <i class="@(car.IsFavorite ? "fa-solid fa-gem" : "fa-regular fa-gem")"></i>
+                            </button>
+                        </div>
+                        <div class="card-image">
+                            <img src="@car.ImageUrl" alt="Car Image">
+                        </div>
+                        <div class="card-info">
+                            <div class="card-header">
+                                <h3>@car.PlateNumber</h3>
+                                <span class="price">@car.CarPrice.ToString("N0")€</span>
+                            </div>
+                            <div class="card-details">
+                                <p><ion-icon name="location-outline"></ion-icon> @car.Location</p>
+                                <p><ion-icon name="speedometer-outline"></ion-icon> @car.Kilometers km • @car.Year</p>
+                                <a href="/Cars/Details/@car.CarId" class="btn-view">Ver Detalhes</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+            @* --- CARROS ESTÁTICOS (DESIGN REFERENCE) --- *@
             <div class="car-card">
+                <div class="premium-garage-wrapper">
+                    <button class="btn-garage" onclick="toggleGarage(0, this)">
+                        <i class="fa-regular fa-gem"></i>
+                    </button>
+                </div>
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&w=800" alt="Ferrari">
                 </div>
@@ -103,6 +195,11 @@
             </div>
 
             <div class="car-card">
+                <div class="premium-garage-wrapper">
+                    <button class="btn-garage" onclick="toggleGarage(-1, this)">
+                        <i class="fa-regular fa-gem"></i>
+                    </button>
+                </div>
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800" alt="Porsche">
                 </div>
@@ -118,7 +215,42 @@
                     </div>
                 </div>
             </div>
-            @* FIM DOS CARROS ESTÁTICOS *@
         </div>
     </section>
 </div>
+
+@section Scripts {
+    <script>
+        async function toggleGarage(carId, btn) {
+            if (carId <= 0) {
+                alert("Este é um carro de demonstração.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/Cars/ToggleFavorite?carId=${carId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                if (response.ok) {
+                    const icon = btn.querySelector('i');
+                    btn.classList.toggle('is-in-garage');
+
+                    if (btn.classList.contains('is-in-garage')) {
+                        icon.classList.replace('fa-regular', 'fa-solid');
+                    } else {
+                        icon.classList.replace('fa-solid', 'fa-regular');
+                    }
+                } else if (response.status === 401) {
+                    alert("Por favor, faça login para adicionar carros à sua garagem privada.");
+                    window.location.href = '/Identity/Account/Login';
+                }
+            } catch (error) {
+                console.error("Erro na ligação à garagem:", error);
+            }
+        }
+    </script>
+}

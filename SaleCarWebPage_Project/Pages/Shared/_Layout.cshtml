@@ -15,14 +15,17 @@
     <link rel="stylesheet" href="~/css/global/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/global/styles.css" asp-append-version="true" />
 
+    @* Toastr para notificações do botão de favoritos *@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
     @await RenderSectionAsync("Styles", required: false)
 
-    @* Scripts essenciais *@
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    @* Scripts essenciais - ATUALIZADO PARA V7 *@
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
 
     <style>
-        /* Fundo Dinâmico */
         #tsparticles {
             position: fixed;
             top: 0;
@@ -33,7 +36,6 @@
             background-color: #050505;
         }
 
-        /* Garante transparência para o fumo ser visível */
         body, .luxury-theme, .main-content, .container {
             background: transparent !important;
         }
@@ -77,7 +79,7 @@
                 <li class="list @IsActive("/Favoritos")">
                     <b></b><b></b>
                     <a asp-page="/Favoritos">
-                        <span class="icon"><ion-icon name="heart-outline"></ion-icon></span>
+                        <span class="icon"><ion-icon name="diamond-outline"></ion-icon></span>
                         <span class="title">Favoritos</span>
                     </a>
                 </li>
@@ -146,27 +148,24 @@
         </main>
     </div>
 
-    @* Configuração com Fallback Seguro para evitar o erro 404 *@
+    @* Scripts de terceiros *@
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    @* Configuração tsParticles *@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             tsParticles.load("tsparticles", {
                 fpsLimit: 60,
                 particles: {
-                    number: {
-                        value: 12,
-                        density: { enable: true, area: 800 }
-                    },
+                    number: { value: 12, density: { enable: true, area: 800 } },
                     color: { value: "#ffffff" },
-                    shape: {
-                        type: "circle" // Mudamos para 'circle' mas com blur pesado para parecer fumo, sem depender de imagens
-                    },
+                    shape: { type: "circle" },
                     opacity: {
                         value: { min: 0.05, max: 0.15 },
                         animation: { enable: true, speed: 0.5, sync: false }
                     },
-                    size: {
-                        value: { min: 150, max: 400 }
-                    },
+                    size: { value: { min: 150, max: 400 } },
                     move: {
                         enable: true,
                         speed: 0.8,
@@ -174,12 +173,7 @@
                         random: true,
                         outModes: { default: "out" }
                     },
-                    // Este efeito cria o aspeto "enevoado" sem precisar da imagem smoke.png
-                    shadow: {
-                        enable: true,
-                        blur: 50,
-                        color: "#ffffff"
-                    }
+                    shadow: { enable: true, blur: 50, color: "#ffffff" }
                 },
                 detectRetina: true
             });

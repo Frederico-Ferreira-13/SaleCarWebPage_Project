@@ -35,7 +35,6 @@ namespace Core.Model
         [NotMapped]
         public int FavoriteCount { get; set; } = 0;
 
-        [NotMapped]
         public bool IsFavorite { get; set; }
 
         // --- NAVEGAÇÃO ---
