@@ -17,13 +17,39 @@
 
     @await RenderSectionAsync("Styles", required: false)
 
+    @* Scripts essenciais *@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+
+    <style>
+        /* Fundo Dinâmico */
+        #tsparticles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: #050505;
+        }
+
+        /* Garante transparência para o fumo ser visível */
+        body, .luxury-theme, .main-content, .container {
+            background: transparent !important;
+        }
+
+        header {
+            position: relative;
+            z-index: 10;
+        }
+    </style>
 </head>
 <body class="luxury-theme">
 
+    <div id="tsparticles"></div>
+
     <nav class="navigation">
         <ul>
-            @* --- ITEM PÚBLICO --- *@
             <li class="list @IsActive("/Index")">
                 <b></b><b></b>
                 <a asp-page="/Index">
@@ -32,7 +58,6 @@
                 </a>
             </li>
 
-            @* --- ITENS PRIVADOS (Qualquer utilizador logado) --- *@
             @if (User.Identity.IsAuthenticated)
             {
                 <li class="list @IsActive("/dashboard")">
@@ -42,7 +67,6 @@
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-
                 <li class="list @IsActive("/Anunciar")">
                     <b></b><b></b>
                     <a asp-page="/Anunciar">
@@ -65,7 +89,6 @@
                     </a>
                 </li>
 
-                @* --- ITEM EXCLUSIVO ADMIN (Aprovações Pendentes) --- *@
                 @if (User.IsInRole("Admin"))
                 {
                     <li class="list @IsActive("/Admin/Aprovacoes")">
@@ -80,21 +103,14 @@
         </ul>
 
         <ul class="nav-bottom" style="margin-bottom: 20px;">
-            <li class="list @IsActive("/login")">
+            <li class="list @IsActive("/auth")">
                 <b></b><b></b>
                 <a asp-page="/auth">
                     <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <span class="title">O Meu Perfil</span>
-                    }
-                    else
-                    {
-                        <span class="title">Entrar</span>
-                    }
+                    <span class="title">@(User.Identity.IsAuthenticated ? "O Meu Perfil" : "Entrar")</span>
                 </a>
             </li>
-            
+
             @if (User.Identity.IsAuthenticated)
             {
                 <li class="list">
@@ -113,22 +129,62 @@
             @if (User.Identity.IsAuthenticated)
             {
                 <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                    <span style="color: var(--gold); font-weight: 500;">Olá, @User.Identity.Name</span>
+                    <span style="color: #d4af37; font-weight: 500;">Olá, @User.Identity.Name</span>
                     @if (User.IsInRole("Admin"))
                     {
-                        <small style="color: #ff4d4d; font-size: 0.7em; text-transform: uppercase; letter-spacing: 1px;">Administrador</small>
+                        <small style="color: #ff4d4d; font-size: 0.7em; text-transform: uppercase;">Administrador</small>
                     }
                 </div>
-                <div class="user-avatar" style="width: 35px; height: 35px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--deep-black);">
+                <div class="user-avatar" style="width: 35px; height: 35px; background: #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000;">
                     <ion-icon name="person"></ion-icon>
                 </div>
             }
         </header>
-        
+
         <main role="main" class="container" style="padding: 20px;">
             @RenderBody()
         </main>
     </div>
+
+    @* Configuração com Fallback Seguro para evitar o erro 404 *@
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            tsParticles.load("tsparticles", {
+                fpsLimit: 60,
+                particles: {
+                    number: {
+                        value: 12,
+                        density: { enable: true, area: 800 }
+                    },
+                    color: { value: "#ffffff" },
+                    shape: {
+                        type: "circle" // Mudamos para 'circle' mas com blur pesado para parecer fumo, sem depender de imagens
+                    },
+                    opacity: {
+                        value: { min: 0.05, max: 0.15 },
+                        animation: { enable: true, speed: 0.5, sync: false }
+                    },
+                    size: {
+                        value: { min: 150, max: 400 }
+                    },
+                    move: {
+                        enable: true,
+                        speed: 0.8,
+                        direction: "top-right",
+                        random: true,
+                        outModes: { default: "out" }
+                    },
+                    // Este efeito cria o aspeto "enevoado" sem precisar da imagem smoke.png
+                    shadow: {
+                        enable: true,
+                        blur: 50,
+                        color: "#ffffff"
+                    }
+                },
+                detectRetina: true
+            });
+        });
+    </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

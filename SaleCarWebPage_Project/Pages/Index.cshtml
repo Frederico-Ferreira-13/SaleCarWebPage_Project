@@ -8,64 +8,92 @@
     <link rel="stylesheet" href="~/css/global/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/global/styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pages/index.css" asp-append-version="true" />
+
+    <style>
+        body, .luxury-theme, .main-content, .home-container {
+            background: transparent !important;
+        }
+
+        .search-section {
+            background: rgba(20, 20, 20, 0.4) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .car-card {
+            background: rgba(15, 15, 15, 0.3) !important;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+
+        .card-info {
+            background: linear-gradient(transparent, rgba(0,0,0,0.8) 70%) !important;
+        }
+
+        .section-title, .card-header h3 {
+            color: white !important;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+        }
+
+        .filter-group label {
+            color: #d4af37 !important;
+        }
+    </style>
 }
 
 <div class="home-container">
-    
-    <section class="search-section">
-        <div class="search-container">
-            <div class="main-search">
-                <ion-icon name="search-outline"></ion-icon>
-                <input type="text" placeholder="Pesquise por modelo (ex: Ferrari 488)..." />
-                <button class="btn-premium">Procurar</button>
-            </div>
+    <form method="get">
+        @* Adicionado formulário para a busca funcionar *@
+        <section class="search-section">
+            <div class="search-container">
+                <div class="main-search">
+                    <ion-icon name="search-outline" style="color: white;"></ion-icon>
+                    <input type="text" asp-for="SearchTerm" placeholder="Pesquise por modelo (ex: Ferrari 488)..." style="color: white;" />
+                    <button type="submit" class="btn-premium">Procurar</button>
+                </div>
 
-            <div class="filter-grid">
-                <div class="filter-group">
-                    <label>Localização</label>
-                    <select>
-                        <option>Portugal Inteiro</option>
-                        <option>Lisboa</option>
-                        <option>Porto</option>
-                        <option>Faro</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Marca</label>
-                    <select>
-                        <option>Todas as Marcas</option>
-                        <option>Ferrari</option>
-                        <option>Porsche</option>
-                        <option>Lamborghini</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label>Tipo</label>
-                    <select>
-                        <option>Todos os Tipos</option>
-                        <option>Desportivo</option>
-                        <option>SUV</option>
-                        <option>Clássico</option>
-                    </select>
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label>Localização</label>
+                        <select asp-for="Location">
+                            <option value="">Portugal Inteiro</option>
+                            <option value="Lisboa">Lisboa</option>
+                            <option value="Porto">Porto</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Marca</label>
+                        <select asp-for="BrandId" asp-items="Model.BrandList">
+                            <option value="">Todas as Marcas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Tipo</label>
+                        <select asp-items="Model.TypeList">
+                            <option value="">Todos os Tipos</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </form>
 
     <section class="cars-display">
         <h2 class="section-title">Destaques Premium</h2>
-        
+
         <div class="cars-grid">
+            @* CARROS ESTÁTICOS (MANUTENÇÃO DE DESIGN) *@
             <div class="car-card">
                 <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&w=800&q=80" alt="Ferrari">
+                    <img src="https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&w=800" alt="Ferrari">
                 </div>
                 <div class="card-info">
                     <div class="card-header">
                         <h3>Ferrari F8 Tributo</h3>
                         <span class="price">340.000€</span>
                     </div>
-                    
                     <div class="card-details">
                         <p><ion-icon name="location-outline"></ion-icon> Lisboa, Portugal</p>
                         <p><ion-icon name="speedometer-outline"></ion-icon> 2.500 km • 720 cv</p>
@@ -76,7 +104,7 @@
 
             <div class="car-card">
                 <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80" alt="Porsche">
+                    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800" alt="Porsche">
                 </div>
                 <div class="card-info">
                     <div class="card-header">
@@ -90,7 +118,7 @@
                     </div>
                 </div>
             </div>
-            
+            @* FIM DOS CARROS ESTÁTICOS *@
         </div>
     </section>
 </div>

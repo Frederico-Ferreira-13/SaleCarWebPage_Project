@@ -117,7 +117,7 @@ namespace Services
                         "O utilizador deve estar autenticado para criar um carro."));
             }
 
-            var modelExists = await _unitOfWork.CarModels.GetByIdAsync(newCar.ModelId);
+            var modelExists = await _unitOfWork.CarModels.GetByIdAsync(newCar.CarModelId);
             if (modelExists == null)
             {
                 return Result<Car>.Failure(
@@ -130,7 +130,7 @@ namespace Services
             try
             {
                 var carToCreate = new Car(
-                    newCar.ModelId,
+                    newCar.CarModelId,
                     newCar.ProviderId,
                     newCar.TypeOfFuel,
                     newCar.CarColor,
@@ -229,7 +229,7 @@ namespace Services
         public async Task<bool> AnyCarsWithModelIdAsync(int modelId)
         {
             var cars = await _unitOfWork.Cars.GetAllAsync();
-            return cars.Any(c => c.ModelId == modelId && c.IsActive);
+            return cars.Any(c => c.CarModelId == modelId && c.IsActive);
         }
 
         public async Task<bool> IsCarFavoriteAsync(int carId, int userId) => await _unitOfWork.Favorites.ExistsAsync(carId, userId);

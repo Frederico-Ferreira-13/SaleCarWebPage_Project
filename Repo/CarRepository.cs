@@ -67,7 +67,7 @@ namespace SaleCarWebPage_Project.Repo
 
             if (modelId.HasValue)
             {
-                query = query.Where(c => c.ModelId == modelId.Value);
+                query = query.Where(c => c.CarModelId == modelId.Value);
             }
 
             if (!string.IsNullOrWhiteSpace(fuelType))
