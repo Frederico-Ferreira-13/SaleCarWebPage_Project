@@ -269,6 +269,11 @@ namespace Services
             }
         }
 
+        public async Task<int> GetFavoriteCountAsync(int carId)
+        {
+            return await _unitOfWork.Favorites.GetCountByCarIdAsync(carId);
+        }
+
         public async Task<Result> UpsertCarRatingAsync(int carId, int userId, int rating) => Result.Success();
         public async Task<Result<double>> GetAverageRatingAsync(int carId) => Result<double>.Success(0.0);
     }

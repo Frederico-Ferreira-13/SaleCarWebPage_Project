@@ -1,4 +1,63 @@
 ﻿@page
 @model SaleCarWebPage_Project.Pages.myFavoritesCarModel
 @{
+    ViewData["Title"] = "Os Meus Favoritos";
 }
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/global/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/global/styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/myfavoritesCar.css" asp-append-version="true" />
+}
+
+<div class="favorites-container">
+    <header class="page-header">
+        <h1 class="silver-text">Garagem <span class="highlight">Privada</span></h1>
+        <p>Os modelos que captaram a sua atenção.</p>
+    </header>
+
+    @if (Model.MyFavoriteCar != null && Model.MyFavoriteCar.Any())
+    {
+        <div class="favorites-grid">
+            @foreach (var car in Model.MyFavoriteCar)
+            {
+                <div class="car-card-premium">
+                    <div class="image-wrapper">
+                        <img src="@car.ImageUrl" alt="@car.Model?.Brand?.BrandName) @(car.Model?.ModelName)">
+                        <div class="price-tag">@car.CarPrice.ToString("C0")</div>
+
+                        <form method="post" asp-page-handler="Remove" asp-route-id="@car.CarId">
+                            <button type="submit" class="remove-fav">
+                                <ion-icon name="heart-dislike"></ion-icon>
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="car-info">
+                        <h3>
+                            @(car.Model?.Brand?.BrandName ?? "Marca")
+                            <span>@(car.Model?.ModelName ?? "Modelo")</span>
+                        </h3>
+                        <div class="car-specs">
+                            <span><ion-icon name="speedometer-outline"></ion-icon> @car.Kilometers km</span>
+                            <span><ion-icon name="calendar-outline"></ion-icon> @car.Year</span>
+                        </div>
+
+                        <div class="card-footer">
+                            <a asp-page="/CarDetails" asp-route-id="@car.CarId" class="btn-silver-small">Ver Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <ion-icon name="diamond-outline"></ion-icon>
+            <h2>Ainda não tem favoritos</h2>
+            <p>Explore a nossa montra e guarde os carros que mais gosta.</p>
+            <a asp-page="/Index" class="btn-premium">Explorar Galeria</a>
+        </div>
+    }
+</div>

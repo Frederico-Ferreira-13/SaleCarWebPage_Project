@@ -35,5 +35,7 @@ namespace Contracts.Services
         Task<Result> UpsertCarRatingAsync(int carId, int userId, int rating);
         Task<Result<double>> GetAverageRatingAsync(int carId);
         Task<Result<bool>> ToggleFavoriteAsync(int carId);
+
+        Task<int> GetFavoriteCountAsync(int carId);
     }
 }

@@ -9,10 +9,13 @@ namespace Core.Model
     public class CarModel : IEntity
     {
         [Key]
+        [Column("ModelId")]
         public int CarModelId { get; set; } 
 
         public int BrandId { get; private set; }
         public string ModelName { get; private set; } = string.Empty;
+
+        [ForeignKey("BrandId")]
         public virtual Brand? Brand { get; private set; }
 
         public CarModel() { }

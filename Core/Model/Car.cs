@@ -10,7 +10,7 @@ namespace Core.Model
         [Key]
         public int CarId { get; private set; }
 
-        // Chaves Estrangeiras (Devem coincidir com a BD após a migração)
+        [Column("ModelId")]
         public int CarModelId { get; private set; }
         public int ProviderId { get; private set; }
 
@@ -23,8 +23,7 @@ namespace Core.Model
         public string PlateNumber { get; private set; } = string.Empty;
         public int Year { get; private set; }
         public int Kilometers { get; private set; }
-        public string? ImageUrl { get; protected set; }
-        public string? Location { get; set; }
+        public string? ImageUrl { get; protected set; }       
 
         public DateTime CreatedAt { get; protected set; }
         public DateTime? LastUpdatedAt { get; protected set; }
@@ -35,7 +34,10 @@ namespace Core.Model
         [NotMapped]
         public int FavoriteCount { get; set; } = 0;
 
+        [NotMapped]
         public bool IsFavorite { get; set; }
+        [NotMapped]
+        public string? Location { get; set; }
 
         // --- NAVEGAÇÃO ---
         [ForeignKey("CarModelId")]
