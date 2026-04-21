@@ -1,4 +1,41 @@
 ﻿@page
 @model SaleCarWebPage_Project.Pages.logoutModel
 @{
+    Layout = "_Layout";
+    ViewData["Title"] = "Terminar Sessão";
 }
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/logout.css" asp-append-version="true" />
+}
+
+
+<div class="logout-wrapper">
+    <div class="logout-container">
+        
+        <div class="logout-icon-wrapper">
+            <ion-icon name="diamond-outline"></ion-icon>
+        </div>
+
+        <header class="logout-header">
+            <h2>Até Breve</h2>
+            <p>Deseja fechar a sua garagem privada e terminar a sessão?</p>
+        </header>
+
+        <div class="logout-actions">
+            <form method="post">
+                @* Token de segurança anti-forgery *@
+                @Html.AntiForgeryToken()
+                
+                <button type="submit" class="logout-btn">
+                    <span>Sair com Segurança</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </form>
+            
+            <a asp-page="/Index" class="cancel-btn">
+                Voltar para a Coleção
+            </a>
+        </div>
+    </div>
+</div>

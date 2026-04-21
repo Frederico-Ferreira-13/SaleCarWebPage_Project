@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -7,6 +9,15 @@ namespace SaleCarWebPage_Project.Pages
     {
         public void OnGet()
         {
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            // Limpa os Cokkies de autenticação
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            // O utilizador é rederecionado para a página inicial.
+            return RedirectToPage("/index");
         }
     }
 }

@@ -20,71 +20,79 @@
 
 .stat-card {
     position: relative;
-    background: linear-gradient(145deg, #1e1e1e, #111111);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(145deg, #ffffff 0%, #e0e0e0 45%, #b0b0b0 100%);
+    border: none;
     padding: 40px 30px;
     border-radius: 24px;
     text-align: left;
     transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
 
-.stat-card::before {
+.stat-card::after {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, transparent 50%);
+    pointer-events: none;
 }
 
 .stat-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    border-color: var(--silver-main);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.7), 0 0 15px rgba(192, 192, 192, 0.1);
+        transform: translateY(-10px) scale(1.03);
+        background: linear-gradient(145deg, #ffffff 0%, #f0f0f0 100%);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 20px rgba(212, 175, 55, 0.2);
 }
 
 /* Ícones com Background Circular e Glow */
 .stat-card ion-icon {
-    font-size: 2rem;
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 16px;
-    color: var(--silver-main);
+    font-size: 1.8rem;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 14px;
+    color: #1a1a1a;
     margin-bottom: 20px;
-    box-shadow: inset 0 0 10px rgba(255,255,255,0.05);
+    position: relative;
+    z-index: 2;
 }
 
+/* Texto em Preto/Antracite para legibilidade sobre o prata */
 .stat-card h3 {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(0, 0, 0, 0.5);
     font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 1.5px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     margin: 0;
+    position: relative;
+    z-index: 2;
 }
 
 .stat-card p {
-    color: #fff;
-    font-size: 2.8rem;
-    font-weight: 800;
-    margin: 10px 0 0;
+    color: #000; /* NÚMERO EM PRETO TOTAL */
+    font-size: 3rem;
+    font-weight: 900;
+    margin: 8px 0 0;
     font-family: 'Orbitron', sans-serif;
+    position: relative;
+    z-index: 2;
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
 }
 
 /* Cores de Destaque por Cartão (O "impacto" que pediste) */
 .stat-card:nth-child(1) {
-    border-left: 4px solid #ffffff;
+    border-left: 6px solid #1a1a1a; /* Contraste negro */
 }
 
 .stat-card:nth-child(2) {
-    border-left: 4px solid #c0c0c0;
+    border-left: 6px solid #d4af37; /* Ouro para a Marca Líder */
 }
 
 .stat-card:nth-child(3) {
-    border-left: 4px solid #555555;
+    border-left: 6px solid #555555;
 }
 
 /* Tabela de Propostas */
