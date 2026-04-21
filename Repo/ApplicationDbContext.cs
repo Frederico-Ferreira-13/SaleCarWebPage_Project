@@ -45,6 +45,15 @@ namespace SaleCarWebPage_Project.Repo
             modelBuilder.Entity<UserSettings>().ToTable("UserSetting");
             modelBuilder.Entity<UsersRole>().ToTable("UsersRole");
 
+            modelBuilder.Entity<Car>(entity => {
+                entity.Property(e => e.CarPrice).HasColumnType("decimal(18,2)");
+                entity.Property(e => e.CarTare).HasColumnType("decimal(18,2)");
+            });
+
+            modelBuilder.Entity<Sale>(entity => {
+                entity.Property(e => e.FinalPrice).HasColumnType("decimal(18,2)");
+            });
+
             modelBuilder.Entity<Users>()
                 .HasKey(u => u.UserId);
 
