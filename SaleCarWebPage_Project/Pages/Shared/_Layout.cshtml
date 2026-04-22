@@ -72,14 +72,14 @@
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-                <li class="list @IsActive("/Anunciar")">
+                @* Texto alterado para Anunciar, mantendo o link para SaleCar *@
+                <li class="list @IsActive("/SaleCar")">
                     <b></b><b></b>
-                    <a asp-page="/Anunciar">
+                    <a asp-page="/SaleCar">
                         <span class="icon"><ion-icon name="add-circle-outline"></ion-icon></span>
-                        <span class="title">Vender Carro</span>
+                        <span class="title">Anunciar</span>
                     </a>
                 </li>
-                @* Pequeno ajuste no IsActive para bater certo com o asp-page *@
                 <li class="list @IsActive("/myfavoritesCar")">
                     <b></b><b></b>
                     <a asp-page="/myfavoritesCar">

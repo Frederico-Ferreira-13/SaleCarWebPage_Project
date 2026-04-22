@@ -67,26 +67,47 @@
                 {
                     <div class="car-card">
                         <div class="premium-garage-wrapper">
+                            @* O botão de favorito só funciona se logado, caso contrário avisa no JS *@
                             <button class="btn-garage @(car.IsFavorite ? "is-in-garage" : "")"
                                     onclick="toggleGarage(@car.CarId, this)">
                                 <i class="@(car.IsFavorite ? "fa-solid fa-gem" : "fa-regular fa-gem")"></i>
                             </button>
                         </div>
+
                         <div class="card-image">
                             <img src="@car.ImageUrl" alt="Car Image">
                         </div>
+
                         <div class="card-info">
                             <div class="card-header">
                                 <h3>@(car.Model?.Brand?.BrandName) @(car.Model?.ModelName)</h3>
                                 <span class="price">@car.CarPrice.ToString("N0")€</span>
                             </div>
+
                             <div class="card-details">
                                 <p>
                                     <ion-icon name="location-outline"></ion-icon>
                                     @(car.Provider?.Address?.City ?? "Portugal")
                                 </p>
                                 <p><ion-icon name="speedometer-outline"></ion-icon> @car.Kilometers km • @car.Year</p>
-                                <a href="/Cars/Details/@car.CarId" class="btn-view">Ver Detalhes</a>
+
+                                <div class="d-flex gap-2 mt-3">
+                                    <a href="/Cars/Details/@car.CarId" class="btn-view" style="flex: 1; text-align: center;">Ver Detalhes</a>
+
+                                    @* Lógica de Interação: Mensagem só para logados *@
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <a asp-page="/Messages/Create" asp-route-carId="@car.CarId" class="btn-view" style="background: #d4af37; color: black;">
+                                            <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="/auth" class="btn-view" style="background: #333; opacity: 0.7;" title="Faça login para contactar">
+                                            <ion-icon name="lock-closed-outline"></ion-icon>
+                                        </a>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -102,24 +123,27 @@
     </section>
 </div>
 
-@* Adicionamos o token de segurança para o POST AJAX funcionar *@
 @Html.AntiForgeryToken()
 
 @section Scripts {
     <script>
         async function toggleGarage(carId, btn) {
-            if (carId <= 0) {
-                alert("Este é um carro de demonstração.");
+            // Verifica se o utilizador está logado antes de tentar o AJAX
+            const isAuthenticated = @(User.Identity.IsAuthenticated.ToString().ToLower());
+
+            if (!isAuthenticated) {
+                toastr.warning("Por favor, faça login para guardar carros nos seus favoritos.");
+                setTimeout(() => { window.location.href = '/auth'; }, 2000);
                 return;
             }
 
+            if (carId <= 0) return;
+
             try {
-                // Alterado para chamar o Handler OnPostToggleFavorite na mesma página
                 const response = await fetch(`?handler=ToggleFavorite&carId=${carId}`, {
                     method: 'POST',
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
-                        // Importante: Envia o token de segurança do .NET
                         'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
                     }
                 });
@@ -130,15 +154,14 @@
 
                     if (btn.classList.contains('is-in-garage')) {
                         icon.classList.replace('fa-regular', 'fa-solid');
+                        toastr.success("Adicionado aos favoritos!");
                     } else {
                         icon.classList.replace('fa-solid', 'fa-regular');
+                        toastr.info("Removido dos favoritos.");
                     }
-                } else if (response.status === 401) {
-                    alert("Por favor, faça login para adicionar carros à sua garagem privada.");
-                    window.location.href = '/Identity/Account/Login';
                 }
             } catch (error) {
-                console.error("Erro na ligação à garagem:", error);
+                console.error("Erro na ligação:", error);
             }
         }
     </script>

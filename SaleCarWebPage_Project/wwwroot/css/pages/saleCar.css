@@ -1,2 +1,88 @@
-﻿body {
+﻿.sale-container {
+    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
 }
+
+.luxury-form-card {
+    background: rgba(15, 15, 15, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 24px;
+    padding: 50px;
+    width: 100%;
+    max-width: 900px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+    .form-header h3 {
+        color: #d4af37;
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        letter-spacing: 3px;
+        margin-bottom: 10px;
+    }
+
+.form-section-title {
+    color: #d4af37;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 30px 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .form-section-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(212, 175, 55, 0.4), transparent);
+    }
+
+.input-premium {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    color: #fff !important;
+    padding: 14px !important;
+    margin-bottom: 5px;
+}
+
+    .input-premium:focus {
+        border-color: #d4af37 !important;
+        background: rgba(212, 175, 55, 0.05) !important;
+    }
+
+label {
+    color: #eee;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    font-weight: 300;
+}
+
+.btn-publish-luxury {
+    background: linear-gradient(135deg, #d4af37 0%, #aa8928 100%);
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    width: 100%;
+    margin-top: 40px;
+    transition: 0.4s;
+}
+
+    .btn-publish-luxury:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+    }
