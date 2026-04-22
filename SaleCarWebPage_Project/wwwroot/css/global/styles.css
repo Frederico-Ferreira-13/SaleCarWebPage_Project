@@ -10,6 +10,8 @@
     --white: #fff;
     --transition-speed: 0.6s;
     --gold-glow: rgba(255, 255, 255, 0.15);
+    --status-approved: #00ff88;
+    --status-pending: #ffcc00;
 }
 
 /* --- ESTILOS DE BASE --- */

@@ -1,2 +1,204 @@
-﻿body {
+﻿/* --- profile.css --- */
+
+/* --- PÁGINA DE PERFIL (DASHBOARD PREMIUM) --- */
+.profile-container {
+    max-width: 1200px;
+    margin: 60px auto;
+    padding: 0 30px;
+}
+
+/* --- HEADER DO PERFIL (GLASSMORPHISM) --- */
+.profile-header {
+    background: var(--sidebar-bg);
+    padding: 50px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 60px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+    /* Brilho decorativo no fundo do header */
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -10%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+.profile-flex {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    flex-wrap: wrap;
+}
+
+/* --- IMAGEM DE PERFIL --- */
+.profile-img-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.profile-img-large {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--black);
+    box-shadow: 0 0 0 2px var(--silver-main);
+    background: var(--black-card);
+}
+
+.status-badge {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: var(--silver-gradient);
+    color: var(--black);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+/* --- TEXTO E INFOS --- */
+.user-info h1 {
+    margin: 0 0 5px 0;
+    color: var(--white);
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.member-since {
+    display: block;
+    color: var(--silver-main);
+    opacity: 0.4;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+/* --- STAT CARDS --- */
+.user-stats-grid {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.stat-card {
+    background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+    padding: 15px 30px;
+    border-radius: 18px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.03);
+    min-width: 130px;
+    transition: all 0.4s ease;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(255,255,255,0.15);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+
+.stat-value {
+    display: block;
+    font-weight: 800;
+    color: var(--white);
+    font-size: 1.8rem;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--silver-main);
+    opacity: 0.5;
+}
+
+/* --- BOTÕES DE AÇÃO --- */
+.profile-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-premium-outline {
+    background: transparent;
+    color: var(--silver-main);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px 25px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .btn-premium-outline:hover {
+        background: rgba(255,255,255,0.05);
+        border-color: var(--white);
+        color: var(--white);
+    }
+
+/* --- GRID DE CARROS (CORREÇÃO DA RENDERIZAÇÃO) --- */
+.profile-content {
+    margin-top: 40px;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    color: var(--white);
+    margin-bottom: 35px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-grid {
+    display: grid;
+    /* Isto cria colunas automáticas de 300px como no index */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    width: 100%;
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 768px) {
+    .profile-header {
+        padding: 30px;
+        text-align: center;
+    }
+
+    .profile-flex {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .user-stats-grid {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .user-info h1 {
+        font-size: 2.2rem;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr; /* Em telemóveis, volta a ser 1 por linha */
+    }
 }
