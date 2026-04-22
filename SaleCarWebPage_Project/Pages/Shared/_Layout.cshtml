@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="~/css/global/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/global/styles.css" asp-append-version="true" />
 
+    @* FontAwesome para o ícone do Diamante preenchido (Favoritos) *@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
     @* Toastr para notificações do botão de favoritos *@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
@@ -76,7 +79,8 @@
                         <span class="title">Vender Carro</span>
                     </a>
                 </li>
-                <li class="list @IsActive("/Favoritos")">
+                @* Pequeno ajuste no IsActive para bater certo com o asp-page *@
+                <li class="list @IsActive("/myfavoritesCar")">
                     <b></b><b></b>
                     <a asp-page="/myfavoritesCar">
                         <span class="icon"><ion-icon name="diamond-outline"></ion-icon></span>

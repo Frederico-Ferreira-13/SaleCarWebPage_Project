@@ -7,6 +7,7 @@ using SaleCarWebPage_Project.Repo;
 using DotNetEnv;
 using Microsoft.AspNetCore.Builder;
 
+// 1. Carregar variáveis do ficheiro .env logo no início
 DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,12 +15,21 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 // --- 1. CONFIGURAÇÃO DE SERVIÇOS (DI Container) ---
 
+// Força o builder a reconhecer as variáveis injetadas pelo DotNetEnv
 builder.Configuration.AddEnvironmentVariables();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-                        throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+// Lógica de captura da Connection String:
+// Primeiro tentamos ler a variável de ambiente direta do .env
+// Se não existir, ele recua para o método padrão (appsettings.json)
+var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+                       ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Configuração do DbContext (Assume-se SQL Server, ajusta se for outro)
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("Connection string 'DefaultConnection' não encontrada no .env ou appsettings.json.");
+}
+
+// Configuração do DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
@@ -41,7 +51,7 @@ builder.Services.AddCors(options =>
         });
 });
 
-// Chamar as tuas extensões (DI Container)
+// Injeção de Dependências das tuas Extensões
 builder.Services.AddApplicationServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddAuthenticationConfig();
@@ -68,11 +78,11 @@ else
     app.UseHsts();
 }
 
-// Localização
+// Configuração de Localização
 var localizationOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
 app.UseRequestLocalization(localizationOptions);
 
-// Ficheiros Estáticos
+// Configuração de Ficheiros Estáticos
 app.UseDefaultFiles();
 var provider = new Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider();
 provider.Mappings[".avif"] = "image/avif";
@@ -83,7 +93,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 app.UseRouting();
 
-// A ordem do CORS, Auth e Authz é fundamental:
+// Ordem fundamental de Middleware: CORS -> Auth -> Authz
 app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();

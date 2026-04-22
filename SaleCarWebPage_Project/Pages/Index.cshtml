@@ -4,9 +4,9 @@
     ViewData["Title"] = "Explorar Coleção";
 }
 
-@section Styles {   
+@section Styles {
     <link rel="stylesheet" href="~/css/pages/index.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 }
 
 <div class="home-container">
@@ -61,8 +61,6 @@
         <h2 class="section-title">Destaques Premium</h2>
 
         <div class="cars-grid">
-
-            @* --- LOOP DA BASE DE DADOS --- *@
             @if (Model.Cars != null && Model.Cars.Any())
             {
                 @foreach (var car in Model.Cars)
@@ -96,14 +94,16 @@
             }
             else
             {
-                @* Mensagem caso não existam carros com os filtros selecionados *@
                 <div class="no-results">
                     <p>Nenhum carro encontrado com os critérios selecionados.</p>
                 </div>
-            }          
+            }
         </div>
     </section>
 </div>
+
+@* Adicionamos o token de segurança para o POST AJAX funcionar *@
+@Html.AntiForgeryToken()
 
 @section Scripts {
     <script>
@@ -114,10 +114,13 @@
             }
 
             try {
-                const response = await fetch(`/Cars/ToggleFavorite?carId=${carId}`, {
+                // Alterado para chamar o Handler OnPostToggleFavorite na mesma página
+                const response = await fetch(`?handler=ToggleFavorite&carId=${carId}`, {
                     method: 'POST',
                     headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        // Importante: Envia o token de segurança do .NET
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
                     }
                 });
 

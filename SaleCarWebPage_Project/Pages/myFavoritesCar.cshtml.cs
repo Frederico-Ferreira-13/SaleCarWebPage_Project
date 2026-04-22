@@ -3,6 +3,9 @@ using Contracts.Services;
 using Core.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SaleCarWebPage_Project.Pages
 {
@@ -32,8 +35,6 @@ namespace SaleCarWebPage_Project.Pages
                 return;
             }
 
-            var userId = userIdResult.Value;
-
             var result = await _carService.GetFavoriteCarByUserIdAsync(userIdResult.Value);
 
             if (result.IsSuccessful)
@@ -54,14 +55,17 @@ namespace SaleCarWebPage_Project.Pages
                 return BadRequest("ID inválido");
             }
 
-            if (!User.Identity?.IsAuthenticated ?? false)
+            // Obtemos o ID do utilizador pelo token
+            var userIdResult = await _tokenService.GetUserIdFromContextAsync();
+            if (!userIdResult.IsSuccessful)
             {
                 return Unauthorized();
-            }            
+            }
 
             try
             {
-                var result = await _carService.ToggleFavoriteAsync(carId);
+                // CORREÇÃO: Passamos o carId E o userId conforme a nova assinatura do serviço
+                var result = await _carService.ToggleFavoriteAsync(carId, userIdResult.Value);
 
                 if (!result.IsSuccessful) return BadRequest(result.Error.Message);
 

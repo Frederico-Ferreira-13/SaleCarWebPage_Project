@@ -10,6 +10,9 @@
     <link rel="stylesheet" href="~/css/pages/myfavoritesCar.css" asp-append-version="true" />
 }
 
+@* Token de segurança necessário para chamadas POST via JavaScript *@
+@Html.AntiForgeryToken()
+
 <div class="favorites-container">
     <header class="page-header">
         <h1 class="silver-text">Garagem <span class="highlight">Privada</span></h1>
@@ -21,18 +24,18 @@
         <div class="favorites-grid">
             @foreach (var car in Model.MyFavoriteCar)
             {
-                <div class="car-card-premium">
+                <div class="car-card-premium" id="car-card-@car.CarId">
                     <div class="image-wrapper">
-                        <img src="@car.ImageUrl" alt="@car.Model?.Brand?.BrandName) @(car.Model?.ModelName)">
+                        @* Correção: Removido parêntese extra no alt *@
+                        <img src="@car.ImageUrl" alt="@(car.Model?.Brand?.BrandName) @(car.Model?.ModelName)">
                         <div class="price-tag">@car.CarPrice.ToString("C0")</div>
 
-                        <form method="post" asp-page-handler="Remove" asp-route-id="@car.CarId">
-                            <button type="submit" class="remove-fav">
-                                <ion-icon name="heart-dislike"></ion-icon>
-                            </button>
-                        </form>
+                        @* Alterado para botão com clique JavaScript para evitar refresh total *@
+                        <button type="button" class="remove-fav" onclick="removeFavorite(@car.CarId)">
+                            <ion-icon name="trash-outline"></ion-icon>
+                        </button>
                     </div>
-                    
+
                     <div class="car-info">
                         <h3>
                             @(car.Model?.Brand?.BrandName ?? "Marca")
@@ -61,3 +64,51 @@
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        async function removeFavorite(carId) {
+            if (!confirm("Deseja remover este veículo da sua garagem?")) return;
+
+            try {
+                const response = await fetch('?handler=ToggleFavorite', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({ carId: carId })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // Se o servidor confirmar que já não é favorito
+                    if (!data.isFavorite) {
+                        const card = document.getElementById(`car-card-${carId}`);
+
+                        // Efeito visual de desaparecimento
+                        card.style.transform = 'scale(0.8)';
+                        card.style.opacity = '0';
+                        card.style.transition = 'all 0.4s ease';
+
+                        setTimeout(() => {
+                            card.remove();
+                            // Se a garagem ficar vazia após remover, recarrega para mostrar o empty-state
+                            if (document.querySelectorAll('.car-card-premium').length === 0) {
+                                location.reload();
+                            }
+                        }, 400);
+
+                        toastr.success("Veículo removido com sucesso.");
+                    }
+                } else {
+                    toastr.error("Não foi possível remover o favorito.");
+                }
+            } catch (error) {
+                console.error("Erro ao remover favorito:", error);
+                toastr.error("Ocorreu um erro técnico.");
+            }
+        }
+    </script>
+}

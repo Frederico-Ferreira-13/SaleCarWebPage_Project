@@ -54,24 +54,16 @@ namespace SaleCarWebPage_Project.Pages
                 FuelList = new SelectList(new List<string> { "Gasolina", "Diesel", "Híbrido", "Elétrico" }, FuelTypeSelected);
                 TransmissionList = new SelectList(new List<string> { "Manual", "Automática" }, Transmission);
 
-                // 2. Chamada ao serviço (Usamos o FuelTypeSelected aqui pois a coluna na BD é TypeOfFuel)
+                // 2. Chamada ao serviço
                 var searchResult = await _carService.SearchCarsAsync(
                     searchTerm: SearchTerm,
                     brandId: BrandId,
                     modelId: null,
-                    fuelType: FuelTypeSelected, // Agora passamos o combustível real
+                    fuelType: FuelTypeSelected,
                     transmission: Transmission,
                     page: 1,
                     pageSize: 50
                 );
-
-                if (searchResult.Items.Any())
-                {
-                    var car = searchResult.Items.First();
-                    Console.WriteLine($"[DEBUG PAGE] Recebidos {searchResult.Items.Count()} carros.");
-                    Console.WriteLine($"[DEBUG PAGE] Localização do 1º: {car.Provider?.Address?.City ?? "NULL"}");
-                    Console.WriteLine($"[DEBUG PAGE] Filtro selecionado: {Location}");
-                }
 
                 if (searchResult.Items != null)
                 {
@@ -81,7 +73,7 @@ namespace SaleCarWebPage_Project.Pages
 
                     _logger.LogInformation($"[DEBUG] Antes de filtros manuais: {tempCars.Count} carros.");
 
-                    // --- FILTRO DE TEXTO MANUAL (Caso o SQL LIKE falhe como no log) ---
+                    // --- FILTRO DE TEXTO MANUAL ---
                     if (!string.IsNullOrWhiteSpace(SearchTerm))
                     {
                         tempCars = tempCars.Where(c =>
@@ -103,7 +95,6 @@ namespace SaleCarWebPage_Project.Pages
                             c.Provider?.Address?.City != null &&
                             c.Provider.Address.City.Trim().Equals(Location.Trim(), StringComparison.OrdinalIgnoreCase)
                         ).ToList();
-                        _logger.LogInformation($"[DEBUG] Após filtro Localização ({Location}): {tempCars.Count} carros.");
                     }
 
                     if (!string.IsNullOrEmpty(Transmission))
@@ -133,13 +124,34 @@ namespace SaleCarWebPage_Project.Pages
                     }
 
                     Cars = tempCars.OrderByDescending(c => c.CreatedAt).ToList();
-                }            
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao carregar coleção.");
-                BrandList = GerarMarcasMock(); 
-            }                        
+                BrandList = GerarMarcasMock();
+            }
+        }
+
+        // NOVO MÉTODO: Trata o clique no diamante (Favoritos)
+        public async Task<IActionResult> OnPostToggleFavoriteAsync(int carId)
+        {
+            var userIdResult = await _tokenService.GetUserIdFromContextAsync();
+
+            if (!userIdResult.IsSuccessful)
+            {
+                return new JsonResult(new { success = false, message = "Unauthorized" }) { StatusCode = 401 };
+            }
+
+            // Chamada ao serviço para Alternar (Adicionar/Remover)
+            var result = await _carService.ToggleFavoriteAsync(carId, userIdResult.Value);
+
+            if (result.IsSuccessful)
+            {
+                return new JsonResult(new { success = true, isFavorite = result.Value });
+            }
+
+            return new JsonResult(new { success = false }) { StatusCode = 400 };
         }
 
         private SelectList GerarMarcasMock()
