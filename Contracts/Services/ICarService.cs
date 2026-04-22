@@ -16,7 +16,7 @@ namespace Contracts.Services
         Task<Result<IEnumerable<Car>>> GetCarsByUserIdAsync(int userId);
 
         Task<(IEnumerable<Car> Items, int TotalCount)> SearchCarsAsync(string? searchTerm, int? brandId,
-            int? modelId, string? fuelType, int page, int pageSize);
+            int? modelId, string? fuelType, string? transmission, int page, int pageSize);
 
         Task<Result<Car>> CreateCarAsync(Car newCar);
 

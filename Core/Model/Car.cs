@@ -18,6 +18,8 @@ namespace Core.Model
         public string CarColor { get; private set; } = string.Empty;
         public int EngineCapacity { get; private set; }
         public decimal CarTare { get; private set; }
+        public string? Transmission { get; set; }
+        public string? Category { get; set; }
         public decimal CarPrice { get; private set; }
         public bool IsAvailable { get; private set; }
         public string PlateNumber { get; private set; } = string.Empty;
@@ -50,7 +52,7 @@ namespace Core.Model
         public Car() { }
 
         public Car(int carModelId, int providerId, string typeOfFuel, string carColor, int engineCapacity,
-                   decimal carTare, decimal carPrice, string plateNumber, int year, int kilometers)
+                   decimal carTare, string? transmission, string? category, decimal carPrice, string plateNumber, int year, int kilometers)
         {
             CarModelId = carModelId;
             ProviderId = providerId;
@@ -58,6 +60,8 @@ namespace Core.Model
             CarColor = carColor;
             EngineCapacity = engineCapacity;
             CarTare = carTare;
+            Transmission = transmission;
+            Category = category;
             CarPrice = carPrice;
             PlateNumber = plateNumber;
             Year = year;

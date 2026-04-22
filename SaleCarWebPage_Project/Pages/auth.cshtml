@@ -1,59 +1,70 @@
 ﻿@page
 @model SaleCarWebPage_Project.Pages.authModel
 @{
-    ViewData["Title"] = "Autenticação Premium";
+    ViewData["Title"] = "Autenticação";
     Layout = "_LayoutNoSidebar"; // Um layout limpo, sem o menu lateral para focar no login
 }
 
-<div class="auth-container" id="auth-container">
-    
-    <div class="form-container sign-up-container">
-        <form method="post" asp-page-handler="Register">
-            <h1>Criar Conta</h1>
-            <div class="social-container">
-                <a href="#" class="social"><ion-icon name="logo-google"></ion-icon></a>
-                <a href="#" class="social"><ion-icon name="logo-apple"></ion-icon></a>
-            </div>
-            <span>ou use o seu email para registo</span>
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/auth.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/global/styles.css" asp-append-version="true" />
+}
 
-            <input type="text" placeholder="Nome Completo" name="RegisterInput.Name" required />
-            <input type="text" placeholder="Nome de Utilizador" name="RegisterInput.UserName" required />
-            <input type="email" placeholder="Email Premium" name="RegisterInput.Email" required />
-            <input type="password" placeholder="Palavra-passe" name="RegisterInput.Password" required />
-            
-            <button type="submit" class="btn-silver">Registar-me</button>
-        </form>
-    </div>
+<div class="auth-page-wrapper">
+    <div class="auth-container" id="auth-container">
+        
+        <div class="form-container sign-up-container">
+            <form method="post" asp-page-handler="Register">
+                <h1>Criar Conta</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><ion-icon name="logo-google"></ion-icon></a>
+                    <a href="#" class="social"><ion-icon name="logo-apple"></ion-icon></a>
+                </div>
+                <span>ou use o seu email para registo</span>
 
-    <div class="form-container sign-in-container">
-        <form method="post" asp-page-handler="Login">
-            <h1>Entrar</h1>
-            <div class="social-container">
-                <a href="#" class="social"><ion-icon name="logo-google"></ion-icon></a>
-                <a href="#" class="social"><ion-icon name="logo-apple"></ion-icon></a>
-            </div>
-            <span>ou use a sua conta Luxury</span>
+                <input type="text" placeholder="Nome Completo" name="RegisterInput.Name" required />
+                <input type="text" placeholder="Nome de Utilizador" name="RegisterInput.UserName" required />
+                <input type="email" placeholder="Email Premium" name="RegisterInput.Email" required />
+                <input type="password" placeholder="Palavra-passe" name="RegisterInput.Password" required />                
+                <button type="submit" class="btn-silver-action">Registar-me</button>
+            </form>
+        </div>
 
-            <input type="email" placeholder="Email" name="LoginInput.Email" required />
-            <input type="password" placeholder="Palavra-passe" name="LoginInput.Password" required />
-            
-            <div asp-validation-summary="All" class="text-danger" style="font-size: 0.8em; list-style: none; color: #ff4d4d; margin-top: 10px;"></div>
-            <button type="submit" class="btn-silver">Entrar</button>
-        </form>
-    </div>
+        <div class="form-container sign-in-container">
+            <form method="post" asp-page-handler="Login">
+                <h1>Entrar</h1>
+                <div class="social-container">
+                    <a href="#" class="social"><ion-icon name="logo-google"></ion-icon></a>
+                    <a href="#" class="social"><ion-icon name="logo-apple"></ion-icon></a>
+                </div>
+                <span>ou use a sua conta Luxury</span>
 
-    <div class="overlay-container">
-        <div class="overlay">
-            <div class="overlay-panel overlay-left">
-                <h1>Bem-vindo de volta!</h1>
-                <p>Para manter-se ligado à nossa coleção exclusiva, por favor faça login com os seus dados.</p>
-                <button class="btn-transparent" id="signIn">Entrar</button>
-            </div>
-            <div class="overlay-panel overlay-right">
-                <h1>Olá, Entusiasta!</h1>
-                <p>Registe-se para começar a explorar a maior montra de carros de luxo de Portugal.</p>
-                <button class="btn-transparent" id="signUp">Criar Conta</button>
+                <input type="email" placeholder="Email" name="LoginInput.Email" required />
+                <input type="password" placeholder="Palavra-passe" name="LoginInput.Password" required />
+                
+                <div asp-validation-summary="All" class="text-danger-custom"></div>
+                
+                <button type="submit" class="btn-silver-action">Entrar</button>
+            </form>
+        </div>
+
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Bem-vindo de volta!</h1>
+                    <p>Para manter-se ligado à nossa coleção exclusiva, por favor faça login com os seus dados.</p>
+                    <button class="btn-transparent" id="signIn">Ir para Login</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Olá, Entusiasta!</h1>
+                    <p>Registe-se para começar a explorar a maior montra de carros de luxo de Portugal.</p>
+                    <button class="btn-transparent" id="signUp">Criar Conta</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/auth.js" asp-append-version="true"></script>
+}

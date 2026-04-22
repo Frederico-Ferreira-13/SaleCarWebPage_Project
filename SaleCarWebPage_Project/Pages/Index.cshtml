@@ -22,7 +22,7 @@
                 <div class="filter-grid">
                     <div class="filter-group">
                         <label>Localização</label>
-                        <select asp-for="Location">
+                        <select asp-for="Location" onchange="this.form.submit()">
                             <option value="">Portugal Inteiro</option>
                             <option value="Lisboa">Lisboa</option>
                             <option value="Porto">Porto</option>
@@ -30,14 +30,26 @@
                     </div>
                     <div class="filter-group">
                         <label>Marca</label>
-                        <select asp-for="BrandId" asp-items="Model.BrandList">
+                        <select asp-for="BrandId" asp-items="Model.BrandList" onchange="this.form.submit()">
                             <option value="">Todas as Marcas</option>
                         </select>
                     </div>
                     <div class="filter-group">
+                        <label>Combustível</label>
+                        <select asp-for="FuelTypeSelected" asp-items="Model.FuelList" onchange="this.form.submit()">
+                            <option value="">Todos os Motores</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Transmissão</label>
+                        <select asp-for="Transmission" asp-items="Model.TransmissionList" onchange="this.form.submit()">
+                            <option value="">Todas as Caixas</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
                         <label>Tipo</label>
-                        <select asp-items="Model.TypeList">
-                            <option value="">Todos os Tipos</option>
+                        <select asp-for="CarType" asp-items="Model.TypeList" onchange="this.form.submit()">
+                            <option value="">Todos os Estilos</option>
                         </select>
                     </div>
                 </div>
@@ -51,7 +63,7 @@
         <div class="cars-grid">
 
             @* --- LOOP DA BASE DE DADOS --- *@
-            @if (Model.Cars != null)
+            @if (Model.Cars != null && Model.Cars.Any())
             {
                 @foreach (var car in Model.Cars)
                 {
@@ -67,11 +79,14 @@
                         </div>
                         <div class="card-info">
                             <div class="card-header">
-                                <h3>@car.PlateNumber</h3>
+                                <h3>@(car.Model?.Brand?.BrandName) @(car.Model?.ModelName)</h3>
                                 <span class="price">@car.CarPrice.ToString("N0")€</span>
                             </div>
                             <div class="card-details">
-                                <p><ion-icon name="location-outline"></ion-icon> @car.Location</p>
+                                <p>
+                                    <ion-icon name="location-outline"></ion-icon>
+                                    @(car.Provider?.Address?.City ?? "Portugal")
+                                </p>
                                 <p><ion-icon name="speedometer-outline"></ion-icon> @car.Kilometers km • @car.Year</p>
                                 <a href="/Cars/Details/@car.CarId" class="btn-view">Ver Detalhes</a>
                             </div>
@@ -79,51 +94,13 @@
                     </div>
                 }
             }
-
-            @* --- CARROS ESTÁTICOS (DESIGN REFERENCE) --- *@
-            <div class="car-card">
-                <div class="premium-garage-wrapper">
-                    <button class="btn-garage" onclick="toggleGarage(0, this)">
-                        <i class="fa-regular fa-gem"></i>
-                    </button>
+            else
+            {
+                @* Mensagem caso não existam carros com os filtros selecionados *@
+                <div class="no-results">
+                    <p>Nenhum carro encontrado com os critérios selecionados.</p>
                 </div>
-                <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&w=800" alt="Ferrari">
-                </div>
-                <div class="card-info">
-                    <div class="card-header">
-                        <h3>Ferrari F8 Tributo</h3>
-                        <span class="price">340.000€</span>
-                    </div>
-                    <div class="card-details">
-                        <p><ion-icon name="location-outline"></ion-icon> Lisboa, Portugal</p>
-                        <p><ion-icon name="speedometer-outline"></ion-icon> 2.500 km • 720 cv</p>
-                        <a href="#" class="btn-view">Ver Detalhes</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="car-card">
-                <div class="premium-garage-wrapper">
-                    <button class="btn-garage" onclick="toggleGarage(-1, this)">
-                        <i class="fa-regular fa-gem"></i>
-                    </button>
-                </div>
-                <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800" alt="Porsche">
-                </div>
-                <div class="card-info">
-                    <div class="card-header">
-                        <h3>Porsche 911 GT3</h3>
-                        <span class="price">215.000€</span>
-                    </div>
-                    <div class="card-details">
-                        <p><ion-icon name="location-outline"></ion-icon> Porto, Portugal</p>
-                        <p><ion-icon name="speedometer-outline"></ion-icon> 1.200 km • 510 cv</p>
-                        <a href="#" class="btn-view">Ver Detalhes</a>
-                    </div>
-                </div>
-            </div>
+            }          
         </div>
     </section>
 </div>

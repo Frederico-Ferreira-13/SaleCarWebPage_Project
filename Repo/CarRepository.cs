@@ -45,12 +45,15 @@ namespace SaleCarWebPage_Project.Repo
             int? brandId,
             int? modelId,
             string? fuelType,
+            string? transmission,
             int page,
             int pageSize)
         {
             var query = _context.Cars
-                 .Include(c => c.Model!)
-                 .ThenInclude(m => m.Brand)
+                .Include(c => c.Model!)
+                    .ThenInclude(m => m.Brand)
+                .Include(c => c.Provider)
+                    .ThenInclude(p => p.Address)
                  .Where(c => c.IsAvailable && c.IsActive)
                  .AsQueryable();
 
@@ -73,7 +76,12 @@ namespace SaleCarWebPage_Project.Repo
             if (!string.IsNullOrWhiteSpace(fuelType))
             {
                 query = query.Where(c => c.TypeOfFuel == fuelType);
-            }            
+            }
+
+            if (!string.IsNullOrWhiteSpace(transmission))
+            {
+                query = query.Where(c => c.Transmission == transmission);
+            }
 
             int totalCount = await query.CountAsync();
 

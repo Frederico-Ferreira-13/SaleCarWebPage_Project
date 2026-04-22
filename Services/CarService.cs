@@ -2,6 +2,7 @@
 using Contracts.Services;
 using Core.Common;
 using Core.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,7 +92,7 @@ namespace Services
         }        
 
         public async Task<(IEnumerable<Car> Items, int TotalCount)> SearchCarsAsync(string? searchTerm, int? brandId,
-            int? modelId, string? fuelType, int page, int pageSize)
+            int? modelId, string? fuelType, string? transmission, int page, int pageSize)
         {
             if (page < 1)
             {
@@ -101,9 +102,9 @@ namespace Services
             if (pageSize < 1 || pageSize > 100)
             {
                 page = 20;
-            }
+            }           
 
-            return await _unitOfWork.Cars.SearchCarsAsync(searchTerm, brandId, modelId, fuelType, page, pageSize);
+            return await _unitOfWork.Cars.SearchCarsAsync(searchTerm, brandId, modelId, fuelType, transmission, page, pageSize);
         }        
 
         public async Task<Result<Car>> CreateCarAsync(Car newCar)
@@ -136,6 +137,8 @@ namespace Services
                     newCar.CarColor,
                     newCar.EngineCapacity,
                     newCar.CarTare,
+                    newCar.Transmission,
+                    newCar.Category,
                     newCar.CarPrice,
                     newCar.PlateNumber,
                     newCar.Year,

@@ -1,62 +1,91 @@
-﻿/* --- auth.css ---*/
-body.auth-page {
-    background: var(--black-deep);
+﻿/* --- Layout Base --- */
+.auth-container * {
+    box-sizing: border-box;
+}
+
+.auth-page-wrapper {
+    background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
 }
 
 .auth-container {
-    background: var(--black-card);
+    background-color: var(--black-card);
     border-radius: 20px;
-    border: 1px solid rgba(192, 192, 192, 0.1);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
     position: relative;
     overflow: hidden;
     width: 850px;
-    max-width: 100%;
+    max-width: 95%;
     min-height: 550px;
 }
 
-/* --- Formulários --- */
+/* --- Ícones Sociais (Correção do Azul) --- */
+.social-container {
+    margin: 20px 0;
+}
+
+    .social-container a {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 5px;
+        height: 40px;
+        width: 40px;
+        /* Força a cor branca para evitar o azul automático */
+        color: #ffffff !important;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        .social-container a ion-icon {
+            font-size: 20px;
+        }
+
+        .social-container a:hover {
+            background: var(--silver-gradient);
+            color: #000000 !important;
+        }
+
+/* --- Contentores dos Formulários --- */
 .form-container {
     position: absolute;
     top: 0;
     height: 100%;
-    transition: all var(--transition-speed) cubic-bezier(0.645, 0.045, 0.355, 1);
+    transition: all var(--transition-speed) ease-in-out;
 }
 
-.form-container form {
-    background: var(--black-card);
-    display: flex;
-    flex-direction: column;
-    padding: 0 50px;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+    .form-container form {
+        background-color: var(--black-card);
+        display: flex;
+        flex-direction: column;
+        padding: 0 45px;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+.sign-in-container {
+    left: 0;
+    width: 50%;
+    z-index: 2;
 }
 
-.form-container h1 {
-    color: var(--white);
-    font-weight: 800;
-    margin: 0 0 10px;
-    letter-spacing: -0.5px;
+.sign-up-container {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
 }
 
-.form-container span {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 12px;
-    margin-bottom: 15px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* --- Overlay (O Painel que desliza) --- */
+/* --- Overlay (Painel de Texto) --- */
 .overlay-container {
     position: absolute;
     top: 0;
@@ -73,27 +102,14 @@ body.auth-page {
 }
 
 .overlay {
-    /* Gradiente Metálico Escuro para o Painel */
-    background: linear-gradient(135deg, #1a1a1a 0%, #333333 50%, #0d0d0d 100%);
-    color: var(--white);
+    background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+    color: #ffffff;
     position: relative;
     left: -100%;
     height: 100%;
     width: 200%;
     transform: translateX(0);
     transition: transform var(--transition-speed) ease-in-out;
-}
-
-/* Adicionar um brilho metálico suave ao overlay */
-.overlay::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
-    opacity: 0.1;
 }
 
 .auth-container.right-panel-active .overlay {
@@ -114,86 +130,80 @@ body.auth-page {
     transition: transform var(--transition-speed) ease-in-out;
 }
 
-.overlay-panel h1 {
-    color: var(--white);
+    .overlay-panel p {
+        font-size: 14px;
+        line-height: 20px;
+        margin: 20px 0 30px;
+    }
+
+/* Posições Alinhadas */
+.overlay-left {
+    transform: translateX(-20%);
 }
 
-.overlay-panel p {
-    font-size: 14px;
-    line-height: 20px;
-    letter-spacing: 0.3px;
-    margin: 20px 0 30px;
-    color: rgba(255, 255, 255, 0.8);
+.auth-container.right-panel-active .overlay-left {
+    transform: translateX(0);
 }
 
-/* --- Botão Transparente (Prata outline) --- */
-.btn-transparent {
-    background: transparent;
-    border: 1px solid var(--silver-main);
-    color: var(--silver-main);
-    border-radius: 20px;
-    padding: 10px 35px;
-    cursor: pointer;
+.overlay-right {
+    right: 0;
+    transform: translateX(0);
+}
+
+.auth-container.right-panel-active .overlay-right {
+    transform: translateX(20%);
+}
+
+/* --- Inputs e Botões --- */
+.form-container input {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+    border-radius: 10px;
+    color: #ffffff !important;
+}
+
+.btn-silver-action {
+    background: var(--silver-gradient);
+    color: #000000;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 45px;
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-top: 15px;
 }
 
-.btn-transparent:hover {
-    background: var(--silver-gradient);
-    color: var(--black-deep);
-    border-color: transparent;
+.btn-transparent {
+    background: transparent;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    border-radius: 25px;
+    padding: 10px 35px;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
-/* --- Social Icons --- */
-.social-container {
-    margin: 20px 0;
-}
-
-.social-container a {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 5px;
-    height: 45px;
-    width: 45px;
-    color: var(--white);
-    background: rgba(255, 255, 255, 0.03);
-    transition: all 0.3s ease;
-}
-
-.social-container a:hover {
-    background: var(--silver-gradient);
-    color: var(--black-deep);
-    transform: translateY(-3px);
-}
-
-/* Lógica de animação mantida igual */
-.sign-in-container {
-    left: 0;
-    width: 50%;
-    z-index: 2;
-}
-
-.sign-up-container {
-    left: 0;
-    width: 50%;
-    opacity: 0;
-    z-index: 1;
-}
-
-.auth-container.right-panel-active .sign-in-container {
-    transform: translateX(100%);
-    opacity: 0;
-}
-
+/* Animação Final */
 .auth-container.right-panel-active .sign-up-container {
     transform: translateX(100%);
     opacity: 1;
     z-index: 5;
-    animation: show var(--transition-speed);
+    animation: show 0.6s;
+}
+
+@keyframes show {
+    0%, 49.99% {
+        opacity: 0;
+        z-index: 1;
+    }
+
+    50%, 100% {
+        opacity: 1;
+        z-index: 5;
+    }
 }
