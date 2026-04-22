@@ -60,15 +60,26 @@ namespace SaleCarWebPage_Project.Pages
                     brandId: BrandId,
                     modelId: null,
                     fuelType: FuelTypeSelected, // Agora passamos o combustível real
+                    transmission: Transmission,
                     page: 1,
                     pageSize: 50
                 );
+
+                if (searchResult.Items.Any())
+                {
+                    var car = searchResult.Items.First();
+                    Console.WriteLine($"[DEBUG PAGE] Recebidos {searchResult.Items.Count()} carros.");
+                    Console.WriteLine($"[DEBUG PAGE] Localização do 1º: {car.Provider?.Address?.City ?? "NULL"}");
+                    Console.WriteLine($"[DEBUG PAGE] Filtro selecionado: {Location}");
+                }
 
                 if (searchResult.Items != null)
                 {
                     var tempCars = searchResult.Items
                         .Where(c => c.IsApproved && c.IsActive)
                         .ToList();
+
+                    _logger.LogInformation($"[DEBUG] Antes de filtros manuais: {tempCars.Count} carros.");
 
                     // --- FILTRO DE TEXTO MANUAL (Caso o SQL LIKE falhe como no log) ---
                     if (!string.IsNullOrWhiteSpace(SearchTerm))
@@ -89,8 +100,10 @@ namespace SaleCarWebPage_Project.Pages
                     if (!string.IsNullOrEmpty(Location))
                     {
                         tempCars = tempCars.Where(c =>
-                            (c.Provider?.Address?.City != null && c.Provider.Address.City.Equals(Location, StringComparison.OrdinalIgnoreCase))
+                            c.Provider?.Address?.City != null &&
+                            c.Provider.Address.City.Trim().Equals(Location.Trim(), StringComparison.OrdinalIgnoreCase)
                         ).ToList();
+                        _logger.LogInformation($"[DEBUG] Após filtro Localização ({Location}): {tempCars.Count} carros.");
                     }
 
                     if (!string.IsNullOrEmpty(Transmission))

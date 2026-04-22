@@ -91,6 +91,14 @@ namespace SaleCarWebPage_Project.Repo
                 .Take(pageSize)
                 .ToListAsync();
 
+            var firstCar = items.FirstOrDefault();
+            if (firstCar != null)
+            {
+                Console.WriteLine($"[DEBUG REPO] Carro: {firstCar.PlateNumber}");
+                Console.WriteLine($"[DEBUG REPO] Provider ID: {firstCar.ProviderId}");
+                Console.WriteLine($"[DEBUG REPO] Cidade: {firstCar.Provider?.Address?.City ?? "NULA"}");
+            }
+
             return (items, totalCount);
         }
     }
