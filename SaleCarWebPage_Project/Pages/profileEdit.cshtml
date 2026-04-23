@@ -1,4 +1,97 @@
 ﻿@page
 @model SaleCarWebPage_Project.Pages.profileEditModel
 @{
+    ViewData["Title"] = "Editar Perfil";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/profileEdit.css" asp-append-version="true" />
+}
+
+<div class="edit-container">
+    <div class="edit-card-premium">
+        @* Cabeçalho Interno *@
+        <div class="edit-header">
+            <div class="header-text">
+                <h1>Configurações de Elite</h1>
+                <p>Personalize a sua presença na Luxury Cars</p>
+            </div>
+            <i class="fa-solid fa-crown gold-icon"></i>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="edit-form-premium">
+            <input type="hidden" asp-for="CurrentUser.UserId" />
+
+            <div class="edit-main-layout">
+                @* Lado Esquerdo: Foto *@
+                <div class="photo-column">
+                    <div class="avatar-upload-wrapper">
+                        <img src="@(Model.CurrentUser?.ProfilePicture ?? "/img/user-default.png")?v=@DateTime.Now.Ticks"
+                             id="previewImg" class="img-preview-main" />
+                        
+                        <label for="fotoInput" class="upload-label">
+                            <i class="fa-solid fa-camera"></i>
+                        </label>
+                        <input type="file" id="fotoInput" asp-for="PhotoUpload" hidden accept="image/*" onchange="previewFile()" />
+                    </div>
+                    <span class="upload-hint">Clique na câmara para alterar</span>
+                </div>
+
+                @* Lado Direito: Inputs *@
+                <div class="fields-column">
+                    <div class="input-group-premium">
+                        <label><i class="fa-solid fa-user"></i> Nome de Utilizador</label>
+                        <input asp-for="InputUserName" placeholder="Ex: João Silva" />
+                    </div>
+
+                    <div class="input-group-premium">
+                        <label><i class="fa-solid fa-envelope"></i> E-mail Corporativo</label>
+                        <input asp-for="InputEmail" placeholder="email@exemplo.com" />
+                    </div>
+
+                    <div class="social-section-divider">
+                        <span><i class="fa-solid fa-share-nodes"></i> Presença Digital</span>
+                    </div>
+
+                    <div class="social-grid">
+                        <div class="input-group-premium social-input">
+                            <label><i class="fa-brands fa-facebook-f"></i> Facebook</label>
+                            <input asp-for="InputFacebook" placeholder="https://facebook.com/..." />
+                        </div>
+
+                        <div class="input-group-premium social-input">
+                            <label><i class="fa-brands fa-instagram"></i> Instagram</label>
+                            <input asp-for="InputInstagram" placeholder="https://instagram.com/..." />
+                        </div>
+
+                        <div class="input-group-premium social-input">
+                            <label><i class="fa-brands fa-x-twitter"></i> X / Twitter</label>
+                            <input asp-for="InputX" placeholder="https://x.com/..." />
+                        </div>
+                    </div>
+                    <div asp-validation-summary="All" class="text-danger-premium"></div>
+
+                    <div class="form-actions-premium">
+                        <button type="submit" class="btn-save-gold">
+                            <i class="fa-solid fa-check"></i> Aplicar Alterações
+                        </button>
+                        <a asp-page="/profile" class="btn-cancel-glass">Cancelar</a>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function previewFile() {
+            const preview = document.querySelector('#previewImg');
+            const file = document.querySelector('#fotoInput').files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => preview.src = reader.result;
+            if (file) reader.readAsDataURL(file);
+        }
+    </script>
 }

@@ -31,6 +31,7 @@ namespace SaleCarWebPage_Project.IDContainer
             services.AddScoped<IMessageBoxService, MessageBoxService>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ICloudService, CloudService>();
             services.AddScoped<IAuthenticationService, Services.AuthenticationService>();
 
             return services;

@@ -1,0 +1,162 @@
+﻿@page "{id:int}"
+@model SaleCarWebPage_Project.Pages.viewCarModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = $"{Model.Car?.Model?.Brand?.BrandName} {Model.Car?.Model?.ModelName}";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/viewCar.css" asp-append-version="true" />
+}
+
+<main class="car-view-container">
+    <div class="car-main-layout">
+        
+        @* LADO ESQUERDO: GALERIA E DETALHES EXTENSOS *@
+        <div class="car-content-area">
+            <div class="car-image-frame">
+                <img src="@(Model.Car?.ImageUrl ?? "/img/cars/default-car.jpg")" alt="@Model.Car?.Model?.ModelName" class="main-car-img" />
+                <div class="car-status-badges">
+                    @if (Model.Car?.IsApproved == true)
+                    {
+                        <span class="badge-approved"><i class="fa-solid fa-check-double"></i> Verificado</span>
+                    }
+                    <span class="badge-category">@Model.Car?.Category</span>
+                </div>
+            </div>
+
+            @* Painel de Informação Técnica Detalhada *@
+            <div class="details-section">
+                <h3 class="section-title"><i class="fa-solid fa-microchip"></i> Especificações Técnicas</h3>
+                <div class="details-grid">
+                    <div class="detail-box">
+                        <span class="detail-label">Matrícula</span>
+                        <span class="detail-value">@Model.Car?.PlateNumber</span>
+                    </div>
+                    <div class="detail-box">
+                        <span class="detail-label">Cor Exterior</span>
+                        <span class="detail-value">@Model.Car?.CarColor</span>
+                    </div>
+                    <div class="detail-box">
+                        <span class="detail-label">Tara (Peso)</span>
+                        <span class="detail-value">@Model.Car?.CarTare.ToString("N0") kg</span>
+                    </div>
+                    <div class="detail-box">
+                        <span class="detail-label">Cilindrada</span>
+                        <span class="detail-value">@Model.Car?.EngineCapacity cc</span>
+                    </div>
+                </div>
+            </div>
+
+            @* Localização do Veículo (Address Entity) *@
+            <div class="details-section">
+                <h3 class="section-title"><i class="fa-solid fa-location-dot"></i> Localização do Veículo</h3>
+                <div class="address-card">
+                    <p><strong>@Model.Car?.Provider?.Address?.Locate</strong></p>
+                    <p>@Model.Car?.Provider?.Address?.City, @Model.Car?.Provider?.Address?.Country</p>
+                    <small>C.P: @Model.Car?.Provider?.Address?.PostalCode</small>
+                </div>
+            </div>
+        </div>
+
+        @* LADO DIREITO: SIDEBAR PREMIUM (AÇÕES E DADOS RÁPIDOS) *@
+        <aside class="car-specs-sidebar">
+            <div class="specs-header">
+                <span class="brand-label">@Model.Car?.Model?.Brand?.BrandName</span>
+                <h1>@Model.Car?.Model?.ModelName</h1>
+                <div class="price-container">
+                    <span class="currency">€</span>
+                    <span class="amount">@Model.Car?.CarPrice.ToString("N0")</span>
+                </div>
+            </div>
+
+            <div class="quick-specs-grid">
+                @* Ano *@
+                <div class="q-spec">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <div>
+                        <label>Ano</label>
+                        <span>@Model.Car?.Year</span>
+                    </div>
+                </div>
+
+                @* Kms *@
+                <div class="q-spec">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <div>
+                        <label>Quilómetros</label>
+                        <span>@Model.Car?.Kilometers.ToString("N0") km</span>
+                    </div>
+                </div>
+
+                @* Fuel *@
+                <div class="q-spec">
+                    <i class="fa-solid fa-gas-pump"></i>
+                    <div>
+                        <label>Combustível</label>
+                        <span>@Model.Car?.TypeOfFuel</span>
+                    </div>
+                </div>
+
+                @* Transmission *@
+                <div class="q-spec">
+                    <i class="fa-solid fa-circle-dot"></i>
+                    <div>
+                        <label>Caixa</label>
+                        <span>@Model.Car?.Transmission</span>
+                    </div>
+                </div>
+            </div>
+
+            @* Card do Vendedor (Provider + User) *@
+            <div class="seller-card">
+                <div class="seller-header">
+                    @* Se tiveres foto de user no futuro, entra aqui *@
+                    <div class="seller-avatar-init">@Model.Car?.Provider?.NameProvider.Substring(0, 1)</div>
+                    <div class="seller-meta">
+                        <span class="seller-type">Vendedor Profissional</span>
+                        <span class="seller-name">@Model.Car?.Provider?.NameProvider</span>
+                    </div>
+                </div>
+                
+                @if (!string.IsNullOrEmpty(Model.Car?.Provider?.CompanyName))
+                {
+                    <p class="company-name"><i class="fa-solid fa-building"></i> @Model.Car?.Provider?.CompanyName</p>
+                }
+
+                <div class="message-box-wrapper">
+                    <div class="message-header">
+                        <h4><i class="fa-solid fa-paper-plane"></i> Contactar Vendedor</h4>
+                    </div>
+
+                    <form method="post" asp-page-handler="SendMessage">
+                        @* Assunto automático com o nome do carro *@
+                        <div class="msg-input-group">
+                            <label>Assunto</label>
+                            <input type="text" name="Subject" class="msg-control"
+                                   value="Interesse no @Model.Car?.Model?.Brand?.BrandName @Model.Car?.Model?.ModelName" readonly />
+                        </div>
+
+                        <div class="msg-input-group">
+                            <label>Sua Mensagem</label>
+                            <textarea name="MessageText" class="msg-control"
+                                      placeholder="Escreva aqui as suas questões sobre este veículo..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-msg">
+                            <i class="fa-solid fa-share"></i> Enviar Proposta
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="favorite-action">
+                <button class="btn-fav">
+                    <i class="@(Model.Car?.IsFavorite == true ? "fa-solid" : "fa-regular") fa-heart"></i>
+                    Adicionar aos Favoritos (@Model.Car?.FavoriteCount)
+                </button>
+            </div>
+        </aside>
+
+    </div>
+</main>

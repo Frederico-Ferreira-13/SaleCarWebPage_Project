@@ -288,6 +288,13 @@ namespace Services
 
             try
             {
+                if (!string.IsNullOrWhiteSpace(userToUpdate.ProfilePicture))
+                {
+                    // Debug temporário para veres no output do Visual Studio
+                    Console.WriteLine($"Gravando nova foto no DB: {userToUpdate.ProfilePicture}");
+                    existingUser.UpdateProfilePicture(userToUpdate.ProfilePicture);
+                }
+
                 if (!string.IsNullOrWhiteSpace(userToUpdate.UserName))
                 {
                     existingUser.UpdateUserName(userToUpdate.UserName);
@@ -296,11 +303,6 @@ namespace Services
                 if (!string.IsNullOrWhiteSpace(userToUpdate.Email))
                 {
                     existingUser.UpdateEmail(userToUpdate.Email);
-                }
-
-                if (userToUpdate.ProfilePicture != existingUser.ProfilePicture)
-                {
-                    existingUser.UpdateProfilePicture(userToUpdate.ProfilePicture);
                 }
 
                 await _unitOfWork.Users.UpdateAsync(existingUser);

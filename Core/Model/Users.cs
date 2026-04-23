@@ -21,7 +21,10 @@ namespace Core.Model
         private string? _profilePicture;
         private string _passwordHash = string.Empty;
         private string _salt = string.Empty;
-        
+        private string? _facebookUrl;
+        private string? _instagramUrl;
+        private string? _twitterUrl;
+
         public DateTime CreatedAt { get; private set; }
         public DateTime? LastUpdatedAt { get; private set; }
 
@@ -34,6 +37,9 @@ namespace Core.Model
         public string PasswordHash { get => _passwordHash; private set => _passwordHash = value; }
         public string Salt { get => _salt; private set => _salt = value; }
         public string? ProfilePicture { get => _profilePicture; private set => _profilePicture = value; }
+        public string? FacebookUrl { get => _facebookUrl; private set => _facebookUrl = value; }
+        public string? InstagramUrl { get => _instagramUrl; private set => _instagramUrl = value; }
+        public string? TwitterUrl { get => _twitterUrl; private set => _twitterUrl = value; }
 
         private Users()
         {
@@ -115,6 +121,20 @@ namespace Core.Model
             if (!string.Equals(Email, newEmail, StringComparison.OrdinalIgnoreCase))
             {
                 Email = newEmail;
+                SetLastUpdatedAt();
+            }
+        }
+
+        public void UpdateSocialLinks(string? fb, string? insta, string? twitter)
+        {
+            CheckIfActive();
+
+            // Só atualiza e marca data se algo mudou
+            if (_facebookUrl != fb || _instagramUrl != insta || _twitterUrl != twitter)
+            {
+                _facebookUrl = fb;
+                _instagramUrl = insta;
+                _twitterUrl = twitter;
                 SetLastUpdatedAt();
             }
         }

@@ -1,4 +1,82 @@
 ﻿@page
 @model SaleCarWebPage_Project.Pages.settingsModel
 @{
+    Layout = "_Layout";
+    ViewData["Title"] = "Configurações de Segurança";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/settings.css" asp-append-version="true" />
+}
+
+<main class="container">
+    <div class="settings-container">
+        <div class="settings-header">
+            <i class="fa-solid fa-shield-halved fa-2x gold-icon"></i>
+            <div class="header-text">
+                <h2>Configurações da Conta</h2>
+                <p>Gira a segurança e os dados da sua presença Luxury Cars</p>
+            </div>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fa-solid fa-circle-check"></i> @TempData["SuccessMessage"]
+            </div>
+        }
+
+        <form method="post" class="settings-form">
+            
+            <div class="settings-section">
+                <h4 class="section-title"><i class="fa-solid fa-envelope"></i> Gestão de E-mail</h4>
+                <div class="settings-grid">
+                    <div class="form-group full-width">
+                        <label asp-for="Email">Endereço de E-mail</label>
+                        <input type="email" asp-for="Email" class="form-control-premium" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-section security-box">
+                <h4 class="section-title"><i class="fa-solid fa-lock"></i> Alterar Palavra-passe</h4>
+                <p class="section-description">Preencha apenas se desejar definir uma nova password.</p>
+                
+                <div class="settings-grid">
+                    <div class="form-group full-width">
+                        <label asp-for="CurrentPassword">Palavra-passe Atual</label>
+                        <input type="password" asp-for="CurrentPassword" class="form-control-premium" placeholder="Confirme a sua identidade" />
+                        <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label asp-for="NewPassword">Nova Palavra-passe</label>
+                        <input type="password" asp-for="NewPassword" class="form-control-premium" />
+                        <span asp-validation-for="NewPassword" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label asp-for="ConfirmPassword">Confirmar Password</label>
+                        <input type="password" asp-for="ConfirmPassword" class="form-control-premium" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            @* Sumário de Erros Geral *@
+            <div asp-validation-summary="ModelOnly" class="text-danger-summary"></div>
+
+            <div class="settings-actions">
+                <button type="submit" class="btn-save-gold">
+                    <i class="fa-solid fa-check"></i> Guardar Alterações
+                </button>
+                <a asp-page="/profile" class="btn-cancel-glass">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

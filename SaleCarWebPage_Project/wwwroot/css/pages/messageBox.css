@@ -1,2 +1,106 @@
-﻿body {
+﻿/* --- messageBox.css --- */
+.message-box-wrapper {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 30px;
+}
+
+.message-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.message-header h4 {
+    color: #d4af37;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Campos de Input de Mensagem */
+.msg-input-group {
+    margin-bottom: 20px;
+}
+
+.msg-input-group label {
+    display: block;
+    color: #888;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+}
+
+.msg-control {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    color: #fff;
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.msg-control:focus {
+    outline: none;
+    border-color: #d4af37;
+    background: rgba(212, 175, 55, 0.05);
+}
+
+textarea.msg-control {
+    resize: none;
+    min-height: 120px;
+}
+
+/* Balões de Mensagem (Para histórico se necessário) */
+.chat-bubble {
+    padding: 12px 18px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+    max-width: 80%;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.bubble-sender {
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    align-self: flex-end;
+    color: #fff;
+    border-bottom-right-radius: 2px;
+}
+
+.bubble-receiver {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    align-self: flex-start;
+    color: #ccc;
+    border-bottom-left-radius: 2px;
+}
+
+.msg-date {
+    display: block;
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Status de Leitura */
+.read-status {
+    font-size: 0.8rem;
+    color: #d4af37;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.deleted-msg {
+    font-style: italic;
+    color: #ff4d4d;
+    opacity: 0.6;
 }

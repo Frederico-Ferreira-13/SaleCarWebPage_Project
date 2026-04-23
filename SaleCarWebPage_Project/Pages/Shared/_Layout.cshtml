@@ -27,27 +27,7 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
-
-    <style>
-        #tsparticles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background-color: #050505;
-        }
-
-        body, .luxury-theme, .main-content, .container {
-            background: transparent !important;
-        }
-
-        header {
-            position: relative;
-            z-index: 10;
-        }
-    </style>
+   
 </head>
 <body class="luxury-theme">
 
@@ -75,7 +55,7 @@
                 @* Texto alterado para Anunciar, mantendo o link para SaleCar *@
                 <li class="list @IsActive("/SaleCar")">
                     <b></b><b></b>
-                    <a asp-page="/SaleCar">
+                    <a asp-page="/saleCar">
                         <span class="icon"><ion-icon name="add-circle-outline"></ion-icon></span>
                         <span class="title">Anunciar</span>
                     </a>
@@ -121,6 +101,14 @@
             }
             else
             {
+                <li class="list @IsActive("/settings")">
+                    <b></b><b></b>
+                    <a asp-page="/settings">
+                        <span class="icon"><ion-icon name="settings-outline"></ion-icon></span>
+                        <span class="title">Definições</span>
+                    </a>
+                </li>
+
                 <li class="list @IsActive("/profile")">
                     <b></b><b></b>
                     <a asp-page="/profile">

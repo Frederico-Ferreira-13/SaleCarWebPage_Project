@@ -6,11 +6,11 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/pages/car_card.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/pages/profile.css" asp-append-version="true" />   
+    <link rel="stylesheet" href="~/css/pages/profile.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/profileEdit.css" asp-append-version="true" />
 }
 
 <div class="profile-container">
-    @* HEADER: Efeito Glassmorphism com Infos do Utilizador *@
     <header class="profile-header">
         <div class="profile-flex">
             <div class="profile-img-wrapper">
@@ -24,11 +24,11 @@
                     }
                     <div class="status-badge">Membro VIP</div>
                 </div>
-            
+    
                 <div class="user-info">
                     <span class="member-since">Membro desde @(Model.CurrentUser?.CreatedAt.ToString("yyyy") ?? "2024")</span>
                     <h1>Olá, @(Model.CurrentUser?.Name ?? "Utilizador")!</h1>
-                
+        
                     <div class="user-stats-grid">
                         <div class="stat-card">
                             <span class="stat-value">@Model.TotalAnnounced</span>
@@ -41,10 +41,11 @@
                     </div>
 
                     <div class="profile-actions">
-                        <a asp-page="/profileEdite" class="btn-premium-outline">
+                        @* BOTÃO PARA IR PARA A PÁGINA DE EDIÇÃO *@
+                        <a asp-page="/profileEdit" class="btn-premium-outline">
                             <i class="fa-solid fa-user-gear"></i> Editar Dados
                         </a>
-                        <a asp-page="/Anunciar" class="btn-premium">
+                        <a asp-page="/saleCar" class="btn-premium">
                             <i class="fa-solid fa-plus"></i> Novo Anúncio
                         </a>
                     </div>
@@ -52,50 +53,48 @@
             </div>
         </header>
 
-        @* CONTEÚDO: Grid de Carros do Utilizador *@
+        @* CONTEÚDO: Grid de Carros *@
         <main class="profile-content">
             <h2 class="section-title">
                 <i class="fa-solid fa-car-side"></i> A Minha Coleção
             </h2>
-        
+    
             <div class="profile-grid">
                 @if (Model.MyCars != null && Model.MyCars.Any())
                 {
                     @foreach (var car in Model.MyCars)
                     {
                         <div class="car-card">
-                            @* Mantive a classe que tinhas no CSS base *@
                             <div class="card-status-badge @(car.IsApproved ? "approved" : "pending")">
                                 <i class="fa-solid @(car.IsApproved ? "fa-check-circle" : "fa-clock")"></i>
                                 @(car.IsApproved ? "Publicado" : "Pendente")
                             </div>
 
                             <div class="card-image">
-                                <img src="@(string.IsNullOrEmpty(car.ImageUrl) ? "/img/no-car.png" : car.ImageUrl)"
-                                     alt="Imagem do Carro">
+                                <img src="@(string.IsNullOrEmpty(car.ImageUrl) ? "/img/no-car.png" : car.ImageUrl)" alt="Imagem do Carro">
                             </div>
+                        
                             <div class="card-info">
-                            <div class="card-header">
-                                <h3>@car.Model?.Brand?.BrandName @car.Model?.ModelName</h3>
-                                <span class="price">@car.CarPrice.ToString("N0") €</span>
-                            </div>
+                                <div class="card-header">
+                                    <h3>@car.Model?.Brand?.BrandName @car.Model?.ModelName</h3>
+                                    <span class="price">@car.CarPrice.ToString("N0") €</span>
+                                </div>
 
-                            <div class="card-details">
-                                <p><i class="fa-solid fa-calendar-days"></i> Ano: @car.Year</p>
+                                <div class="card-details">
+                                    <p><i class="fa-solid fa-calendar-days"></i> Ano: @car.Year</p>
                                     <p><i class="fa-solid fa-gauge-high"></i> @car.Kilometers.ToString("N0") km</p>
                                 
-                                <div class="card-actions">
-                                    <a href="/Cars/Edit/@car.CarId" class="btn-card-secondary">
-                                        <i class="fa-solid fa-pen"></i> Gerir
-                                    </a>
-                                    <a href="/Cars/Details/@car.CarId" class="btn-card-primary">
-                                        <i class="fa-solid fa-eye"></i> Ver
-                                    </a>
+                                    <div class="card-actions">
+                                        <a href="/Cars/Edit/@car.CarId" class="btn-card-secondary">
+                                            <i class="fa-solid fa-pen"></i> Gerir
+                                        </a>
+                                        <a href="/Cars/Details/@car.CarId" class="btn-card-primary">
+                                            <i class="fa-solid fa-eye"></i> Ver
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                
                     }
                 }
                 else
@@ -103,7 +102,7 @@
                     <div class="empty-state-notice" style="grid-column: 1/-1; text-align: center; padding: 60px; background: rgba(255,255,255,0.02); border-radius: 20px; border: 1px dashed rgba(255,255,255,0.1);">
                         <i class="fa-solid fa-car" style="font-size: 3rem; color: rgba(255,255,255,0.1); margin-bottom: 20px;"></i>
                         <p style="color: white; opacity: 0.6;">Ainda não tens carros listados para venda.</p>
-                        <a asp-page="/Anunciar" class="btn-premium" style="margin-top: 20px; text-decoration: none; display: inline-block;">
+                        <a asp-page="/saleCar" class="btn-premium" style="margin-top: 20px; text-decoration: none; display: inline-block;">
                             Começar a Vender
                         </a>
                     </div>
@@ -111,5 +110,4 @@
             </div>
         </main>
     </div>
-
     
