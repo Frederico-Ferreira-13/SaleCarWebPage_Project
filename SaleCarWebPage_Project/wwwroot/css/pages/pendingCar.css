@@ -1,2 +1,203 @@
-﻿body {
+﻿/* --- pendingCar.css --- */
+.pending-wrapper {
+    max-width: 1300px;
+    margin: 60px auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.silver-text {
+    color: var(--white);
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.highlight {
+    color: #d4af37;
+    text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+.subtitle {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+/* Grid de Cards */
+.pending-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+/* --- ESTADO VAZIO (O "BOTÃO" CENTRAL) --- */
+.empty-state-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}
+
+.empty-state-premium {
+    text-align: center;
+    padding: 60px 80px;    
+    background: rgba(15, 15, 15, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 30px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+    max-width: 550px;
+}
+
+.empty-state-premium i {
+    font-size: 4.5rem;
+    margin-bottom: 25px;
+    color: #d4af37;
+    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
+}
+
+.empty-state-premium p {
+    color: var(--silver-main);
+    font-size: 1.2rem;
+    margin-bottom: 35px;
+    font-weight: 300;
+}
+
+/* --- O BOTÃO PREMIUM (Inspirado no teu styles.css) --- */
+.btn-gold-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    /* Usando o teu gradiente de prata mas com um toque de ouro no hover */
+    background: var(--silver-gradient);
+    color: #1a1a1a;
+    padding: 18px 45px;
+    border-radius: 50px; /* Mais elegante que o quadrado */
+    text-decoration: none;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+    .btn-gold-action:hover {
+        background: #d4af37; /* Transição para o ouro no hover */
+        color: #000;
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 15px 35px rgba(212, 175, 55, 0.4);
+        border-color: #fff;
+    }
+
+/* Ajustes nos Cards Individuais para manter a consistência */
+.car-card-premium.pending {
+    background: rgba(21, 21, 21, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    transition: transform 0.3s ease;
+}
+
+    .car-card-premium.pending:hover {
+        transform: translateY(-10px);
+        border-color: #d4af37;
+    }
+
+.bg-visual-fix {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/img/cars/ferrari_background.jpg'); /* Teu caminho da imagem */
+    background-size: cover;
+    background-position: center;
+    opacity: 0.35; /* Aumentada a opacidade: 0.1 era muito pouco */
+    filter: brightness(0.6) contrast(1.1);
+    z-index: 1;
+}
+
+/* FIX: Adição dos estilos de alertas premium */
+.alert-premium {
+    padding: 15px 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    animation: slideIn 0.5s ease;
+}
+
+    .alert-premium.success {
+        background: rgba(0, 255, 136, 0.1);
+        border-color: rgba(0, 255, 136, 0.3);
+        color: #00ff88;
+    }
+
+    .alert-premium.error {
+        background: rgba(255, 71, 71, 0.1);
+        border-color: rgba(255, 71, 71, 0.3);
+        color: #ff4747;
+    }
+
+.approval-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    padding-bottom: 10px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: #888;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+    .tab-btn.active {
+        color: #d4af37;
+        border-bottom: 2px solid #d4af37;
+        font-weight: bold;
+    }
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.5s;
+}
+
+    .tab-content.active {
+        display: block;
+    }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-approval-row {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-left: 4px solid #d4af37;
 }

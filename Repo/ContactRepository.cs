@@ -19,5 +19,11 @@ namespace SaleCarWebPage_Project.Repo
                                  .Where(x => x.ClientId == clientId)
                                  .ToListAsync();
         }
+
+        public async Task<Contact?> GetByEmailAsync(string email)
+        {
+            
+            return await _dbSet.FirstOrDefaultAsync(c => c.Email == email);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Core.Model;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Contracts.Repositories
@@ -8,5 +9,7 @@ namespace Contracts.Repositories
         
         Task<Users?> GetByEmailAsync(string email);
         Task<Users?> GetByUserNameAsync(string userName);
+
+        Task<IEnumerable<Users>> FindAsync(Expression<Func<Users, bool>> predicate);
     }
 }

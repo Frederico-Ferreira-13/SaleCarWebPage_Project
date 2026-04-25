@@ -84,14 +84,14 @@ namespace Services
                         new Dictionary<string, string[]> { { nameof(userName), new[] { "Escolha outro nome de utilizador" } } }
                     )
                 );
-            }
+            }            
 
-            if (await _unitOfWork.Users.GetByEmailAsync(normalizedEmail) != null)
+            var existingContact = await _unitOfWork.Contacts.GetByEmailAsync(normalizedEmail);
+            if (existingContact != null)
             {
                 return Result<Users>.Failure(
-                    Error.Conflict(ErrorCodes.AlreadyExists, "Este email já está registado.",
-                        new Dictionary<string, string[]> { { nameof(email), new[] { "Use outro email ou faça login" } } }));
-            }           
+                    Error.Conflict(ErrorCodes.AlreadyExists, "Este email já está associado a um contacto existente."));
+            }
 
             await _unitOfWork.BeginTransactionAsync();
 
@@ -105,18 +105,16 @@ namespace Services
                 }
 
                 var names = name.Split(' ', 2);
-                var firstName = names[0];
-                var lastName = names.Length > 1 ? names[1] : "N/A";
-
                 var contact = new Contact(
-                    firstName: firstName,
-                    lastName: lastName,
+                    firstName: names[0],
+                    lastName: names.Length > 1 ? names[1] : "N/A",
                     email: normalizedEmail,
-                    phoneNumber: "000000000", // por default
-                    jobTitle: "User" // por default
+                    phoneNumber: "000000000",
+                    jobTitle: "User"
                 );
 
                 await _unitOfWork.Contacts.AddAsync(contact);
+                await _unitOfWork.CommitAsync();
 
                 bool isAdminEmail = _adminEmails.Contains(email.ToLowerInvariant());
 
@@ -901,6 +899,41 @@ namespace Services
                 _unitOfWork.Rollback();
                 return Result.Failure(
                     Error.InternalServer($"Erro ao eliminar nível de acesso: {ex.Message}"));
+            }
+        }
+
+        public async Task<Result<IEnumerable<Users>>> GetPendingUsersAsync()
+        {
+            try
+            {
+                // Vai buscar utilizadores onde IsApproved é false
+                var users = await _unitOfWork.Users.FindAsync(u => !u.IsApproved && u.IsActive);
+                return Result<IEnumerable<Users>>.Success(users);
+            }
+            catch (Exception ex)
+            {
+                return Result<IEnumerable<Users>>.Failure(Error.InternalServer(ex.Message));
+            }
+        }
+
+        public async Task<Result<bool>> ApproveUserAsync(int userId)
+        {
+            try
+            {
+                var user = await _unitOfWork.Users.GetByIdAsync(userId);
+                if (user == null) 
+                    return Result<bool>.Failure(Error.NotFound(code: "Users.NotFound", description: "Utilizador não encontrado."));
+
+                user.Approve(); // Assume que tens um método Approve() ou faz: user.IsApproved = true;
+
+                await _unitOfWork.Users.UpdateAsync(user);
+                await _unitOfWork.CommitAsync();
+
+                return Result<bool>.Success(true);
+            }
+            catch (Exception ex)
+            {
+                return Result<bool>.Failure(Error.InternalServer(ex.Message));
             }
         }
     }

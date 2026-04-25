@@ -77,9 +77,9 @@
 
                 @if (User.IsInRole("Admin"))
                 {
-                    <li class="list @IsActive("/Admin/Aprovacoes")">
+                    <li class="list @IsActive("/pendingCar")">
                         <b></b><b></b>
-                        <a asp-page="/Admin/Aprovacoes">
+                        <a asp-page="/pendingCar">
                             <span class="icon"><ion-icon name="checkmark-done-circle-outline"></ion-icon></span>
                             <span class="title">Aprovações</span>
                         </a>

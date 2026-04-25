@@ -1,4 +1,81 @@
-﻿@page
-@model SaleCarWebPage_Project.Pages.Shared._messageBoxModel
+﻿@model SaleCarWebPage_Project.Pages.Shared._messageBoxModel
+@using System.Security.Claims
+
 @{
+    var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
 }
+
+<div style="color: red; font-size: 10px;">
+    DEBUG: Mensagens no Model = @Model.ChatHistory?.Count | CarId = @Model.CarId
+</div>
+
+<div class="message-box-wrapper">
+    <div class="message-header">
+        <h4><i class="fa-solid fa-comments"></i> Contactar Vendedor</h4>
+        <p style="font-size: 0.8rem; color: #666;">Tire as suas dúvidas sobre este veículo</p>
+    </div>
+
+    <div class="chat-conversation" id="chat-container" style="display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 10px;">
+        @if (Model.ChatHistory != null && Model.ChatHistory.Any())
+        {
+            @foreach (var msg in Model.ChatHistory.OrderBy(x => x.SentDate))
+            {
+                bool isMe = currentUserId == msg.SenderId.ToString();
+                
+                <div class="chat-bubble @(isMe ? "bubble-sender" : "bubble-receiver")">
+                    @if (msg.IsDeleted)
+                    {
+                        <p class="deleted-msg"><i class="fa-solid fa-ban"></i> @msg.MessageText</p>
+                    }
+                    else
+                    {
+                        <p>@msg.MessageText</p>
+                    }
+                    <time class="msg-date">
+                        @msg.SentDate.ToString("dd/MM HH:mm")
+                        @if (isMe)
+                        {
+                            <span class="read-status">
+                                <i class="fa-solid @(msg.IsRead ? "fa-check-double" : "fa-check")"></i>
+                            </span>
+                        }
+                    </time>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-chat" style="text-align: center; padding: 20px; color: #555;">
+                <i class="fa-solid fa-comment-dots" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                <p>Ainda não iniciou conversa para este anúncio.</p>
+            </div>
+        }
+    </div>
+
+    @if (isAuthenticated)
+    {
+        <div class="chat-input-area" style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+            <form method="post" asp-page-handler="SendMessage">
+                @Html.AntiForgeryToken()
+                <div class="msg-input-group">
+                    <label><i class="fa-solid fa-pen-nib"></i> Sua Mensagem</label>
+                    <textarea name="MessageText"
+                              class="msg-control"
+                              placeholder="Escreva aqui as suas questões..."
+                              required></textarea>
+                </div>
+
+                <button type="submit" class="btn-gold-action">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar Mensagem
+                </button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="login-prompt-msg" style="margin-top: 20px; text-align: center; padding: 15px; background: rgba(212, 175, 55, 0.05); border-radius: 8px;">
+            <p><a href="/auth" style="color: #d4af37; font-weight: bold; text-decoration: none;">Inicie sessão</a> para contactar o vendedor.</p>
+        </div>
+    }
+</div>

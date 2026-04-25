@@ -1,0 +1,92 @@
+﻿@page
+@model SaleCarWebPage_Project.Pages.pendingCarModel
+@{
+    ViewData["Title"] = "Aprovação de Veículos";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/pendingCar.css" asp-append-version="true" />
+}
+
+<div class="pending-wrapper">
+    <header class="page-header">
+        <h1 class="silver-text"><i class="fa-solid fa-shield-halved"></i> Centro de <span class="highlight">Gestão</span></h1>
+    </header>
+
+    @* --- NAVEGAÇÃO DE ABAS --- *@
+    <div class="approval-tabs">
+        <button class="tab-btn active" onclick="openTab(event, 'carsTab')">
+            <i class="fa-solid fa-car"></i> Anúncios (@Model.PendingCars.Count)
+        </button>
+        <button class="tab-btn" onclick="openTab(event, 'usersTab')">
+            <i class="fa-solid fa-users"></i> Utilizadores (@Model.PendingUsers.Count)
+        </button>
+    </div>
+
+    @* --- CONTEÚDO: ANÚNCIOS --- *@
+    <div id="carsTab" class="tab-content active">
+        @if (Model.PendingCars.Any())
+        {
+            <div class="pending-grid">
+                @foreach (var car in Model.PendingCars)
+                {
+                    <article class="car-card-premium pending">
+                        @* ... Teu código atual do card de carro ... *@
+                        <form method="post" asp-page-handler="ApproveCar">
+                            <input type="hidden" name="id" value="@car.CarId" />
+                            <button type="submit" class="btn-approve-action">Aprovar Carro</button>
+                        </form>
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+
+            <p class="empty-msg">Nenhum carro pendente.</p>
+        }
+    </div>
+
+    @* --- CONTEÚDO: UTILIZADORES --- *@
+    <div id="usersTab" class="tab-content">
+        @if (Model.PendingUsers.Any())
+        {
+            <div class="users-list-premium">
+                @foreach (var user in Model.PendingUsers)
+                {
+                    <div class="user-approval-row">
+                        <div class="user-info">
+                            <strong>@user.Name</strong>
+                            <span>@user.Email</span>
+                        </div>
+                        <form method="post" asp-page-handler="ApproveUser">
+                            <input type="hidden" name="id" value="@user.UserId" />
+                            <button type="submit" class="btn-approve-user">
+                                <i class="fa-solid fa-user-check"></i> Aprovar Acesso
+                            </button>
+                        </form>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+
+            <p class="empty-msg">Nenhum utilizador a aguardar aprovação.</p>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
+}

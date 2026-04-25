@@ -37,5 +37,8 @@ namespace Contracts.Services
         Task<Result<IEnumerable<UsersRole>>> GetAllUsersRolesAsync();
         Task<Result> UpdateUsersRoleAsync(UsersRole updateUserRole);
         Task<Result> DeleteUsersRoleAsync(int id);
+
+        Task<Result<IEnumerable<Users>>> GetPendingUsersAsync();
+        Task<Result<bool>> ApproveUserAsync(int userId);
     }
 }

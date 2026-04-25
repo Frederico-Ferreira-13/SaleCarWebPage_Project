@@ -8,5 +8,6 @@ namespace Contracts.Repositories
     {
         // Útil para ver os contactos de um cliente específico
         Task<IEnumerable<Contact>> GetByClientIdAsync(int clientId);
+        Task<Contact?> GetByEmailAsync(string email);
     }
 }

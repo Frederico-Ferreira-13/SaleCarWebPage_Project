@@ -65,13 +65,29 @@ namespace SaleCarWebPage_Project.Repo
 
         public async Task BeginTransactionAsync()
         {
-            // Mantido comentário do colega, mas deixo a estrutura preparada
+            // Vou comentar para que o UnitOfWork não bloquear o ADO.NET
+            /*if (_scope != null)
+            {
+                throw new InvalidOperationException("Já existe uma transação ativa.");
+            }
+
+            var options = new TransactionOptions
+            {
+                IsolationLevel = IsolationLevel.ReadCommitted, // Padrão bom para leitura/escrita consistente
+                Timeout = TimeSpan.FromSeconds(30) // Ajustar se necessitar de mais tempo
+            };
+
+            _scope = new TransactionScope(
+                TransactionScopeOption.Required,
+                options,
+                TransactionScopeAsyncFlowOption.Enabled //Para Async
+            );*/
+
             await Task.CompletedTask;
         }
 
         public async Task<int> CommitAsync()
         {
-            // CORREÇÃO: Chama o SaveChangesAsync do contexto para gravar os dados
             return await _context.SaveChangesAsync();
         }
 
@@ -85,7 +101,6 @@ namespace SaleCarWebPage_Project.Repo
             if (!_disposed)
             {
                 _scope?.Dispose();
-                _context.Dispose(); // Garante que o contexto é libertado
                 _disposed = true;
             }
             GC.SuppressFinalize(this);

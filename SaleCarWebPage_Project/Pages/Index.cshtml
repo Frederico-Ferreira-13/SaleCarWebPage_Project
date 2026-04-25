@@ -6,7 +6,8 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/pages/car_card.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/pages/index.css" asp-append-version="true" />    
+    <link rel="stylesheet" href="~/css/pages/favoritesBottom.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/index.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 }
 
@@ -93,7 +94,7 @@
                                 <p><ion-icon name="speedometer-outline"></ion-icon> @car.Kilometers km • @car.Year</p>
 
                                 <div class="d-flex gap-2 mt-3">
-                                    <a href="/Cars/Details/@car.CarId" class="btn-view" style="flex: 1; text-align: center;">Ver Detalhes</a>
+                                    <a href="/viewCar/@car.CarId" class="btn-view" style="flex: 1; text-align: center;">Ver Detalhes</a>
 
                                     @* Lógica de Interação: Mensagem só para logados *@
                                     @if (User.Identity.IsAuthenticated)

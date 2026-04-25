@@ -7,7 +7,10 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/pages/viewCar.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/favoritesBottom.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/messageBox.css" asp-append-version="true" />
 }
+
 
 <main class="car-view-container">
     <div class="car-main-layout">
@@ -71,47 +74,14 @@
             </div>
 
             <div class="quick-specs-grid">
-                @* Ano *@
-                <div class="q-spec">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <div>
-                        <label>Ano</label>
-                        <span>@Model.Car?.Year</span>
-                    </div>
-                </div>
-
-                @* Kms *@
-                <div class="q-spec">
-                    <i class="fa-solid fa-gauge-high"></i>
-                    <div>
-                        <label>Quilómetros</label>
-                        <span>@Model.Car?.Kilometers.ToString("N0") km</span>
-                    </div>
-                </div>
-
-                @* Fuel *@
-                <div class="q-spec">
-                    <i class="fa-solid fa-gas-pump"></i>
-                    <div>
-                        <label>Combustível</label>
-                        <span>@Model.Car?.TypeOfFuel</span>
-                    </div>
-                </div>
-
-                @* Transmission *@
-                <div class="q-spec">
-                    <i class="fa-solid fa-circle-dot"></i>
-                    <div>
-                        <label>Caixa</label>
-                        <span>@Model.Car?.Transmission</span>
-                    </div>
-                </div>
+                <div class="q-spec"><i class="fa-solid fa-calendar-check"></i> <div><label>Ano</label><span>@Model.Car?.Year</span></div></div>
+                <div class="q-spec"><i class="fa-solid fa-gauge-high"></i> <div><label>Kms</label><span>@Model.Car?.Kilometers.ToString("N0") km</span></div></div>
+                <div class="q-spec"><i class="fa-solid fa-gas-pump"></i> <div><label>Combustível</label><span>@Model.Car?.TypeOfFuel</span></div></div>
+                <div class="q-spec"><i class="fa-solid fa-circle-dot"></i> <div><label>Caixa</label><span>@Model.Car?.Transmission</span></div></div>
             </div>
-
-            @* Card do Vendedor (Provider + User) *@
+            
             <div class="seller-card">
-                <div class="seller-header">
-                    @* Se tiveres foto de user no futuro, entra aqui *@
+                <div class="seller-header">                   
                     <div class="seller-avatar-init">@Model.Car?.Provider?.NameProvider.Substring(0, 1)</div>
                     <div class="seller-meta">
                         <span class="seller-type">Vendedor Profissional</span>
@@ -124,39 +94,70 @@
                     <p class="company-name"><i class="fa-solid fa-building"></i> @Model.Car?.Provider?.CompanyName</p>
                 }
 
-                <div class="message-box-wrapper">
-                    <div class="message-header">
-                        <h4><i class="fa-solid fa-paper-plane"></i> Contactar Vendedor</h4>
-                    </div>
-
-                    <form method="post" asp-page-handler="SendMessage">
-                        @* Assunto automático com o nome do carro *@
-                        <div class="msg-input-group">
-                            <label>Assunto</label>
-                            <input type="text" name="Subject" class="msg-control"
-                                   value="Interesse no @Model.Car?.Model?.Brand?.BrandName @Model.Car?.Model?.ModelName" readonly />
-                        </div>
-
-                        <div class="msg-input-group">
-                            <label>Sua Mensagem</label>
-                            <textarea name="MessageText" class="msg-control"
-                                      placeholder="Escreva aqui as suas questões sobre este veículo..."></textarea>
-                        </div>
-
-                        <button type="submit" class="btn-msg">
-                            <i class="fa-solid fa-share"></i> Enviar Proposta
-                        </button>
-                    </form>
-                </div>
+                <partial name="_messageBox" model="Model.MessageBoxData" />
             </div>
 
-            <div class="favorite-action">
-                <button class="btn-fav">
-                    <i class="@(Model.Car?.IsFavorite == true ? "fa-solid" : "fa-regular") fa-heart"></i>
-                    Adicionar aos Favoritos (@Model.Car?.FavoriteCount)
+            <div class="favorite-action-premium">
+                <button class="btn-garage @(Model.Car?.IsFavorite == true ? "is-in-garage" : "")"
+                        onclick="toggleGarage(@Model.Car?.CarId, this)">
+                    <i class="@(Model.Car?.IsFavorite == true ? "fa-solid fa-gem" : "fa-regular fa-gem")"></i>
+                    <span class="fav-text">
+                        @(Model.Car?.IsFavorite == true ? "Na minha Garagem" : "Guardar na Garagem")
+                    </span>
                 </button>
             </div>
         </aside>
 
     </div>
 </main>
+
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script>
+        async function toggleGarage(carId, btn) {
+            // Verifica se o utilizador está logado antes de tentar o AJAX
+            const isAuthenticated = @(User.Identity.IsAuthenticated.ToString().ToLower());
+
+            if (!isAuthenticated) {
+                toastr.warning("Por favor, faça login para guardar carros nos seus favoritos.");
+                setTimeout(() => { window.location.href = '/auth'; }, 2000);
+                return;
+            }
+
+            if (carId <= 0) return;
+
+            try {
+                const response = await fetch(`?handler=ToggleFavorite&carId=${carId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    }
+                });
+
+                if (response.ok) {
+                    const icon = btn.querySelector('i');
+                    btn.classList.toggle('is-in-garage');
+
+                    if (btn.classList.contains('is-in-garage')) {
+                        icon.classList.replace('fa-regular', 'fa-solid');
+                        toastr.success("Adicionado aos favoritos!");
+                    } else {
+                        icon.classList.replace('fa-solid', 'fa-regular');
+                        toastr.info("Removido dos favoritos.");
+                    }
+                }
+            } catch (error) {
+                console.error("Erro na ligação:", error);
+            }
+        }
+
+                document.addEventListener("DOMContentLoaded", function() {
+            const chatContainer = document.getElementById("chat-container");
+            if (chatContainer) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        });
+    </script>
+}
