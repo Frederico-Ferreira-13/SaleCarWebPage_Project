@@ -64,6 +64,7 @@
                 @foreach (var car in Model.Cars)
                 {
                     <div class="car-card">
+                        @* 1. Botão de Favoritos (Gem) *@
                         <div class="premium-garage-wrapper">
                             <button class="btn-garage @(car.IsFavorite ? "is-in-garage" : "")"
                                     onclick="toggleGarage(@car.CarId, this)">
@@ -71,10 +72,12 @@
                             </button>
                         </div>
 
+                        @* 2. Imagem *@
                         <div class="card-image">
                             <img src="@(string.IsNullOrEmpty(car.ImageUrl) ? "/img/no-car.png" : car.ImageUrl)" alt="Carro">
                         </div>
 
+                        @* 3. Info do Carro *@
                         <div class="card-info">
                             <div class="card-header">
                                 <h3>@(car.Model?.Brand?.BrandName) @(car.Model?.ModelName)</h3>
@@ -85,10 +88,25 @@
                                 <p><i class="fa-solid fa-location-dot"></i> @(car.Provider?.Address?.City ?? "Portugal")</p>
                                 <p><i class="fa-solid fa-gauge-high"></i> @car.Kilometers.ToString("N0") km • @car.Year</p>
 
-                                <div class="card-actions">
-                                    <a href="/viewCar/@car.CarId" class="btn-card-primary">
+                                @* 4. Ações (Aqui é onde devem estar os botões) *@
+                                <div class="card-actions" style="display: flex; gap: 5px; margin-top: 15px;">
+                                    <a href="/viewCar/@car.CarId" class="btn-card-primary" style="flex: 1;">
                                         <i class="fa-solid fa-eye"></i> Detalhes
-                                    </a>                                    
+                                    </a>
+
+                                    @{
+                                        var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                                        bool isAdmin = User.IsInRole("1");
+                                        bool isOwner = currentUserId != null && car.ProviderId.ToString() == currentUserId;
+                                    }
+
+                                    @if (isAdmin || isOwner)
+                                    {
+                                        <a href="/editSaleCar/@car.CarId" class="btn-card-edit" title="Editar Anúncio"
+                                               style="background: #d4af37; color: black; padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                    }
                                 </div>
                             </div>
                         </div>

@@ -73,6 +73,24 @@ namespace Core.Model
             CreatedAt = DateTime.UtcNow;
         }
 
+        public void UpdateDetails(int carModelId, string typeOfFuel, string carColor, decimal carTare,
+                          string? transmission, string? category, decimal carPrice,
+                          string plateNumber, int year, int kilometers)
+        {
+            CarModelId = carModelId;
+            TypeOfFuel = typeOfFuel;
+            CarColor = carColor;
+            CarTare = carTare;
+            Transmission = transmission;
+            Category = category;
+            CarPrice = carPrice;
+            PlateNumber = plateNumber;
+            Year = year;
+            Kilometers = kilometers;
+
+            SetLastUpdatedAt(); // Método que já tens para atualizar a data
+        }
+
         // --- MÉTODOS OBRIGATÓRIOS (CORREÇÃO DO ERRO CS0535) ---
 
         public void Deactivate()

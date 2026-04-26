@@ -23,6 +23,8 @@ namespace SaleCarWebPage_Project.Pages
 
         public Car Car { get; set; } = default!;
 
+        public bool CanEdit { get; set; }
+
         [BindProperty]
         public string MessageText { get; set; } = string.Empty;
 
@@ -57,6 +59,8 @@ namespace SaleCarWebPage_Project.Pages
             }
 
             Car = result.Value;
+
+            CanEdit = User.IsInRole("1") || (currentUserId.HasValue && Car.ProviderId == currentUserId.Value);
 
             MessageBoxData = new _messageBoxModel
             {

@@ -1,4 +1,98 @@
-﻿@page
+﻿@page "{id:int}"
 @model SaleCarWebPage_Project.Pages.editSaleCarModel
 @{
+    ViewData["Title"] = "Editar Anúncio Premium";
 }
+
+@section Styles {
+    @* Reutilizamos o CSS da SaleCar para manter a consistência *@
+    <link rel="stylesheet" href="~/css/pages/saleCar.css" asp-append-version="true" />
+}
+
+<div class="sale-container">
+    <div class="luxury-form-card">
+        <div class="form-header">
+            <span class="badge-edit">MODO EDIÇÃO</span>
+            <h3>@Model.CarToEdit.Model?.Brand?.BrandName @Model.CarToEdit.Model?.ModelName</h3>
+            <p style="color: #888;">Atualize os detalhes do seu anúncio exclusivo.</p>
+        </div>
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="CarToEdit.CarId" />
+
+            <div class="form-section-title">Informação Principal</div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Marca</label>
+                    <select asp-for="CarToEdit.Model.BrandId" class="form-control input-premium" asp-items="Model.BrandList">
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Modelo (Texto)</label>
+                    <input type="text" asp-for="CarToEdit.Model.ModelName" class="form-control input-premium" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label>Ano</label>
+                    <input asp-for="CarToEdit.Year" class="form-control input-premium" type="number" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Preço Atual (€)</label>
+                    <input asp-for="CarToEdit.CarPrice" class="form-control input-premium" type="number" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Categoria</label>
+                    <input asp-for="CarToEdit.Category" class="form-control input-premium" placeholder="Ex: Sedan, SUV..." />
+                </div>
+            </div>
+
+            <div class="form-section-title">Especificações Técnicas</div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label>Combustível</label>
+                    <select asp-for="CarToEdit.TypeOfFuel" class="form-control input-premium" asp-items="Model.FuelList"></select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Transmissão</label>
+                    <select asp-for="CarToEdit.Transmission" class="form-control input-premium" asp-items="Model.TransmissionList"></select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Quilómetros (Km)</label>
+                    <input asp-for="CarToEdit.Kilometers" class="form-control input-premium" type="number" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Matrícula</label>
+                    <input asp-for="CarToEdit.PlateNumber" class="form-control input-premium" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Cor Exterior</label>
+                    <input asp-for="CarToEdit.CarColor" class="form-control input-premium" />
+                </div>
+            </div>
+
+            <div class="form-section-title">Visual</div>
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label>URL da Imagem Principal</label>
+                    <input asp-for="CarToEdit.ImageUrl" class="form-control input-premium" />
+                    <div class="mt-2 text-center">
+                        <img src="@Model.CarToEdit.ImageUrl" style="max-width: 200px; border-radius: 10px; border: 1px solid #d4af37;" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="edit-actions-row">
+                <a href="/viewCar/@Model.CarToEdit.CarId" class="btn-cancel">Cancelar</a>
+                <button type="submit" class="btn-publish-luxury">
+                    Guardar Alterações
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

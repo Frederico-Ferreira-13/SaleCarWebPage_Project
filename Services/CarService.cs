@@ -161,6 +161,46 @@ namespace Services
             }
         }
 
+        public async Task<Result<Car>> UpdateCarAsync(int carId, Car updatedCar)
+        {
+            var existingCar = await _unitOfWork.Cars.GetByIdAsync(carId);
+            if (existingCar == null)
+                return Result<Car>.Failure(Error.NotFound(ErrorCodes.NotFound, "Carro não encontrado para atualização."));
+
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                // Usar o método de atualização interno da Entidade Client
+                existingCar.UpdateDetails(
+                    updatedCar.CarModelId,
+                    updatedCar.TypeOfFuel,
+                    updatedCar.CarColor,
+                    updatedCar.CarTare,
+                    updatedCar.Transmission,
+                    updatedCar.Category,
+                    updatedCar.CarPrice,
+                    updatedCar.PlateNumber,
+                    updatedCar.Year,
+                    updatedCar.Kilometers
+                );
+
+                if (!string.IsNullOrEmpty(updatedCar.ImageUrl))
+                {
+                    existingCar.SetImageUrl(updatedCar.ImageUrl);
+                }
+
+                await _unitOfWork.Cars.UpdateAsync(existingCar);
+                await _unitOfWork.CommitAsync();
+
+                return Result<Car>.Success(existingCar);
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return Result<Car>.Failure(Error.InternalServer($"Erro ao atualizar Carro: {ex.Message}"));
+            }
+        }
+
         public async Task<Result> ApproveCarAsync(int carId)
         {
             var car = await _unitOfWork.Cars.GetByIdAsync(carId);

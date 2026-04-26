@@ -74,10 +74,34 @@
             </div>
 
             <div class="quick-specs-grid">
-                <div class="q-spec"><i class="fa-solid fa-calendar-check"></i> <div><label>Ano</label><span>@Model.Car?.Year</span></div></div>
-                <div class="q-spec"><i class="fa-solid fa-gauge-high"></i> <div><label>Kms</label><span>@Model.Car?.Kilometers.ToString("N0") km</span></div></div>
-                <div class="q-spec"><i class="fa-solid fa-gas-pump"></i> <div><label>Combustível</label><span>@Model.Car?.TypeOfFuel</span></div></div>
-                <div class="q-spec"><i class="fa-solid fa-circle-dot"></i> <div><label>Caixa</label><span>@Model.Car?.Transmission</span></div></div>
+                <div class="q-spec">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <div>
+                        <label>Ano</label>
+                        <span class="spec-value"> @Model.Car?.Year</span>
+                    </div>
+                </div>
+                <div class="q-spec">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <div>
+                        <label>Kms</label>
+                        <span class="spec-value"> @Model.Car?.Kilometers.ToString("N0") km</span>
+                    </div>
+                </div>
+                <div class="q-spec">
+                    <i class="fa-solid fa-gas-pump"></i>
+                    <div>
+                        <label>Combustível</label>
+                        <span class="spec-value"> @Model.Car?.TypeOfFuel</span>
+                    </div>
+                </div>
+                <div class="q-spec">
+                    <i class="fa-solid fa-circle-dot"></i>
+                    <div>
+                        <label>Caixa</label>
+                        <span class="spec-value"> @Model.Car?.Transmission</span>
+                    </div>
+                </div>
             </div>
             
             <div class="seller-card">
@@ -112,7 +136,18 @@
                         @(Model.Car?.IsFavorite == true ? "Na minha Garagem" : "Guardar na Garagem")
                     </span>
                 </button>
-            </div>
+            </div>            
+
+            @if (Model.CanEdit)
+            {
+                <div class="edit-mode-notice" style="margin-bottom: 15px;">
+                    <a href="/editSaleCar/@Model.Car?.CarId" class="btn-gold-action"
+                           style="background: linear-gradient(45deg, #d4af37, #f2d06b); color: #000; width: 100%; display: block; text-align: center; font-weight: bold;">
+                        <i class="fa-solid fa-gears"></i> CONFIGURAR ANÚNCIO
+                    </a>
+                </div>
+            }
+
         </aside>
     </div>
 </main>

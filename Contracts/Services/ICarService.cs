@@ -19,6 +19,7 @@ namespace Contracts.Services
             int? modelId, string? fuelType, string? transmission, int page, int pageSize);
 
         Task<Result<Car>> CreateCarAsync(Car newCar);
+        Task<Result<Car>> UpdateCarAsync(int carId, Car updatedCar);
 
         Task<Result> ApproveCarAsync(int carId);
 
@@ -34,6 +35,7 @@ namespace Contracts.Services
         Task<bool> IsCarFavoriteAsync(int carId, int userId);
         Task<Result> UpsertCarRatingAsync(int carId, int userId, int rating);
         Task<Result<double>> GetAverageRatingAsync(int carId);
+        
 
         // CORREÇÃO: Adicionado o parâmetro userId para sabermos de quem é o favorito
         Task<Result<bool>> ToggleFavoriteAsync(int carId, int userId);
