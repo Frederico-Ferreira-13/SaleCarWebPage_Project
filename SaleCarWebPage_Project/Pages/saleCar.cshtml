@@ -18,6 +18,29 @@
         <form method="post">
             @Html.AntiForgeryToken()
 
+            <div class="form-section-title">Dados do Vendedor & Faturamento</div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Nome da Empresa / Profissional</label>
+                    <input type="text" class="form-control input-premium" placeholder="Ex: Stand Luxury S.A." />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>NIF (Número de Contribuinte)</label>
+                    <input type="text" class="form-control input-premium" placeholder="Ex: 500123456" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label>Telemóvel de Contacto</label>
+                    <input type="tel" class="form-control input-premium" placeholder="+351 912 ..." />
+                </div>
+                <div class="col-md-8 mb-3">
+                    <label>Morada de Exibição do Veículo</label>
+                    <input type="text" class="form-control input-premium" placeholder="Rua, Cidade, Código Postal" />
+                </div>
+            </div>
+
             <div class="form-section-title">Informação Principal</div>
             <div class="row">
                 <div class="col-md-6 mb-3">

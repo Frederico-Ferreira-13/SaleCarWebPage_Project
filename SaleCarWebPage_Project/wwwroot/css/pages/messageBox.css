@@ -1,10 +1,12 @@
 ﻿/* --- messageBox.css --- */
 .message-box-wrapper {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(212, 175, 55, 0.15);
-    border-radius: 15px;
-    padding: 25px;
+    background: rgba(15, 15, 15, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 20px;
+    padding: 30px;
     margin-top: 30px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
 }
 
 .message-header {
@@ -15,92 +17,170 @@
 
 .message-header h4 {
     color: #d4af37;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    margin: 0;
 }
 
-/* Campos de Input de Mensagem */
-.msg-input-group {
+.header-subtitle {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 5px;
+}
+
+/ /* --- Área de Chat --- */
+.chat-conversation {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 10px;
     margin-bottom: 20px;
+}
+
+/* Personalização da Scrollbar */
+.chat-conversation::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chat-conversation::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.3);
+    border-radius: 10px;
+}
+
+.empty-chat {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.empty-chat i {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    display: block;
+}
+
+/* --- Balões de Mensagem --- */
+.chat-bubble {
+    padding: 14px 18px;
+    border-radius: 18px;
+    max-width: 85%;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    position: relative;
+}
+
+.bubble-sender {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    align-self: flex-end;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+.bubble-receiver {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    align-self: flex-start;
+    color: #e0e0e0;
+    border-bottom-left-radius: 4px;
+}
+
+.msg-date {
+    display: block;
+    font-size: 0.7rem;
+    opacity: 0.5;
+    margin-top: 8px;
+    text-align: right;
+}
+
+/* --- Área de Input e Botão --- */
+.chat-input-area {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .msg-input-group label {
     display: block;
-    color: #888;
-    font-size: 0.8rem;
-    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
 }
 
 .msg-control {
     width: 100%;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 12px;
+    border-radius: 12px;
+    padding: 15px;
     color: #fff;
     font-family: inherit;
-    transition: all 0.3s ease;
+    resize: none;
+    min-height: 100px;
+    transition: 0.3s;
 }
 
 .msg-control:focus {
     outline: none;
     border-color: #d4af37;
     background: rgba(212, 175, 55, 0.05);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
 }
 
-textarea.msg-control {
-    resize: none;
-    min-height: 120px;
-}
-
-/* Balões de Mensagem (Para histórico se necessário) */
-.chat-bubble {
-    padding: 12px 18px;
-    border-radius: 15px;
-    margin-bottom: 10px;
-    max-width: 80%;
-    font-size: 0.9rem;
-    line-height: 1.4;
-}
-
-.bubble-sender {
-    background: rgba(212, 175, 55, 0.1);
-    border: 1px solid rgba(212, 175, 55, 0.2);
-    align-self: flex-end;
-    color: #fff;
-    border-bottom-right-radius: 2px;
-}
-
-.bubble-receiver {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    align-self: flex-start;
-    color: #ccc;
-    border-bottom-left-radius: 2px;
-}
-
-.msg-date {
-    display: block;
-    font-size: 0.7rem;
-    color: #666;
-    margin-top: 5px;
-}
-
-/* Status de Leitura */
-.read-status {
-    font-size: 0.8rem;
-    color: #d4af37;
+/* BOTÃO PREMIUM (SILVER/METALLIC) */
+.btn-gold-action {
+    width: 100%;
+    background: var(--silver-gradient); /* Vem do teu styles.css */
+    color: #0d0d0d !important;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.85rem;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 4px;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.deleted-msg {
-    font-style: italic;
-    color: #ff4d4d;
-    opacity: 0.6;
+.btn-gold-action:hover {
+    background: var(--silver-hover); /* Vem do teu styles.css */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+}
+
+.btn-gold-action i {
+    transition: 0.3s;
+}
+
+.btn-gold-action:hover i {
+    transform: translateX(5px) rotate(-10deg);
+}
+
+.login-prompt-msg {
+    text-align: center;
+    padding: 20px;
+    background: rgba(212, 175, 55, 0.05);
+    border: 1px dashed rgba(212, 175, 55, 0.3);
+    border-radius: 12px;
+}
+
+.login-prompt-msg a {
+    color: #d4af37;
+    text-decoration: none;
+    font-weight: 700;
 }

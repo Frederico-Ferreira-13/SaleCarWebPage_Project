@@ -81,7 +81,7 @@
             </div>
             
             <div class="seller-card">
-                <div class="seller-header">                   
+                <div class="seller-header">
                     <div class="seller-avatar-init">@Model.Car?.Provider?.NameProvider.Substring(0, 1)</div>
                     <div class="seller-meta">
                         <span class="seller-type">Vendedor Profissional</span>
@@ -93,6 +93,13 @@
                 {
                     <p class="company-name"><i class="fa-solid fa-building"></i> @Model.Car?.Provider?.CompanyName</p>
                 }
+
+                @* Botão de Proposta *@
+                <div class="offer-container" style="margin: 20px 0;">
+                    <button type="button" class="btn-make-offer" data-bs-toggle="modal" data-bs-target="#offerModal">
+                        <i class="fa-solid fa-hand-holding-dollar"></i> FAZER PROPOSTA OFICIAL
+                    </button>
+                </div>
 
                 <partial name="_messageBox" model="Model.MessageBoxData" />
             </div>
@@ -107,9 +114,44 @@
                 </button>
             </div>
         </aside>
-
     </div>
 </main>
+
+@* MODAL DE PROPOSTA (Fora do main para evitar conflitos de z-index) *@
+<div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content luxury-modal">
+            <div class="modal-header" style="border-bottom: 1px solid rgba(212, 175, 55, 0.2);">
+                <h5 class="modal-title" id="offerModalLabel" style="color: #d4af37; letter-spacing: 2px;">FORMALIZAR PROPOSTA</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="padding: 30px;">
+                <div class="mb-4">
+                    <label class="form-label" style="color: #888; font-size: 0.8rem; text-transform: uppercase;">Valor da Oferta (€)</label>
+                    <input type="number" id="offerValue" class="form-control input-premium" value="@Model.Car?.CarPrice" style="font-size: 1.5rem; font-weight: 700; color: #d4af37 !important;">
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" style="color: #888; font-size: 0.8rem; text-transform: uppercase;">O seu NIF</label>
+                        <input type="text" id="offerNif" class="form-control input-premium" placeholder="250 000 000">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" style="color: #888; font-size: 0.8rem; text-transform: uppercase;">Contacto</label>
+                        <input type="tel" id="offerContact" class="form-control input-premium" placeholder="912 345 678">
+                    </div>
+                </div>
+                <p style="font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-top: 15px;">
+                    * Ao submeter, o vendedor receberá uma notificação oficial com os seus dados para análise.
+                </p>
+            </div>
+            <div class="modal-footer" style="border-top: none; padding-bottom: 30px;">
+                <button type="button" class="btn-gold-action" style="margin: 0 auto; min-width: 200px;" onclick="submitOffer()">
+                    SUBMETER OFERTA
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @Html.AntiForgeryToken()
 
@@ -159,5 +201,20 @@
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }
         });
+
+        function submitOffer() {
+            const value = document.getElementById("offerValue").value;
+            const nif = document.getElementById("offerNif").value;
+            const contact = document.getElementById("offerContact").value;
+
+            if(!nif || !value || !contact) {
+                toastr.error("Por favor, preencha todos os campos da proposta.");
+                return;
+            }
+
+            // Aqui farias o teu POST para o servidor
+            toastr.success("Proposta enviada com sucesso!");
+            bootstrap.Modal.getInstance(document.getElementById('offerModal')).hide();
+        }
     </script>
 }

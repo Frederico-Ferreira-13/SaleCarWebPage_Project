@@ -12,12 +12,13 @@
 }
 
 <div class="home-container">
+    @* --- SECÇÃO DE FILTROS --- *@
     <form method="get">
         <section class="search-section">
             <div class="search-container">
                 <div class="main-search">
-                    <ion-icon name="search-outline" style="color: white;"></ion-icon>
-                    <input type="text" asp-for="SearchTerm" placeholder="Pesquise por modelo (ex: Ferrari 488)..." style="color: white; background: transparent; border: none; outline: none; width: 100%;" />
+                    <i class="fa-solid fa-magnifying-glass" style="color: var(--silver-main); margin-left: 15px;"></i>
+                    <input type="text" asp-for="SearchTerm" placeholder="Pesquise por modelo (ex: Ferrari 488)..." />
                     <button type="submit" class="btn-premium">Procurar</button>
                 </div>
 
@@ -48,17 +49,12 @@
                             <option value="">Todas as Caixas</option>
                         </select>
                     </div>
-                    <div class="filter-group">
-                        <label>Tipo</label>
-                        <select asp-for="CarType" asp-items="Model.TypeList" onchange="this.form.submit()">
-                            <option value="">Todos os Estilos</option>
-                        </select>
-                    </div>
                 </div>
             </div>
         </section>
     </form>
 
+    @* --- GRID DE CARROS --- *@
     <section class="cars-display">
         <h2 class="section-title">Destaques Premium</h2>
 
@@ -69,7 +65,6 @@
                 {
                     <div class="car-card">
                         <div class="premium-garage-wrapper">
-                            @* O botão de favorito só funciona se logado, caso contrário avisa no JS *@
                             <button class="btn-garage @(car.IsFavorite ? "is-in-garage" : "")"
                                     onclick="toggleGarage(@car.CarId, this)">
                                 <i class="@(car.IsFavorite ? "fa-solid fa-gem" : "fa-regular fa-gem")"></i>
@@ -77,49 +72,28 @@
                         </div>
 
                         <div class="card-image">
-                            <img src="@car.ImageUrl" alt="Car Image">
+                            <img src="@(string.IsNullOrEmpty(car.ImageUrl) ? "/img/no-car.png" : car.ImageUrl)" alt="Carro">
                         </div>
 
                         <div class="card-info">
                             <div class="card-header">
                                 <h3>@(car.Model?.Brand?.BrandName) @(car.Model?.ModelName)</h3>
-                                <span class="price">@car.CarPrice.ToString("N0")€</span>
+                                <span class="price">@car.CarPrice.ToString("N0") €</span>
                             </div>
 
                             <div class="card-details">
-                                <p>
-                                    <ion-icon name="location-outline"></ion-icon>
-                                    @(car.Provider?.Address?.City ?? "Portugal")
-                                </p>
-                                <p><ion-icon name="speedometer-outline"></ion-icon> @car.Kilometers km • @car.Year</p>
+                                <p><i class="fa-solid fa-location-dot"></i> @(car.Provider?.Address?.City ?? "Portugal")</p>
+                                <p><i class="fa-solid fa-gauge-high"></i> @car.Kilometers.ToString("N0") km • @car.Year</p>
 
-                                <div class="d-flex gap-2 mt-3">
-                                    <a href="/viewCar/@car.CarId" class="btn-view" style="flex: 1; text-align: center;">Ver Detalhes</a>
-
-                                    @* Lógica de Interação: Mensagem só para logados *@
-                                    @if (User.Identity.IsAuthenticated)
-                                    {
-                                        <a asp-page="/Messages/Create" asp-route-carId="@car.CarId" class="btn-view" style="background: #d4af37; color: black;">
-                                            <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <a asp-page="/auth" class="btn-view" style="background: #333; opacity: 0.7;" title="Faça login para contactar">
-                                            <ion-icon name="lock-closed-outline"></ion-icon>
-                                        </a>
-                                    }
+                                <div class="card-actions">
+                                    <a href="/viewCar/@car.CarId" class="btn-card-primary">
+                                        <i class="fa-solid fa-eye"></i> Detalhes
+                                    </a>                                    
                                 </div>
                             </div>
                         </div>
                     </div>
                 }
-            }
-            else
-            {
-                <div class="no-results">
-                    <p>Nenhum carro encontrado com os critérios selecionados.</p>
-                </div>
             }
         </div>
     </section>
