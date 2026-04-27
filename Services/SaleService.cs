@@ -2,6 +2,7 @@
 using Contracts.Services;
 using Core.Common;
 using Core.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,20 @@ namespace Services
         public SaleService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        }
+
+        public async Task<Result> AddAsync(Sale sale)
+        {
+            try
+            {
+                await _unitOfWork.Sales.AddAsync(sale);
+                await _unitOfWork.CommitAsync();
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(Error.InternalServer($"Erro ao guardar proposta: {ex.Message}"));
+            }
         }
 
         public async Task<Result> MarkAsSoldAsync(int carId, int clientId, decimal finalPrice)

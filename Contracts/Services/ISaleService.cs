@@ -10,6 +10,8 @@ namespace Contracts.Services
 {
     public interface ISaleService
     {
+        Task<Result> AddAsync(Sale sale);
+
         Task<Result> MarkAsSoldAsync(int carId, int clientId, decimal finalPrice);
 
         Task<Result<IEnumerable<Car>>> GetSoldInventoryAsync(int providerId);

@@ -117,36 +117,36 @@
     gap: 12px;
 }
 
-    .q-spec i {
-        color: #d4af37;
-        font-size: 1.3rem;
-        width: 25px;
-        text-align: center;
-        filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));
-    }
+.q-spec i {
+    color: #d4af37;
+    font-size: 1.3rem;
+    width: 25px;
+    text-align: center;
+    filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));
+}
 
-    .q-spec div {
-        display: flex;
-        flex-direction: column;
-    }
+.q-spec div {
+    display: flex;
+    flex-direction: column;
+}
 
-    .q-spec label {
-        font-size: 0.7rem;
-        color: var(--silver-main);
-        text-transform: uppercase;
-        margin-bottom: 2px;
-        display: block;
-        letter-spacing: 1px;
-        opacity: 0.7;
-    }
+.q-spec label {
+    font-size: 0.7rem;
+    color: var(--silver-main);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+    display: block;
+    letter-spacing: 1px;
+    opacity: 0.7;
+}
 
-    .q-spec .spec-value {
-        color: #fff;
-        font-weight: 700;
-        font-size: 1rem;
-        text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
-        letter-spacing: 0.5px;
-    }
+.q-spec .spec-value {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.5px;
+}
 
 /* --- Seller Card --- */
 .seller-card {
@@ -205,10 +205,10 @@
     transition: all 0.3s ease;
 }
 
-    .btn-make-offer:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
-    }
+.btn-make-offer:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+}
 
 .btn-gold-action {
     text-decoration: none;
@@ -217,10 +217,61 @@
     transition: 0.3s;
 }
 
-    .btn-gold-action:hover {
-        filter: brightness(1.1);
-        transform: scale(1.02);
-    }
+.btn-gold-action:hover {
+    filter: brightness(1.1);
+    transform: scale(1.02);
+}
+
+/* --- LUXURY & PROPOSAL STYLES --- */
+.luxury-modal {
+    background: #0f0f0f;
+    border: 1px solid #d4af37;
+    border-radius: 20px;
+    color: #fff;
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.1); /* Um brilho extra no modal */
+}
+
+.input-premium {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease; /* Transição suave no foco */
+}
+
+.input-premium:focus {
+    border-color: #d4af37 !important;
+    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+    background: rgba(255, 255, 255, 0.07) !important;
+}
+
+/* --- Estilo das Propostas (Visão do Dono) --- */
+.proposal-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 12px;
+    border-left: 4px solid #d4af37;
+    transition: all 0.3s ease;
+}
+
+.proposal-item:hover {
+    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: -5px 0 15px rgba(212, 175, 55, 0.1);
+}
+
+.proposal-item p {
+    margin-bottom: 5px;
+    color: #fff;
+}
+
+.proposal-item small {
+    display: block;
+    color: #888;
+    font-size: 0.8rem;
+}
 
 /* --- Responsividade --- */
 @media (max-width: 992px) {

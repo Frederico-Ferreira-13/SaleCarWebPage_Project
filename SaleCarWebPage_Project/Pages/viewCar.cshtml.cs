@@ -13,12 +13,15 @@ namespace SaleCarWebPage_Project.Pages
         private readonly ICarService _carServices;
         private readonly IMessageBoxService _messageService;
         private readonly ITokenService _tokenService;
+        private readonly ISaleService _saleService;
 
-        public viewCarModel(ICarService carServices, IMessageBoxService messageService, ITokenService tokenService)
+        public viewCarModel(ICarService carServices, IMessageBoxService messageService, ITokenService tokenService, 
+            ISaleService saleService)
         {
             _carServices = carServices;
             _messageService = messageService;
             _tokenService = tokenService;
+            _saleService = saleService;
         }
 
         public Car Car { get; set; } = default!;
@@ -62,35 +65,19 @@ namespace SaleCarWebPage_Project.Pages
 
             CanEdit = User.IsInRole("1") || (currentUserId.HasValue && Car.ProviderId == currentUserId.Value);
 
-            MessageBoxData = new _messageBoxModel
-            {
-                CarId = id,
-                ProviderId = Car.ProviderId,
-                ChatHistory = currentUserId.HasValue
-                    ? (await _messageService.GetChatHistoryAsync(id, currentUserId.Value, Car.ProviderId)).Value?.ToList() ?? new List<MessageBox>()
-                    : new List<MessageBox>()
-
-            };
-
             if (currentUserId.HasValue)
             {
                 var historyResult = await _messageService.GetChatHistoryAsync(id, currentUserId.Value, Car.ProviderId);
-
                 MessageBoxData = new _messageBoxModel
                 {
                     CarId = id,
                     ProviderId = Car.ProviderId,
                     ChatHistory = historyResult.Value?.ToList() ?? new List<MessageBox>()
                 };
-
-                Console.WriteLine($"\n--- DEBUG GET CHAT ---");
-                Console.WriteLine($"Utilizador Atual: {currentUserId.Value}");
-                Console.WriteLine($"Mensagens encontradas: {MessageBoxData.ChatHistory.Count}");
-
-                foreach (var m in MessageBoxData.ChatHistory)
-                {
-                    Console.WriteLine($"Msg: {m.MessageText} | De: {m.SenderId} | Em: {m.SentDate}");
-                }
+            }
+            else
+            {
+                MessageBoxData = new _messageBoxModel { CarId = id, ChatHistory = new List<MessageBox>() };
             }
 
             return Page();
@@ -128,6 +115,25 @@ namespace SaleCarWebPage_Project.Pages
             if (!result.IsSuccessful) Console.WriteLine($"Erro do Serviço: {result.Message}");
 
             return RedirectToPage(new { id = id });
+        }
+
+        public async Task<IActionResult> OnPostSubmitProposalAsync(int carId, decimal offerValue, string contact)
+        {
+            var userIdResult = await _tokenService.GetUserIdFromContextAsync();
+            if (!userIdResult.IsSuccessful) return Unauthorized();
+           
+            var novaProposta = new Sale(
+                carId,
+                userIdResult.Value,
+                DateTime.UtcNow,
+                offerValue,
+                DateTime.UtcNow,
+                "Pendente" // Ou o método de pagamento selecionado
+            );            
+            
+            await _saleService.AddAsync(novaProposta);
+
+            return RedirectToPage(new { id = carId });
         }
 
         // Handler AJAX para Favoritos (Similar ao RateOnly das receitas)

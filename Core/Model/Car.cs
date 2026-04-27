@@ -40,6 +40,7 @@ namespace Core.Model
         public bool IsFavorite { get; set; }
         [NotMapped]
         public string? Location { get; set; }
+        public List<Sale> Proposals { get; set; } = new List<Sale>();
 
         // --- NAVEGAÇÃO ---
         [ForeignKey("CarModelId")]
@@ -47,6 +48,8 @@ namespace Core.Model
 
         [ForeignKey("ProviderId")]
         public virtual Provider? Provider { get; private set; }
+
+        
 
         // --- CONSTRUTORES ---
         public Car() { }

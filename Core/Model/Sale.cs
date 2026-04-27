@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Core.Model
@@ -11,11 +12,14 @@ namespace Core.Model
         [Key]
         public int SaleId { get; private set; }
         public int CarId { get; private set; }
-        public int ClientId { get; private set; }
+        public int ClientId { get; private set; }        
         public DateTime SaleDate { get; private set; }
         public decimal FinalPrice { get; private set; }
         public DateTime PurchaseDate { get; private set; }
         public string PaymentMethod { get; private set; } = string.Empty;
+        
+        [ForeignKey("ClientId")]
+        public virtual Users? Client { get; private set; }
 
         public Sale() { }
 
