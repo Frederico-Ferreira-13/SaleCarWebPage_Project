@@ -1,4 +1,6 @@
 ﻿/* --- viewCar.css --- */
+
+/* 1. ESTRUTURA E LAYOUT */
 .car-view-container {
     max-width: 1300px;
     margin: 40px auto;
@@ -11,7 +13,7 @@
     align-items: flex-start;
 }
 
-/* Área da Esquerda */
+/* 2. ÁREA DA ESQUERDA (IMAGEM) */
 .car-content-area {
     flex: 1.6;
 }
@@ -41,8 +43,8 @@
 }
 
 .badge-approved {
-    background: #2ecc71;
-    color: white;
+    background: var(--status-approved, #2ecc71);
+    color: #000;
     padding: 6px 15px;
     border-radius: 50px;
     font-size: 0.8rem;
@@ -52,14 +54,14 @@
 .badge-category {
     background: rgba(0,0,0,0.6);
     backdrop-filter: blur(5px);
-    color: #fff;
+    color: var(--white);
     padding: 6px 15px;
     border-radius: 50px;
     font-size: 0.8rem;
     border: 1px solid rgba(255,255,255,0.2);
 }
 
-/* --- Sidebar e Cabeçalho --- */
+/* 3. SIDEBAR E INFO DO CARRO */
 .car-specs-sidebar {
     flex: 0.9;
     position: sticky;
@@ -80,7 +82,7 @@
 }
 
 .specs-header h1 {
-    color: #fff;
+    color: var(--white);
     font-size: 2.4rem;
     margin: 5px 0;
 }
@@ -100,7 +102,7 @@
     letter-spacing: -1px;
 }
 
-/* --- AJUSTE: Quick Specs Grid (Onde o texto estava colado) --- */
+/* 4. GRID DE ESPECIFICAÇÕES */
 .quick-specs-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -117,51 +119,40 @@
     gap: 12px;
 }
 
-.q-spec i {
-    color: #d4af37;
-    font-size: 1.3rem;
-    width: 25px;
-    text-align: center;
-    filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.4));
-}
+    .q-spec i {
+        color: #d4af37;
+        font-size: 1.3rem;
+        width: 25px;
+        text-align: center;
+    }
 
-.q-spec div {
-    display: flex;
-    flex-direction: column;
-}
+    .q-spec div {
+        display: flex;
+        flex-direction: column;
+    }
 
-.q-spec label {
-    font-size: 0.7rem;
-    color: var(--silver-main);
-    text-transform: uppercase;
-    margin-bottom: 2px;
-    display: block;
-    letter-spacing: 1px;
-    opacity: 0.7;
-}
+    .q-spec label {
+        font-size: 0.7rem;
+        color: var(--silver-main);
+        text-transform: uppercase;
+        margin-bottom: 2px;
+        opacity: 0.7;
+        letter-spacing: 1px;
+    }
 
-.q-spec .spec-value {
-    color: #fff;
-    font-weight: 700;
-    font-size: 1rem;
-    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
-    letter-spacing: 0.5px;
-}
+    .q-spec .spec-value {
+        color: var(--white);
+        font-weight: 700;
+        font-size: 1rem;
+    }
 
-/* --- Seller Card --- */
+/* 5. CARD DO VENDEDOR */
 .seller-card {
     background: rgba(0,0,0,0.3);
     padding: 25px;
     border-radius: 20px;
     margin-top: 25px;
     border: 1px solid rgba(255,255,255,0.05);
-}
-
-.seller-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
 }
 
 .seller-avatar-init {
@@ -177,103 +168,227 @@
     font-size: 1.4rem;
 }
 
-.seller-name {
-    display: block;
-    color: #fff;
-    font-weight: 700;
-    font-size: 1.1rem;
+/* 6. MODAL DE PROPOSTA (LUXURY SLIM) */
+.modal-sm-custom {
+    max-width: 420px;
+    margin: 1.75rem auto;
 }
 
-.seller-type {
-    display: block;
-    color: #888;
-    font-size: 0.75rem;
+.luxury-modal-slim {
+    background: linear-gradient(145deg, #1a1a1a 0%, #050505 100%);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+    position: relative;
+    overflow: hidden;
 }
 
-/* --- Botões de Ação --- */
-.btn-make-offer {
+.luxury-modal-slim::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212,175,55,0.5), transparent);
+}
+
+.btn-close-luxury {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    background: none;
+    border: none;
+    color: #d4af37;
+    font-size: 20px;
+    opacity: 0.6;
+    transition: 0.3s;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.btn-close-luxury:hover {
+    opacity: 1;
+    transform: rotate(90deg);
+}
+
+.luxury-form-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.luxury-subtitle {
+    color: #d4af37;
+    text-transform: uppercase;
+    font-size: 0.65rem;
+    letter-spacing: 4px;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.luxury-title {
+    color: #ffffff;
+    font-size: 1.6rem;
+    font-weight: 300;
+    margin: 0;
+}
+
+/* Inputs do Modal */
+.luxury-input-group {
+    margin-bottom: 20px;
+}
+
+.luxury-input-group label {
+    font-size: 0.65rem;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+    display: block;
+    padding-left: 4px;
+}
+
+.luxury-input {
     width: 100%;
-    background: linear-gradient(135deg, #d4af37 0%, #aa8928 100%);
-    color: #000 !important;
+    background: rgba(255,255,255,0.03) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: #ffffff !important;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.luxury-input:focus {
+    outline: none;
+    border-color: #d4af37 !important;
+    background: rgba(212, 175, 55, 0.05) !important;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+}
+
+/* Estilo especial para o valor principal */
+.luxury-input.main-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #d4af37 !important;
+    text-align: center;
+    background: rgba(0,0,0,0.3) !important;
+    border: 1px solid rgba(212, 175, 55, 0.2) !important;
+    margin-top: 5px;
+}
+
+/* Ajuste para as colunas de NIF e Contacto */
+.row.g-2 {
+    margin-left: -4px;
+    margin-right: -4px;
+}
+
+.row.g-2 > [class*='col-'] {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+/* Botão de Envio */
+.btn-luxury-submit {
+    width: 100%;
+    background: linear-gradient(45deg, #aa8928, #d4af37);
+    color: #000;
     border: none;
     padding: 16px;
     border-radius: 12px;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-make-offer:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
-}
-
-.btn-gold-action {
-    text-decoration: none;
-    padding: 14px;
-    border-radius: 12px;
+    letter-spacing: 1.5px;
+    margin-top: 15px;
     transition: 0.3s;
+    cursor: pointer;
 }
 
-.btn-gold-action:hover {
+.btn-luxury-submit:hover {
     filter: brightness(1.1);
-    transform: scale(1.02);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
 }
 
-/* --- LUXURY & PROPOSAL STYLES --- */
-.luxury-modal {
-    background: #0f0f0f;
-    border: 1px solid #d4af37;
-    border-radius: 20px;
-    color: #fff;
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.1); /* Um brilho extra no modal */
+.luxury-footer-text {
+    text-align: center;
+    font-size: 0.65rem;
+    color: #666;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
-.input-premium {
-    background: rgba(255, 255, 255, 0.03) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #fff !important;
-    padding: 12px;
-    border-radius: 8px;
-    transition: all 0.3s ease; /* Transição suave no foco */
+.luxury-footer-text i {
+    color: #2ecc71; /* Cor de sucesso para o ícone de escudo */
 }
 
-.input-premium:focus {
-    border-color: #d4af37 !important;
-    box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
-    background: rgba(255, 255, 255, 0.07) !important;
+.address-card {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 10px;
 }
 
-/* --- Estilo das Propostas (Visão do Dono) --- */
-.proposal-item {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 15px;
-    border-radius: 12px;
-    margin-top: 12px;
-    border-left: 4px solid #d4af37;
-    transition: all 0.3s ease;
-}
-
-.proposal-item:hover {
-    transform: translateX(5px);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: -5px 0 15px rgba(212, 175, 55, 0.1);
-}
-
-.proposal-item p {
+.address-card p {
     margin-bottom: 5px;
-    color: #fff;
+    color: var(--white);
 }
 
-.proposal-item small {
-    display: block;
-    color: #888;
-    font-size: 0.8rem;
+.address-card small {
+    color: #666;
 }
 
-/* --- Responsividade --- */
+.seller-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.seller-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.seller-type {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: #d4af37;
+    letter-spacing: 1px;
+}
+
+.seller-name {
+    font-weight: bold;
+    color: var(--white);
+}
+
+.company-name {
+    font-size: 0.85rem;
+    color: #aaa;
+    margin-bottom: 15px;
+    padding-left: 5px;
+}
+
+.proposal-item {
+    background: rgba(212, 175, 55, 0.05);
+    border-left: 3px solid #d4af37;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.prop-val {
+    color: #d4af37;
+    font-weight: bold;
+}
+
+/* 7. RESPONSIVIDADE */
 @media (max-width: 992px) {
     .car-main-layout {
         flex-direction: column;
@@ -284,7 +399,7 @@
         width: 100%;
     }
 
-    .quick-specs-grid {
-        grid-template-columns: 1fr 1fr;
+    .car-image-frame {
+        border-radius: 15px;
     }
 }

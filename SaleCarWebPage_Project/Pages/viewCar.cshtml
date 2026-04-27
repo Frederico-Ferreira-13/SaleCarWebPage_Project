@@ -182,31 +182,45 @@
 @if (!Model.CanEdit)
 {
     <div class="modal fade" id="offerModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content luxury-modal">
-                <div class="modal-header">
-                    <h5 class="modal-title">FORMALIZAR PROPOSTA</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
+        <div class="modal-dialog modal-dialog-centered modal-sm-custom">
+            <div class="modal-content luxury-modal-slim">
                 <div class="modal-body">
-                    <div class="mb-4">
-                        <label class="form-label label-caps">Valor da Oferta (€)</label>
-                        <input type="number" id="offerValue" class="form-control input-premium main-val" value="@Model.Car?.CarPrice">
+                    <button type="button" class="btn-close-luxury" data-bs-dismiss="modal">×</button>
+                    
+                    <div class="luxury-form-header">
+                        <span class="luxury-subtitle">Private Offer</span>
+                        <h2 class="luxury-title">Formalizar Proposta</h2>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label label-caps">O seu NIF</label>
-                            <input type="text" id="offerNif" class="form-control input-premium" placeholder="250000000" maxlength="9">
+
+                    <div class="luxury-input-group">
+                        <label>Valor da Oferta (€)</label>
+                        <input type="number" id="offerValue" class="luxury-input main-value"
+                               value="@Model.Car?.CarPrice"
+                               placeholder="@Model.Car?.CarPrice" step="500">
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="luxury-input-group">
+                                <label>NIF (Opcional)</label>
+                                <input type="text" id="offerNif" class="luxury-input" placeholder="000 000 000" maxlength="9">
+                            </div>
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label label-caps">Contacto</label>
-                            <input type="tel" id="offerContact" class="form-control input-premium" placeholder="912345678">
+                        <div class="col-6">
+                            <div class="luxury-input-group">
+                                <label>Contacto</label>
+                                <input type="tel" id="offerContact" class="luxury-input" placeholder="912 345 678">
+                            </div>
                         </div>
                     </div>
-                    <p class="disclaimer">* O vendedor será notificado com os seus dados.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-gold-action" onclick="submitOffer()">SUBMETER OFERTA</button>
+
+                    <button type="button" class="btn-luxury-submit" onclick="submitOffer()">
+                        ENVIAR PROPOSTA EXCLUSIVA
+                    </button>
+                    
+                    <p class="luxury-footer-text">
+                        <i class="fa-solid fa-shield-check"></i> Ligação segura e privada ao vendedor
+                    </p>
                 </div>
             </div>
         </div>
@@ -256,19 +270,23 @@
         }
 
         async function submitOffer() {
-            const value = document.getElementById("offerValue").value;
-            const contact = document.getElementById("offerContact").value;
+            // 1. Obter os elementos e valores corretamente
+            const valueEl = document.getElementById("offerValue");
+            const contactEl = document.getElementById("offerContact");
+            const nifEl = document.getElementById("offerNif");
             const carId = "@Model.Car?.CarId";
 
-            if(!value || !contact) {
-                toastr.error("Por favor, preencha o valor e o contacto.");
+            // 2. Validação simples
+            if(!valueEl.value || !contactEl.value) {
+                toastr.warning("Por favor, preencha o valor e o contacto.");
                 return;
             }
 
             const formData = new FormData();
-            formData.append("carId", carId);
-            formData.append("offerValue", value);
-            formData.append("contact", contact);
+            formData.append("carId", parseInt(carId));
+            formData.append("offerValue", valueEl.value);
+            formData.append("contact", contactEl.value);
+            formData.append("nif", nifEl.value); // Adicionado o NIF que tens no HTML
 
             try {
                 const response = await fetch(`?handler=SubmitProposal`, {
@@ -281,25 +299,19 @@
 
                 if (response.ok) {
                     toastr.success("Proposta enviada com sucesso!");
+            
                     const modalEl = document.getElementById('offerModal');
                     const modal = bootstrap.Modal.getInstance(modalEl);
                     if(modal) modal.hide();
-                    
-                    // Recarregar após o sucesso para atualizar a UI
+            
                     setTimeout(() => location.reload(), 1500);
                 } else {
-                    toastr.error("Erro ao enviar proposta. Verifique se está autenticado.");
+                    toastr.error("Não foi possível processar a oferta.");
                 }
             } catch (error) {
-                toastr.error("Erro de rede ao submeter proposta.");
+                console.error("Erro crítico:", error);
+                toastr.error("Erro de ligação ao servidor.");
             }
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            const chatContainer = document.getElementById("chat-container");
-            if (chatContainer) {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }
-        });
     </script>
 }
