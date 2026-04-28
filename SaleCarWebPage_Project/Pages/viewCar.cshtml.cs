@@ -135,21 +135,11 @@ namespace SaleCarWebPage_Project.Pages
 
             try
             {
-                int? realClientId = await _saleService.GetClientIdByUserIdAsync(userIdResult.Value);
+                int realClientId = await _saleService.EnsureClientProfileExistsAsync(userIdResult.Value);
 
-                if (realClientId == null)
-                {
-                    return new JsonResult(new
-                    {
-                        success = false,
-                        message = "Apenas utilizadores registados como Clientes podem fazer propostas."
-                    });
-                }
-
-                // Criamos a proposta com o contacto no campo de método de pagamento temporariamente
                 var newProposal = new Sale(
                     carId,
-                    realClientId.Value,
+                    realClientId,
                     DateTime.Now,
                     offerValue,
                     DateTime.Now,
@@ -158,12 +148,11 @@ namespace SaleCarWebPage_Project.Pages
 
                 var result = await _saleService.AddAsync(newProposal);
 
-                if (result.IsSuccessful)
+                return new JsonResult(new
                 {
-                    return new JsonResult(new { success = true, message = "Proposta enviada com sucesso!" });
-                }
-
-                return new JsonResult(new { success = false, message = result.Message });
+                    success = result.IsSuccessful,
+                    message = result.IsSuccessful ? "Proposta enviada!" : "Erro ao guardar."
+                });
             }
             catch (Exception ex)
             {

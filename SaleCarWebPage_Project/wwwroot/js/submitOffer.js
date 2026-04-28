@@ -2,8 +2,10 @@
     const valueEl = document.getElementById("offerValue");
     const contactEl = document.getElementById("offerContact");
     const nifEl = document.getElementById("offerNif");
+    const carIdEl = document.getElementById("hiddenCarId");
+    const modal = document.getElementById('offerModal');
 
-    const carId = parseInt(document.getElementById("hiddenCarId").value);
+    const carId = parseInt(carIdEl.value);
 
     if (isNaN(carId) || carId <= 0) {
         toastr.error("Erro: Identificador do veículo não encontrado.");
@@ -20,9 +22,8 @@
     btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> A ENVIAR...';
     btn.disabled = true;
 
-    const url = `?handler=SubmitProposal&carId=${carId}&offerValue=${valueEl.value}&contact=${contactEl.value}`;
-
     try {
+        // Removemos os parâmetros da URL para evitar o erro de binding duplicado
         const response = await fetch(`?handler=SubmitProposal`, {
             method: 'POST',
             headers: {
@@ -37,11 +38,24 @@
             })
         });
 
+        if (!response.ok) throw new Error("Falha na comunicação com o servidor.");
+
         const result = await response.json();
 
         if (result.success) {
             toastr.success(result.message);
-            bootstrap.Modal.getInstance(document.getElementById('offerModal')).hide();
+
+            // FECHAR MODAL (PURO CSS/JS)
+            if (modal) {
+                modal.style.display = 'none'; // Esconde o modal
+                modal.classList.remove('show'); // Remove classe se usares para animação
+                document.body.classList.remove('modal-open'); // Liberta o scroll da página
+
+                // Remove o "backdrop" escuro se o criares manualmente
+                const backdrop = document.querySelector('.modal-backdrop');
+                if (backdrop) backdrop.remove();
+            }
+
             setTimeout(() => location.reload(), 1500);
         } else {
             toastr.error(result.message || "Erro ao enviar proposta.");

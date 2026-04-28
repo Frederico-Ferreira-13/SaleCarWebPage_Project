@@ -110,5 +110,42 @@ namespace Services
 
             return client?.ClientId;
         }
+
+        public async Task<int> EnsureClientProfileExistsAsync(int userId)
+        {
+            // 1. Verificar se já existe como Cliente
+            var clients = await _unitOfWork.Clients.GetAllAsync();
+            var client = clients.FirstOrDefault(c => c.UserId == userId);
+            if (client != null) return client.ClientId;
+
+            // 2. Se não existe, vamos tentar copiar os dados do perfil de Provider (Vendedor)
+            var providers = await _unitOfWork.Providers.GetAllAsync();
+            var provider = providers.FirstOrDefault(p => p.UserId == userId);
+
+            Client newClient;
+
+            if (provider != null)
+            {
+                // Aproveita os dados que o utilizador já preencheu como vendedor
+                newClient = new Client(
+                    provider.NameProvider,
+                    provider.NIF,
+                    1, 
+                    userId,
+                    provider.AddressId
+                );
+            }
+            else
+            {
+                // Se nem como provider existe (user novo), cria com dados genéricos 
+                // ou redireciona para completar perfil
+                newClient = new Client("Utilizador Registado", "000000000", 1, userId, 1);
+            }
+
+            await _unitOfWork.Clients.AddAsync(newClient);
+            await _unitOfWork.CommitAsync();
+
+            return newClient.ClientId;
+        }
     }
 }
