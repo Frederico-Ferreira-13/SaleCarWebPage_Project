@@ -15,5 +15,7 @@ namespace Contracts.Services
         Task<Result> MarkAsSoldAsync(int carId, int clientId, decimal finalPrice);
 
         Task<Result<IEnumerable<Car>>> GetSoldInventoryAsync(int providerId);
+
+        Task<Result<IEnumerable<Sale>>> GetProposalsByCarIdAsync(int carId);
     }
 }

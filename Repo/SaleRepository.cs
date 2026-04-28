@@ -27,5 +27,14 @@ namespace SaleCarWebPage_Project.Repo
             return await _context.Set<Sale>()
                                  .FirstOrDefaultAsync(x => x.CarId == carId);
         }
+
+        public async Task<IEnumerable<Sale>> GetProposalsByCarIdAsync(int carId)
+        {
+            return await _context.Set<Sale>()
+                                 .Include(s => s.Client) 
+                                 .Where(s => s.CarId == carId)
+                                 .OrderByDescending(s => s.SaleDate)
+                                 .ToListAsync();
+        }
     }
 }

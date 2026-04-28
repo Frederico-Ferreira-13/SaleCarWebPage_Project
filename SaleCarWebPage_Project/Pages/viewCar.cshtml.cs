@@ -3,6 +3,7 @@ using Core.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 using SaleCarWebPage_Project.Pages.Shared;
 using System.Security.Claims;
 
@@ -65,6 +66,15 @@ namespace SaleCarWebPage_Project.Pages
 
             CanEdit = User.IsInRole("1") || (currentUserId.HasValue && Car.ProviderId == currentUserId.Value);
 
+            if (CanEdit)
+            {
+                var proposalsResult = await _saleService.GetProposalsByCarIdAsync(id);
+                if (proposalsResult.IsSuccessful)
+                {
+                    Car.Proposals = proposalsResult.Value!.ToList();
+                }
+            }
+
             if (currentUserId.HasValue)
             {
                 var historyResult = await _messageService.GetChatHistoryAsync(id, currentUserId.Value, Car.ProviderId);
@@ -119,6 +129,13 @@ namespace SaleCarWebPage_Project.Pages
 
         public async Task<IActionResult> OnPostSubmitProposalAsync(int carId, decimal offerValue, string contact)
         {
+            Console.WriteLine($"[PROPOSTA] Recebido CarId: {carId}, Valor: {offerValue}, Contacto: {contact}");
+
+            if (carId <= 0 || offerValue <= 0)
+            {
+                return new JsonResult(new { success = false, message = "Dados inválidos." });
+            }           
+
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
             if (!userIdResult.IsSuccessful) return Unauthorized();
            
@@ -129,11 +146,15 @@ namespace SaleCarWebPage_Project.Pages
                 offerValue,
                 DateTime.UtcNow,
                 "Pendente" // Ou o método de pagamento selecionado
-            );            
-            
-            await _saleService.AddAsync(novaProposta);
+            );
 
-            return RedirectToPage(new { id = carId });
+            var result = await _saleService.AddAsync(novaProposta);
+
+            return new JsonResult(new
+            {
+                success = result.IsSuccessful,
+                message = result.IsSuccessful ? "Proposta enviada!" : "Erro ao guardar."
+            });
         }
 
         // Handler AJAX para Favoritos (Similar ao RateOnly das receitas)

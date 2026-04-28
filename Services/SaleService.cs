@@ -85,5 +85,22 @@ namespace Services
 
             return Result<IEnumerable<Car>>.Success(soldCars);
         }
+
+        public async Task<Result<IEnumerable<Sale>>> GetProposalsByCarIdAsync(int carId)
+        {
+            try
+            {
+                var proposals = await _unitOfWork.Sales.GetByCarIdAsync(carId);
+
+                var allSales = await _unitOfWork.Sales.GetAllAsync();
+                var carProposals = allSales.Where(s => s.CarId == carId).ToList();
+
+                return Result<IEnumerable<Sale>>.Success(carProposals);
+            }
+            catch (Exception ex)
+            {
+                return Result<IEnumerable<Sale>>.Failure(Error.InternalServer($"Erro: {ex.Message}"));
+            }
+        }
     }
 }

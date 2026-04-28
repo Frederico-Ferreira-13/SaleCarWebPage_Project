@@ -40,6 +40,8 @@ namespace Core.Model
         public bool IsFavorite { get; set; }
         [NotMapped]
         public string? Location { get; set; }
+
+        [NotMapped]
         public List<Sale> Proposals { get; set; } = new List<Sale>();
 
         // --- NAVEGAÇÃO ---

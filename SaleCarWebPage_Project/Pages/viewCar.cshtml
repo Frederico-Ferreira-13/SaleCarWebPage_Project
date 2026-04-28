@@ -276,17 +276,27 @@
             const nifEl = document.getElementById("offerNif");
             const carId = "@Model.Car?.CarId";
 
-            // 2. Validação simples
-            if(!valueEl.value || !contactEl.value) {
-                toastr.warning("Por favor, preencha o valor e o contacto.");
+            if(!valueEl || !contactEl || !valueEl.value || !contactEl.value) {
+                toastr.warning("Por favor, preencha o valor e o contacto para formalizar a proposta.");
                 return;
             }
+
+            const btn = document.querySelector('.btn-luxury-submit');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> A ENVIAR...';
+            btn.disabled = true;
 
             const formData = new FormData();
             formData.append("carId", parseInt(carId));
             formData.append("offerValue", valueEl.value);
             formData.append("contact", contactEl.value);
-            formData.append("nif", nifEl.value); // Adicionado o NIF que tens no HTML
+
+            console.log("Tentando submeter proposta...");
+            console.log("CarID:", carId);
+            console.log("Valor:", valInput?.value);
+            console.log("Contacto:", contactInput?.value);
+
+           
 
             try {
                 const response = await fetch(`?handler=SubmitProposal`, {
@@ -297,20 +307,21 @@
                     }
                 });
 
+                    console.log("Status da Resposta:", response.status);
+
                 if (response.ok) {
-                    toastr.success("Proposta enviada com sucesso!");
-            
-                    const modalEl = document.getElementById('offerModal');
-                    const modal = bootstrap.Modal.getInstance(modalEl);
-                    if(modal) modal.hide();
-            
-                    setTimeout(() => location.reload(), 1500);
+                    toastr.success("Proposta exclusiva enviada com sucesso!");
+                    bootstrap.Modal.getInstance(document.getElementById('offerModal')).hide();
+                    setTimeout(() => location.reload(), 1000);
                 } else {
-                    toastr.error("Não foi possível processar a oferta.");
+                    toastr.error("Não foi possível enviar a proposta. Tente novamente.");
                 }
             } catch (error) {
-                console.error("Erro crítico:", error);
+                console.error("Erro:", error);
                 toastr.error("Erro de ligação ao servidor.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
         }
     </script>
