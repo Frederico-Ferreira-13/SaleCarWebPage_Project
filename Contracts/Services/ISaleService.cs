@@ -17,5 +17,7 @@ namespace Contracts.Services
         Task<Result<IEnumerable<Car>>> GetSoldInventoryAsync(int providerId);
 
         Task<Result<IEnumerable<Sale>>> GetProposalsByCarIdAsync(int carId);
+
+        Task<int?> GetClientIdByUserIdAsync(int userId);
     }
 }

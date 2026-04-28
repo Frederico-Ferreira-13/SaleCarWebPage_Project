@@ -129,32 +129,46 @@ namespace SaleCarWebPage_Project.Pages
 
         public async Task<IActionResult> OnPostSubmitProposalAsync(int carId, decimal offerValue, string contact)
         {
-            Console.WriteLine($"[PROPOSTA] Recebido CarId: {carId}, Valor: {offerValue}, Contacto: {contact}");
-
-            if (carId <= 0 || offerValue <= 0)
-            {
-                return new JsonResult(new { success = false, message = "Dados inválidos." });
-            }           
-
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
-            if (!userIdResult.IsSuccessful) return Unauthorized();
-           
-            var novaProposta = new Sale(
-                carId,
-                userIdResult.Value,
-                DateTime.UtcNow,
-                offerValue,
-                DateTime.UtcNow,
-                "Pendente" // Ou o método de pagamento selecionado
-            );
+            if (!userIdResult.IsSuccessful)
+                return new JsonResult(new { success = false, message = "Sessão expirada. Faça login novamente." });
 
-            var result = await _saleService.AddAsync(novaProposta);
-
-            return new JsonResult(new
+            try
             {
-                success = result.IsSuccessful,
-                message = result.IsSuccessful ? "Proposta enviada!" : "Erro ao guardar."
-            });
+                int? realClientId = await _saleService.GetClientIdByUserIdAsync(userIdResult.Value);
+
+                if (realClientId == null)
+                {
+                    return new JsonResult(new
+                    {
+                        success = false,
+                        message = "Apenas utilizadores registados como Clientes podem fazer propostas."
+                    });
+                }
+
+                // Criamos a proposta com o contacto no campo de método de pagamento temporariamente
+                var newProposal = new Sale(
+                    carId,
+                    realClientId.Value,
+                    DateTime.Now,
+                    offerValue,
+                    DateTime.Now,
+                    $"Proposta via Web - Contacto: {contact}"
+                );
+
+                var result = await _saleService.AddAsync(newProposal);
+
+                if (result.IsSuccessful)
+                {
+                    return new JsonResult(new { success = true, message = "Proposta enviada com sucesso!" });
+                }
+
+                return new JsonResult(new { success = false, message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { success = false, message = "Erro interno: " + ex.Message });
+            }
         }
 
         // Handler AJAX para Favoritos (Similar ao RateOnly das receitas)

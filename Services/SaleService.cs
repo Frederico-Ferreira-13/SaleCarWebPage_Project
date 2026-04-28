@@ -102,5 +102,13 @@ namespace Services
                 return Result<IEnumerable<Sale>>.Failure(Error.InternalServer($"Erro: {ex.Message}"));
             }
         }
+
+        public async Task<int?> GetClientIdByUserIdAsync(int userId)
+        {
+            var allClients = await _unitOfWork.Clients.GetAllAsync();
+            var client = allClients.FirstOrDefault(c => c.UserId == userId);
+
+            return client?.ClientId;
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Core.Model
@@ -14,7 +15,9 @@ namespace Core.Model
         public int ContactId { get; private set; }
         public int AddressId { get; private set; }
         public string ClientName { get; private set; } = string.Empty;
-        public string Email { get; private set; } = string.Empty;
+        
+        [NotMapped]
+        public string Email { get; set; } = string.Empty;
         public string Nif { get; private set; } = string.Empty;
 
         public bool IsActive { get; private set; } = true;

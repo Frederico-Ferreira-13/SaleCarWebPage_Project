@@ -188,7 +188,8 @@
                     <button type="button" class="btn-close-luxury" data-bs-dismiss="modal">×</button>
                     
                     <div class="luxury-form-header">
-                        <span class="luxury-subtitle">Private Offer</span>
+                        <input type="hidden" id="hiddenCarId" value="@Model.Car?.CarId" />
+                        <span class="luxury subtitle">Private Offer</span>
                         <h2 class="luxury-title">Formalizar Proposta</h2>
                     </div>
 
@@ -268,61 +269,9 @@
                 console.error("Erro na ligação:", error);
             }
         }
-
-        async function submitOffer() {
-            // 1. Obter os elementos e valores corretamente
-            const valueEl = document.getElementById("offerValue");
-            const contactEl = document.getElementById("offerContact");
-            const nifEl = document.getElementById("offerNif");
-            const carId = "@Model.Car?.CarId";
-
-            if(!valueEl || !contactEl || !valueEl.value || !contactEl.value) {
-                toastr.warning("Por favor, preencha o valor e o contacto para formalizar a proposta.");
-                return;
-            }
-
-            const btn = document.querySelector('.btn-luxury-submit');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> A ENVIAR...';
-            btn.disabled = true;
-
-            const formData = new FormData();
-            formData.append("carId", parseInt(carId));
-            formData.append("offerValue", valueEl.value);
-            formData.append("contact", contactEl.value);
-
-            console.log("Tentando submeter proposta...");
-            console.log("CarID:", carId);
-            console.log("Valor:", valInput?.value);
-            console.log("Contacto:", contactInput?.value);
-
-           
-
-            try {
-                const response = await fetch(`?handler=SubmitProposal`, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    }
-                });
-
-                    console.log("Status da Resposta:", response.status);
-
-                if (response.ok) {
-                    toastr.success("Proposta exclusiva enviada com sucesso!");
-                    bootstrap.Modal.getInstance(document.getElementById('offerModal')).hide();
-                    setTimeout(() => location.reload(), 1000);
-                } else {
-                    toastr.error("Não foi possível enviar a proposta. Tente novamente.");
-                }
-            } catch (error) {
-                console.error("Erro:", error);
-                toastr.error("Erro de ligação ao servidor.");
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
+        
+       
     </script>
+
+    <script src="~/js/submitOffer.js" asp-append-version="true"></script>
 }
