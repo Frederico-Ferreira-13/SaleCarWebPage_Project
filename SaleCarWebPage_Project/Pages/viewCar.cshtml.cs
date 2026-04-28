@@ -35,6 +35,9 @@ namespace SaleCarWebPage_Project.Pages
         [BindProperty]
         public string Subject { get; set; } = string.Empty;
 
+        [BindProperty]
+        public int? ParentMessageId { get; set; }
+
         public List<SelectListItem> SubjectOptions { get; set; } = new()
         {
             new SelectListItem { Value = "Pedido de Informação", Text = "Pedido de Informação" },
@@ -44,6 +47,8 @@ namespace SaleCarWebPage_Project.Pages
         };
 
         public _messageBoxModel MessageBoxData { get; set; }
+
+        private readonly ILogger<viewCarModel> _logger;
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -76,8 +81,9 @@ namespace SaleCarWebPage_Project.Pages
             }
 
             if (currentUserId.HasValue)
-            {
-                var historyResult = await _messageService.GetChatHistoryAsync(id, currentUserId.Value, Car.ProviderId);
+            {                
+                var historyResult = await _messageService.GetChatHistoryAsync(id, currentUserId.Value);
+
                 MessageBoxData = new _messageBoxModel
                 {
                     CarId = id,
@@ -114,17 +120,38 @@ namespace SaleCarWebPage_Project.Pages
 
             // Carregamos o carro para saber quem é o fornecedor (ReceiverId)
             var carResult = await _carServices.GetCarByIdAsync(id, userIdResult.Value);
-            var result = await _messageService.SendInquiryAsync(
-                id,
-                userIdResult.Value,
-                $"Interesse no veículo #{id}",
-                MessageText
+            if (!carResult.IsSuccessful || carResult.Value == null)
+                return NotFound();
+
+            int receiverId = carResult.Value.ProviderId;
+
+            string resolvedSubject = ParentMessageId.HasValue
+        ? await GetParentSubjectAsync(ParentMessageId.Value)
+        : (string.IsNullOrWhiteSpace(Subject)
+            ? $"Interesse no veículo #{id}"
+            : Subject);
+
+            // 5. Enviar — passando ParentMessageId para criar a thread
+            var result = await _messageService.SendMessageAsync(
+                carId: id,
+                senderId: userIdResult.Value,
+                receiverId: receiverId,
+                subject: resolvedSubject,
+                messageText: MessageText,
+                parentMessageId: ParentMessageId   // null = nova conversa, int = resposta
             );
 
-            Console.WriteLine($"Resultado do Envio: {result.IsSuccessful}");
-            if (!result.IsSuccessful) Console.WriteLine($"Erro do Serviço: {result.Message}");
+            if (!result.IsSuccessful)
+                _logger.LogWarning("Falha ao enviar mensagem: CarId={CarId}, Erro={Msg}",
+                    id, result.Message);
 
-            return RedirectToPage(new { id = id });
+            return RedirectToPage(new { id });
+        }
+
+        private async Task<string> GetParentSubjectAsync(int parentId)
+        {
+            var result = await _messageService.GetMessageDetailAsync(parentId, 0);
+            return result.IsSuccessful ? result.Value.Subject : "Re: mensagem anterior";
         }
 
         public async Task<IActionResult> OnPostSubmitProposalAsync(int carId, decimal offerValue, string contact)

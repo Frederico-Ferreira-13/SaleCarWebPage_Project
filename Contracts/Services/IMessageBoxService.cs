@@ -20,5 +20,10 @@ namespace Contracts.Services
         Task<Result> ArchiveMessageAsync(int messageId, int currentUserId);
 
         Task<Result<int>> GetUnreadCountAsync(int userId);
+
+        Task<Result<IEnumerable<MessageBox>>> GetChatHistoryAsync(int carId, int currentUserId);
+
+        Task<Result<MessageBox>> SendMessageAsync(int carId, int senderId, int receiverId, string subject,
+            string messageText, int? parentMessageId = null);
     }
 }

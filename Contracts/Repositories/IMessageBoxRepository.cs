@@ -10,5 +10,7 @@ namespace Contracts.Repositories
         Task<IEnumerable<MessageBox>> GetByUserIdAsync(int userId);
         Task<IEnumerable<MessageBox>> GetChatHistoryAsync(int carId, int user1Id, int user2Id);
         Task<int> GetUnreadCountAsync(int userId);
+        Task<IEnumerable<MessageBox>> GetMainThreadsByCarAsync(int carId);
+        Task<IEnumerable<MessageBox>> GetRepliesAsync(int parentId);
     }
 }

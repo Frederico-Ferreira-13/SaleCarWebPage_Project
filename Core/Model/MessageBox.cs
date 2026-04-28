@@ -10,6 +10,7 @@ namespace Core.Model
     {
         [Key]
         public int MessageBoxId { get; private set; }
+        public int? ParentMessageId { get; private set; }
         public int SenderId { get; private set; }
         public int ReceiverId { get; private set; }
         public int CarId { get; private set; }
@@ -20,7 +21,7 @@ namespace Core.Model
         public bool IsEdited { get; protected set; } = false;
         public bool IsDeleted { get; private set; } = false;
         public bool IsActive => !IsDeleted;
-        public bool IsRead { get; private set; } = true;
+        public bool IsRead { get; private set; } = false;
 
         private MessageBox() { }
 
@@ -46,21 +47,29 @@ namespace Core.Model
             {
                 throw new ArgumentException("O MessageText é obrigatório.", nameof(messageText));
             }
+
             SenderId = senderId;
             ReceiverId = receiverId;
             CarId = carId;
             Subject = subject;
             MessageText = messageText;
             SentDate = DateTime.UtcNow;
+            ParentMessageId = null;
         }
 
-        public MessageBox(int messageBoxId, int senderId, int receiverId, int carId, string subject, string messageText, DateTime sentDate, bool isRead)
+        public MessageBox(int messageBoxId, int senderId, int receiverId, int carId, string subject, string messageText, int parentMessageId, DateTime sentDate, bool isRead)
             : this(senderId, receiverId, carId, subject, messageText)
         {
             if (messageBoxId < 0)
             {
                 throw new ArgumentException("O ID não pode ser negativo.", nameof(messageBoxId));
             }
+
+            if (parentMessageId <= 0)
+                throw new ArgumentException("ID da mensagem pai inválido.");
+
+            ParentMessageId = parentMessageId;
+
             MessageBoxId = messageBoxId;
             SentDate = sentDate;
             IsRead = isRead;
@@ -89,6 +98,11 @@ namespace Core.Model
 
             Subject = newSubject;
             MessageText = newMessageText;
+        }
+
+        public void SetParent(int parentId)
+        {
+            ParentMessageId = parentId;
         }
 
         public void Deactivate()

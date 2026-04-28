@@ -135,5 +135,60 @@ namespace Services
             int count = await _unitOfWork.MessageBox.GetUnreadCountAsync(userId);
             return Result<int>.Success(count);
         }
+
+        public async Task<Result<IEnumerable<MessageBox>>> GetChatHistoryAsync(int carId, int currentUserId)
+        {
+            var car = await _unitOfWork.Cars.GetByIdAsync(carId);
+            if (car == null) 
+            {
+                return Result<IEnumerable<MessageBox>>.Failure(Error.NotFound("Carro não encontrado"));
+            } 
+
+            // É o vendedor ou admin?
+            bool isSeller = (car.ProviderId == currentUserId);
+
+            if (isSeller)
+            {
+                // Vendedor vê TUDO (Principais + Respostas)
+                var allMessages = await _unitOfWork.MessageBox.GetAllAsync();
+                return Result<IEnumerable<MessageBox>>.Success(allMessages.Where(m => m.CarId == carId));
+            }
+            else
+            {
+                // Comprador só vê a sua conversa (onde ele é sender ou receiver)
+                var myHistory = await _unitOfWork.MessageBox.GetChatHistoryAsync(carId, currentUserId, car.ProviderId);
+                return Result<IEnumerable<MessageBox>>.Success(myHistory);
+            }
+        }
+
+        public async Task<Result<MessageBox>> SendMessageAsync(int carId, int senderId, int receiverId, string subject,
+            string messageText, int? parentMessageId = null)
+        {
+            if (senderId == receiverId)
+                return Result<MessageBox>.Failure(
+                    Error.Validation("Não pode enviar uma mensagem para si mesmo."));
+
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                var newMessage = new MessageBox(
+                    senderId, receiverId, carId, subject, messageText);
+
+                // Ligar à thread pai se for uma resposta
+                if (parentMessageId.HasValue)
+                    newMessage.SetParent(parentMessageId.Value);
+
+                await _unitOfWork.MessageBox.AddAsync(newMessage);
+                await _unitOfWork.CommitAsync();
+
+                return Result<MessageBox>.Success(newMessage);
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return Result<MessageBox>.Failure(
+                    Error.InternalServer($"Erro ao enviar mensagem: {ex.Message}"));
+            }
+        }
     }
 }

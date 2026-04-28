@@ -23,9 +23,6 @@ namespace Core.Common
 
         public static Error None() => new(ErrorType.None, string.Empty, string.Empty);
 
-        public static Error NotFound(string code, string? description = null)
-            => new(ErrorType.NotFound, code, description ?? "Recurso não encontrado.");
-
         public static Error NotFound(string code, string? description = null, IDictionary<string, string[]>? validationErrors = null)
             => new(ErrorType.NotFound, code, description ?? "Recurso não encontrado.", validationErrors);
 
@@ -35,9 +32,6 @@ namespace Core.Common
         public static Error Unauthorized(string code, string? description = null)
             => new(ErrorType.Unauthorized, code, description ?? "Não autorizado.");
 
-        public static Error Conflict(string code, string? description = null)
-            => new(ErrorType.Conflict, code, description ?? "Conflito de estado.");
-
         public static Error Conflict(string code, string? description = null, IDictionary<string, string[]>? validationErrors = null)
             => new(ErrorType.Conflict, code, description ?? "Conflito de estado.", validationErrors);
 
@@ -46,9 +40,6 @@ namespace Core.Common
 
         public static Error InternalServer(string? description = null)
             => new(ErrorType.InternalServer, ErrorCodes.ServerError, description ?? "Erro interno do servidor.");
-
-        public static Error BusinessRuleViolation(string code, string? description = null)
-            => new(ErrorType.BusinessRuleViolation, code, description ?? "Violação de regra de negócio.");
 
         public static Error BusinessRuleViolation(string code, string? description = null, IDictionary<string, string[]>? validationErrors = null)
             => new(ErrorType.BusinessRuleViolation, code, description ?? "Violação de regra de negócio.", validationErrors);

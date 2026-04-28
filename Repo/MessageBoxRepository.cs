@@ -37,5 +37,23 @@ namespace SaleCarWebPage_Project.Repo
             return await _context.Set<MessageBox>()
                                  .CountAsync(x => x.ReceiverId == userId && !x.IsRead && !x.IsDeleted);
         }
+
+        public async Task<IEnumerable<MessageBox>> GetMainThreadsByCarAsync(int carId)
+        {
+            // Retorna apenas o início de cada conversa para este carro
+            return await _context.Set<MessageBox>()
+                                 .Where(x => x.CarId == carId && x.ParentMessageId == null && !x.IsDeleted)
+                                 .OrderByDescending(x => x.SentDate)
+                                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MessageBox>> GetRepliesAsync(int parentId)
+        {
+            // Retorna todas as respostas de uma conversa específica
+            return await _context.Set<MessageBox>()
+                                 .Where(x => x.ParentMessageId == parentId && !x.IsDeleted)
+                                 .OrderBy(x => x.SentDate)
+                                 .ToListAsync();
+        }
     }
 }
