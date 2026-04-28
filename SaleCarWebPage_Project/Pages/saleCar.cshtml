@@ -18,7 +18,7 @@
         <form method="post">
             @Html.AntiForgeryToken()
 
-            <div class="form-section-title">Dados do Vendedor & Faturamento</div>
+            <div class="form-section-title">Dados do Vendedor</div>
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label>Nome da Empresa / Profissional</label>
@@ -30,74 +30,115 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label>Telemóvel de Contacto</label>
-                    <input type="tel" class="form-control input-premium" placeholder="+351 912 ..." />
-                </div>
-                <div class="col-md-8 mb-3">
-                    <label>Morada de Exibição do Veículo</label>
-                    <input type="text" class="form-control input-premium" placeholder="Rua, Cidade, Código Postal" />
-                </div>
-            </div>
-
             <div class="form-section-title">Informação Principal</div>
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-4">
                     <label>Marca</label>
                     <select asp-for="NewCar.Model.BrandId" class="form-control input-premium" asp-items="Model.BrandList">
                         <option value="">Selecione a Marca</option>
                     </select>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label>Modelo (Texto)</label>
+                <div class="col-md-6 mb-4">
+                    <label>Modelo</label>
                     <input type="text" asp-for="NewCar.Model.ModelName" class="form-control input-premium" placeholder="Ex: Aventador SVJ" />
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-4">
                     <label>Ano</label>
                     <input asp-for="NewCar.Year" class="form-control input-premium" type="number" />
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-4">
                     <label>Preço (€)</label>
                     <input asp-for="NewCar.CarPrice" class="form-control input-premium" type="number" />
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label>Estado</label>
-                    <select class="form-control input-premium">
-                        <option value="Usado">Usado</option>
-                        <option value="Novo">Novo / 0 Km</option>
-                    </select>
+                <div class="col-md-4 mb-4">
+                    <label>Estado do Veículo</label>
+                    <div class="luxury-selector-grid" style="grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));">
+                        <label>
+                            <input type="radio" name="Estado" value="Usado" class="luxury-radio" checked>
+                            <div class="luxury-card"><span>Usado</span></div>
+                        </label>
+                        <label>
+                            <input type="radio" name="Estado" value="Novo" class="luxury-radio">
+                            <div class="luxury-card"><span>Novo</span></div>
+                        </label>
+                    </div>
                 </div>
             </div>
 
             <div class="form-section-title">Especificações Técnicas</div>
+
+            <div class="mb-4">
+                <label>Combustível</label>
+                <div class="luxury-selector-grid">
+                    <label>
+                        <input type="radio" asp-for="NewCar.TypeOfFuel" value="Gasolina" class="luxury-radio" checked>
+                        <div class="luxury-card">
+                            <ion-icon name="water-outline"></ion-icon>
+                            <span>Gasolina</span>
+                        </div>
+                    </label>
+                    <label>
+                        <input type="radio" asp-for="NewCar.TypeOfFuel" value="Diesel" class="luxury-radio">
+                        <div class="luxury-card">
+                            <ion-icon name="leaf-outline"></ion-icon>
+                            <span>Diesel</span>
+                        </div>
+                    </label>
+                    <label>
+                        <input type="radio" asp-for="NewCar.TypeOfFuel" value="Híbrido" class="luxury-radio">
+                        <div class="luxury-card">
+                            <ion-icon name="infinite-outline"></ion-icon>
+                            <span>Híbrido</span>
+                        </div>
+                    </label>
+                    <label>
+                        <input type="radio" asp-for="NewCar.TypeOfFuel" value="Elétrico" class="luxury-radio">
+                        <div class="luxury-card">
+                            <ion-icon name="flash-outline"></ion-icon>
+                            <span>Elétrico</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
             <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label>Combustível</label>
-                    <select asp-for="NewCar.TypeOfFuel" class="form-control input-premium" asp-items="Model.FuelList"></select>
-                </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-6 mb-4">
                     <label>Transmissão</label>
-                    <select asp-for="NewCar.Transmission" class="form-control input-premium" asp-items="Model.TransmissionList"></select>
+                    <div class="luxury-selector-grid">
+                        <label>
+                            <input type="radio" asp-for="NewCar.Transmission" value="Manual" class="luxury-radio">
+                            <div class="luxury-card">
+                                <ion-icon name="settings-outline"></ion-icon>
+                                <span>Manual</span>
+                            </div>
+                        </label>
+                        <label>
+                            <input type="radio" asp-for="NewCar.Transmission" value="Automática" class="luxury-radio" checked>
+                            <div class="luxury-card">
+                                <ion-icon name="speedometer-outline"></ion-icon>
+                                <span>Automática</span>
+                            </div>
+                        </label>
+                    </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label>Quilómetros (Km)</label>
-                    <input asp-for="NewCar.Kilometers" class="form-control input-premium" type="number" />
+                <div class="col-md-6 mb-4">
+                    <label>Portas</label>
+                    <div class="luxury-selector-grid grid-compact">
+                        <label><input type="radio" name="Portas" value="2" class="luxury-radio"><div class="luxury-card"><span>2</span></div></label>
+                        <label><input type="radio" name="Portas" value="3" class="luxury-radio"><div class="luxury-card"><span>3</span></div></label>
+                        <label><input type="radio" name="Portas" value="4" class="luxury-radio"><div class="luxury-card"><span>4</span></div></label>
+                        <label><input type="radio" name="Portas" value="5" class="luxury-radio" checked><div class="luxury-card"><span>5</span></div></label>
+                    </div>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <label>Portas</label>
-                    <select class="form-control input-premium">
-                        <option value="2">2 Portas</option>
-                        <option value="3">3 Portas</option>
-                        <option value="4">4 Portas</option>
-                        <option value="5">5 Portas</option>
-                    </select>
+                    <label>Quilómetros (Km)</label>
+                    <input asp-for="NewCar.Kilometers" class="form-control input-premium" type="number" />
                 </div>
                 <div class="col-md-4 mb-3">
                     <label>Cavalos (CV)</label>
