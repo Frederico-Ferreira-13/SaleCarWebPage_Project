@@ -8,7 +8,7 @@ using Services;
 
 namespace SaleCarWebPage_Project.Pages
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "1, Admin")]
     public class pendingCarModel : PageModel
     {
         private readonly ICarService _carService;

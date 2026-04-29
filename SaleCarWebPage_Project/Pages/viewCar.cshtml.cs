@@ -15,14 +15,20 @@ namespace SaleCarWebPage_Project.Pages
         private readonly IMessageBoxService _messageService;
         private readonly ITokenService _tokenService;
         private readonly ISaleService _saleService;
+        private readonly ILogger<viewCarModel> _logger;
 
-        public viewCarModel(ICarService carServices, IMessageBoxService messageService, ITokenService tokenService, 
-            ISaleService saleService)
+        public viewCarModel(
+            ICarService carServices,
+            IMessageBoxService messageService,
+            ITokenService tokenService,
+            ISaleService saleService,
+            ILogger<viewCarModel> logger) // Injeção corrigida
         {
             _carServices = carServices;
             _messageService = messageService;
             _tokenService = tokenService;
             _saleService = saleService;
+            _logger = logger;
         }
 
         public Car Car { get; set; } = default!;
@@ -48,11 +54,9 @@ namespace SaleCarWebPage_Project.Pages
 
         public _messageBoxModel MessageBoxData { get; set; }
 
-        private readonly ILogger<viewCarModel> _logger;
-
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            if(id <= 0)
+            if (id <= 0)
             {
                 return RedirectToPage("/Index");
             }
@@ -69,7 +73,13 @@ namespace SaleCarWebPage_Project.Pages
 
             Car = result.Value;
 
-            CanEdit = User.IsInRole("1") || (currentUserId.HasValue && Car.ProviderId == currentUserId.Value);
+            // --- LÓGICA DE PERMISSÃO CORRIGIDA ---
+            var userRole = User.FindFirstValue(ClaimTypes.Role);
+            bool isAdmin = userRole == "1";
+            bool isOwner = currentUserId.HasValue && Car.ProviderId == currentUserId.Value;
+
+            CanEdit = isAdmin || isOwner;
+            // -------------------------------------
 
             if (CanEdit)
             {
@@ -81,7 +91,7 @@ namespace SaleCarWebPage_Project.Pages
             }
 
             if (currentUserId.HasValue)
-            {                
+            {
                 var historyResult = await _messageService.GetChatHistoryAsync(id, currentUserId.Value);
 
                 MessageBoxData = new _messageBoxModel
@@ -101,24 +111,17 @@ namespace SaleCarWebPage_Project.Pages
 
         public async Task<IActionResult> OnPostSendMessageAsync(int id)
         {
-            Console.WriteLine($"\n--- DEBUG SEND MESSAGE ---");
-            Console.WriteLine($"CarId: {id}");
-            Console.WriteLine($"Texto Recebido: '{MessageText}'");
-
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
             if (!userIdResult.IsSuccessful)
             {
-                Console.WriteLine("Erro: Utilizador não autenticado.");
                 return Unauthorized();
             }
 
             if (string.IsNullOrWhiteSpace(MessageText))
             {
-                Console.WriteLine("Aviso: MessageText está VAZIO. O binding pode ter falhado.");
                 return RedirectToPage(new { id });
             }
 
-            // Carregamos o carro para saber quem é o fornecedor (ReceiverId)
             var carResult = await _carServices.GetCarByIdAsync(id, userIdResult.Value);
             if (!carResult.IsSuccessful || carResult.Value == null)
                 return NotFound();
@@ -126,24 +129,22 @@ namespace SaleCarWebPage_Project.Pages
             int receiverId = carResult.Value.ProviderId;
 
             string resolvedSubject = ParentMessageId.HasValue
-        ? await GetParentSubjectAsync(ParentMessageId.Value)
-        : (string.IsNullOrWhiteSpace(Subject)
-            ? $"Interesse no veículo #{id}"
-            : Subject);
+                ? await GetParentSubjectAsync(ParentMessageId.Value)
+                : (string.IsNullOrWhiteSpace(Subject)
+                    ? $"Interesse no veículo #{id}"
+                    : Subject);
 
-            // 5. Enviar — passando ParentMessageId para criar a thread
             var result = await _messageService.SendMessageAsync(
                 carId: id,
                 senderId: userIdResult.Value,
                 receiverId: receiverId,
                 subject: resolvedSubject,
                 messageText: MessageText,
-                parentMessageId: ParentMessageId   // null = nova conversa, int = resposta
+                parentMessageId: ParentMessageId
             );
 
             if (!result.IsSuccessful)
-                _logger.LogWarning("Falha ao enviar mensagem: CarId={CarId}, Erro={Msg}",
-                    id, result.Message);
+                _logger.LogWarning("Falha ao enviar mensagem: CarId={CarId}, Erro={Msg}", id, result.Message);
 
             return RedirectToPage(new { id });
         }
@@ -187,36 +188,20 @@ namespace SaleCarWebPage_Project.Pages
             }
         }
 
-        // Handler AJAX para Favoritos (Similar ao RateOnly das receitas)
         public async Task<JsonResult> OnPostToggleFavorite([FromBody] int carId)
         {
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
             if (!userIdResult.IsSuccessful)
                 return new JsonResult(new { success = false, message = "Login necessário." });
 
-            // Assume que tens este método no teu ICarsService
             var result = await _carServices.ToggleFavoriteAsync(carId, userIdResult.Value);
 
             return new JsonResult(new
             {
                 success = result.IsSuccessful,
-                isFavorite = result.Value, // O service deve retornar true/false
-                count = result.Message // O service deve retornar o novo total
+                isFavorite = result.Value,
+                count = result.Message
             });
-        }
-
-        private async Task LoadPageData(int id)
-        {
-            var userIdResult = await _tokenService.GetUserIdFromContextAsync();
-            int? currentUserId = userIdResult.IsSuccessful ? userIdResult.Value : null;
-
-            // O GetCarByIdAsync deve fazer os Includes necessários (Brand, Model, Provider, Address)
-            var result = await _carServices.GetCarByIdAsync(id, currentUserId);
-
-            if (result.IsSuccessful)
-            {
-                Car = result.Value;
-            }
         }
     }
 }

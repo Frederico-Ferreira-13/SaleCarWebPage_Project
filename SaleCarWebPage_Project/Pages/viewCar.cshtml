@@ -12,10 +12,9 @@
     <link rel="stylesheet" href="~/css/pages/styles.css" asp-append-version="true" />
 }
 
-
 <main class="car-view-container">
     <div class="car-main-layout">
-        
+
         @* LADO ESQUERDO: GALERIA E DETALHES *@
         <div class="car-content-area">
             <div class="car-image-frame">
@@ -28,7 +27,7 @@
                     <span class="badge-category">@Model.Car?.Category</span>
                 </div>
             </div>
-            
+
             <div class="details-section">
                 <h3 class="section-title"><i class="fa-solid fa-microchip"></i> Especificações Técnicas</h3>
                 <div class="details-grid">
@@ -50,7 +49,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="details-section">
                 <h3 class="section-title"><i class="fa-solid fa-location-dot"></i> Localização do Veículo</h3>
                 <div class="address-card">
@@ -102,22 +101,21 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="seller-card">
                 <div class="seller-header">
-                    <div class="seller-avatar-init">@Model.Car?.Provider?.NameProvider.Substring(0, 1)</div>
+                    <div class="seller-avatar-init">@(Model.Car?.Provider?.NameProvider?.Substring(0, 1) ?? "V")</div>
                     <div class="seller-meta">
                         <span class="seller-type">Vendedor Profissional</span>
                         <span class="seller-name">@Model.Car?.Provider?.NameProvider</span>
                     </div>
                 </div>
-                
+
                 @if (!string.IsNullOrEmpty(Model.Car?.Provider?.CompanyName))
                 {
                     <p class="company-name"><i class="fa-solid fa-building"></i> @Model.Car?.Provider?.CompanyName</p>
                 }
 
-                @* LÓGICA DE VISIBILIDADE: DONO VS COMPRADOR *@
                 @if (Model.CanEdit)
                 {
                     <div class="owner-panel">
@@ -168,9 +166,8 @@
 
             @if (Model.CanEdit)
             {
-                <div class="edit-mode-notice" style="margin-top: 15px;">
-                    <a href="/editSaleCar/@Model.Car?.CarId" class="btn-gold-action"
-                           style="background: linear-gradient(45deg, #d4af37, #f2d06b); color: #000; width: 100%; display: block; text-align: center; font-weight: bold; text-decoration: none; padding: 10px 0; border-radius: 5px;">
+                <div class="edit-mode-notice">
+                    <a asp-page="/editSaleCar" asp-route-id="@Model.Car?.CarId" class="btn-gold-action">
                         <i class="fa-solid fa-gears"></i> CONFIGURAR ANÚNCIO
                     </a>
                 </div>
@@ -179,7 +176,7 @@
     </div>
 </main>
 
-@* MODAL DE PROPOSTA: APENAS PARA QUEM NÃO É O DONO *@
+@* MODAL DE PROPOSTA *@
 @if (!Model.CanEdit)
 {
     <div class="modal fade" id="offerModal" tabindex="-1" aria-hidden="true">
@@ -187,10 +184,10 @@
             <div class="modal-content luxury-modal-slim">
                 <div class="modal-body">
                     <button type="button" class="btn-close-luxury" data-bs-dismiss="modal">×</button>
-                    
+
                     <div class="luxury-form-header">
                         <input type="hidden" id="hiddenCarId" value="@Model.Car?.CarId" />
-                        <span class="luxury subtitle">Private Offer</span>
+                        <span class="luxury-subtitle">Private Offer</span>
                         <h2 class="luxury-title">Formalizar Proposta</h2>
                     </div>
 
@@ -219,7 +216,7 @@
                     <button type="button" class="btn-luxury-submit" onclick="submitOffer()">
                         ENVIAR PROPOSTA EXCLUSIVA
                     </button>
-                    
+
                     <p class="luxury-footer-text">
                         <i class="fa-solid fa-shield-check"></i> Ligação segura e privada ao vendedor
                     </p>
@@ -270,9 +267,6 @@
                 console.error("Erro na ligação:", error);
             }
         }
-        
-       
     </script>
-
     <script src="~/js/submitOffer.js" asp-append-version="true"></script>
 }
