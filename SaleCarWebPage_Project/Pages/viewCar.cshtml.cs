@@ -15,14 +15,16 @@ namespace SaleCarWebPage_Project.Pages
         private readonly IMessageBoxService _messageService;
         private readonly ITokenService _tokenService;
         private readonly ISaleService _saleService;
+        private readonly ILogger<viewCarModel> _logger;
 
         public viewCarModel(ICarService carServices, IMessageBoxService messageService, ITokenService tokenService, 
-            ISaleService saleService)
+            ISaleService saleService, ILogger<viewCarModel> logger)
         {
             _carServices = carServices;
             _messageService = messageService;
             _tokenService = tokenService;
             _saleService = saleService;
+            _logger = logger;
         }
 
         public Car Car { get; set; } = default!;
@@ -46,9 +48,7 @@ namespace SaleCarWebPage_Project.Pages
             new SelectListItem { Value = "Avaliação de Retoma", Text = "Avaliação de Retoma" }
         };
 
-        public _messageBoxModel MessageBoxData { get; set; }
-
-        private readonly ILogger<viewCarModel> _logger;
+        public _messageBoxModel MessageBoxData { get; set; }        
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -101,35 +101,43 @@ namespace SaleCarWebPage_Project.Pages
 
         public async Task<IActionResult> OnPostSendMessageAsync(int id)
         {
-            Console.WriteLine($"\n--- DEBUG SEND MESSAGE ---");
-            Console.WriteLine($"CarId: {id}");
-            Console.WriteLine($"Texto Recebido: '{MessageText}'");
+            Console.WriteLine($"[DEBUG] Handler chamado — id={id}, senderId a verificar...");
 
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
             if (!userIdResult.IsSuccessful)
             {
-                Console.WriteLine("Erro: Utilizador não autenticado.");
+                Console.WriteLine("[DEBUG] FALHOU: utilizador não autenticado");
                 return Unauthorized();
             }
+            Console.WriteLine($"[DEBUG] senderId={userIdResult.Value}");
 
             if (string.IsNullOrWhiteSpace(MessageText))
             {
-                Console.WriteLine("Aviso: MessageText está VAZIO. O binding pode ter falhado.");
+                Console.WriteLine("[DEBUG] FALHOU: MessageText vazio");
                 return RedirectToPage(new { id });
             }
 
             // Carregamos o carro para saber quem é o fornecedor (ReceiverId)
             var carResult = await _carServices.GetCarByIdAsync(id, userIdResult.Value);
             if (!carResult.IsSuccessful || carResult.Value == null)
+            {
+                Console.WriteLine($"[DEBUG] FALHOU: carro não encontrado para id={id}");
                 return NotFound();
+            }
 
             int receiverId = carResult.Value.ProviderId;
+            Console.WriteLine($"[DEBUG] receiverId={receiverId}");
+
+            // Verificar o caso vendedor a responder a si mesmo
+            if (userIdResult.Value == receiverId)
+            {
+                Console.WriteLine($"[DEBUG] AVISO: senderId==receiverId ({userIdResult.Value}) — o serviço vai rejeitar");
+            }
 
             string resolvedSubject = ParentMessageId.HasValue
-        ? await GetParentSubjectAsync(ParentMessageId.Value)
-        : (string.IsNullOrWhiteSpace(Subject)
-            ? $"Interesse no veículo #{id}"
-            : Subject);
+                ? await GetParentSubjectAsync(ParentMessageId.Value)
+                : (string.IsNullOrWhiteSpace(Subject) ? $"Interesse no veículo #{id}" : Subject);
+            Console.WriteLine($"[DEBUG] resolvedSubject='{resolvedSubject}'");
 
             // 5. Enviar — passando ParentMessageId para criar a thread
             var result = await _messageService.SendMessageAsync(
@@ -141,9 +149,10 @@ namespace SaleCarWebPage_Project.Pages
                 parentMessageId: ParentMessageId   // null = nova conversa, int = resposta
             );
 
+            Console.WriteLine($"[DEBUG] SendMessageAsync resultado: {result.IsSuccessful}, msg: {result.Message}");
+
             if (!result.IsSuccessful)
-                _logger.LogWarning("Falha ao enviar mensagem: CarId={CarId}, Erro={Msg}",
-                    id, result.Message);
+                _logger.LogWarning("Falha ao enviar mensagem: CarId={CarId}, Erro={Msg}", id, result.Message);
 
             return RedirectToPage(new { id });
         }

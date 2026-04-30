@@ -60,7 +60,10 @@
     @if (isAuthenticated)
     {
         <div class="chat-input-area mt-3">
-            <form method="post" asp-page-handler="SendMessage">
+            <form method="post"
+                  asp-page="/viewCar"
+                  asp-page-handler="SendMessage"
+                  asp-route-id="@Model.CarId">
                 @Html.AntiForgeryToken()
                 
                 @* CAMPOS HIDDEN PARA O BINDING NO C# *@
