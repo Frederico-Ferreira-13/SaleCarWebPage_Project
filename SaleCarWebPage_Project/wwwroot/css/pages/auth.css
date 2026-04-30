@@ -1,7 +1,4 @@
 ﻿/* --- Layout Base --- */
-.auth-container * {
-    box-sizing: border-box;
-}
 
 .auth-page-wrapper {
     background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
@@ -10,6 +7,7 @@
     align-items: center;
     min-height: 100vh;
     margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .auth-container {
@@ -24,36 +22,31 @@
     min-height: 550px;
 }
 
-/* --- Ícones Sociais (Correção do Azul) --- */
-.social-container {
-    margin: 20px 0;
+.auth-container * {
+    box-sizing: border-box;
 }
 
-    .social-container a {
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 5px;
-        height: 40px;
-        width: 40px;
-        /* Força a cor branca para evitar o azul automático */
-        color: #ffffff !important;
-        text-decoration: none;
-        transition: 0.3s;
-    }
+/* --- Títulos e Textos --- */
+.auth-container h1 {
+    color: var(--gold);
+    margin: 0 0 10px;
+    font-weight: 700;
+}
 
-        .social-container a ion-icon {
-            font-size: 20px;
-        }
+.auth-container p {
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 20px;
+    margin: 20px 0 30px;
+}
 
-        .social-container a:hover {
-            background: var(--silver-gradient);
-            color: #000000 !important;
-        }
+.auth-container span {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-bottom: 15px;
+}
 
-/* --- Contentores dos Formulários --- */
+/* --- Formulários --- */
 .form-container {
     position: absolute;
     top: 0;
@@ -61,31 +54,100 @@
     transition: all var(--transition-speed) ease-in-out;
 }
 
-    .form-container form {
-        background-color: var(--black-card);
-        display: flex;
-        flex-direction: column;
-        padding: 0 45px;
-        height: 100%;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-    }
-
-.sign-in-container {
-    left: 0;
-    width: 50%;
-    z-index: 2;
+.form-container form {
+    background-color: var(--black-card);
+    display: flex;
+    flex-direction: column;
+    padding: 0 45px;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
-.sign-up-container {
-    left: 0;
-    width: 50%;
-    opacity: 0;
-    z-index: 1;
+/* --- Inputs (Consumindo estilos do tema Luxury) --- */
+.form-container input {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+    border-radius: 10px;
+    color: var(--white) !important;
+    outline: none;
+    transition: 0.3s;
 }
 
-/* --- Overlay (Painel de Texto) --- */
+.form-container input:focus {
+    border-color: var(--gold) !important;
+    background: rgba(212, 175, 55, 0.05) !important;
+    box-shadow: 0 0 12px var(--gold-glow);
+}
+
+/* --- Botões --- */
+.btn-silver-action {
+    background: var(--gold-gradient);
+    color: #000000;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 45px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+}
+
+.btn-silver-action:hover {
+    background: var(--gold-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+}
+
+.btn-transparent {
+    background: transparent;
+    border: 1px solid var(--white);
+    color: var(--white);
+    border-radius: 25px;
+    padding: 10px 35px;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.btn-transparent:hover {
+    background: var(--white);
+    color: var(--black);
+}
+
+/* --- Ícones Sociais --- */
+.social-container {
+    margin: 20px 0;
+}
+
+.social-container a {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+    height: 40px;
+    width: 40px;
+    color: var(--white) !important;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.social-container a:hover {
+    background: var(--gold-gradient);
+    color: #000000 !important;
+    border-color: var(--gold);
+}
+
+/* --- Overlay e Animações --- */
 .overlay-container {
     position: absolute;
     top: 0;
@@ -102,8 +164,8 @@
 }
 
 .overlay {
-    background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+    color: var(--white);
     position: relative;
     left: -100%;
     height: 100%;
@@ -130,13 +192,6 @@
     transition: transform var(--transition-speed) ease-in-out;
 }
 
-    .overlay-panel p {
-        font-size: 14px;
-        line-height: 20px;
-        margin: 20px 0 30px;
-    }
-
-/* Posições Alinhadas */
 .overlay-left {
     transform: translateX(-20%);
 }
@@ -154,41 +209,24 @@
     transform: translateX(20%);
 }
 
-/* --- Inputs e Botões --- */
-.form-container input {
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    padding: 12px 15px;
-    margin: 8px 0;
-    width: 100%;
-    border-radius: 10px;
-    color: #ffffff !important;
+/* --- Alternância de Painéis --- */
+.sign-in-container {
+    left: 0;
+    width: 50%;
+    z-index: 2;
 }
 
-.btn-silver-action {
-    background: var(--silver-gradient);
-    color: #000000;
-    border: none;
-    border-radius: 25px;
-    padding: 12px 45px;
-    font-weight: 700;
-    text-transform: uppercase;
-    cursor: pointer;
-    margin-top: 15px;
+.sign-up-container {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
 }
 
-.btn-transparent {
-    background: transparent;
-    border: 1px solid #ffffff;
-    color: #ffffff;
-    border-radius: 25px;
-    padding: 10px 35px;
-    cursor: pointer;
-    font-weight: 600;
-    text-transform: uppercase;
+.auth-container.right-panel-active .sign-in-container {
+    transform: translateX(100%);
 }
 
-/* Animação Final */
 .auth-container.right-panel-active .sign-up-container {
     transform: translateX(100%);
     opacity: 1;

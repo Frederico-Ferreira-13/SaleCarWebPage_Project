@@ -1,8 +1,52 @@
 ﻿@page
 @model PrivacyModel
 @{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Política de Privacidade e RGPD";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="settings-container" style="max-width: 1000px; margin-top: 100px;">
+    <div class="settings-header">
+        <div class="header-text">
+            <h2><i class="fa-solid fa-shield-halved" style="color: var(--gold); margin-right: 15px;"></i>Privacidade</h2>
+            <p>Compromisso com a proteção dos seus dados pessoais conforme o RGPD.</p>
+        </div>
+    </div>
+
+    <div class="privacy-content" style="color: var(--white); line-height: 1.8; font-size: 0.95rem; opacity: 0.9;">
+        
+        <section class="mb-5">
+            <h3 style="color: var(--gold); font-size: 1.2rem; text-transform: uppercase; margin-bottom: 20px;">1. Responsável pelo Tratamento</h3>
+            <p>A [Nome do Teu Stand/Site], com sede em Portugal, é a entidade responsável pelo tratamento dos dados pessoais recolhidos nesta plataforma, garantindo que os mesmos são tratados de forma lícita, leal e transparente.</p>
+        </section>
+
+        <section class="mb-5">
+            <h3 style="color: var(--gold); font-size: 1.2rem; text-transform: uppercase; margin-bottom: 20px;">2. Dados Recolhidos e Finalidade</h3>
+            <p>Recolhemos dados estritamente necessários para:</p>
+            <ul style="list-style: none; padding-left: 20px;">
+                <li><i class="fa-solid fa-check" style="color: var(--gold); margin-right: 10px;"></i> <strong>Gestão de Perfil:</strong> Nome e e-mail para autenticação.</li>
+                <li><i class="fa-solid fa-check" style="color: var(--gold); margin-right: 10px;"></i> <strong>Anúncios:</strong> Localização e contacto para utilizadores que publicam veículos.</li>
+                <li><i class="fa-solid fa-check" style="color: var(--gold); margin-right: 10px;"></i> <strong>Favoritos:</strong> Armazenamento das preferências do utilizador (Garage).</li>
+            </ul>
+        </section>
+
+        <section class="mb-5">
+            <h3 style="color: var(--gold); font-size: 1.2rem; text-transform: uppercase; margin-bottom: 20px;">3. Direitos do Utilizador</h3>
+            <p>Nos termos da lei, o utilizador pode exercer a qualquer momento os seus direitos de:</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                <div class="detail-box">Acesso e Retificação</div>
+                <div class="detail-box">Eliminação (Direito ao Esquecimento)</div>
+                <div class="detail-box">Portabilidade dos Dados</div>
+                <div class="detail-box">Oposição ao Tratamento</div>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <h3 style="color: var(--gold); font-size: 1.2rem; text-transform: uppercase; margin-bottom: 20px;">4. Segurança</h3>
+            <p>Utilizamos protocolos de segurança avançados (SSL/TLS) e encriptação de dados para proteger as suas informações contra acessos não autorizados.</p>
+        </section>
+
+        <div class="security-box" style="text-align: center; margin-top: 40px;">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">Para qualquer questão relacionada com os seus dados, contacte o nosso Encarregado de Proteção de Dados: <strong>privacidade@@doseusite.pt</strong></p>
+        </div>
+    </div>
+</div>

@@ -88,12 +88,19 @@ namespace SaleCarWebPage_Project.Pages
                 {
                     CarId = id,
                     ProviderId = Car.ProviderId,
-                    ChatHistory = historyResult.Value?.ToList() ?? new List<MessageBox>()
+                    ChatHistory = historyResult.Value?.ToList() ?? new List<MessageBox>(),
+                    ReadOnly = true
                 };
             }
             else
             {
-                MessageBoxData = new _messageBoxModel { CarId = id, ChatHistory = new List<MessageBox>() };
+                MessageBoxData = new _messageBoxModel 
+                { 
+                    CarId = id, 
+                    ChatHistory = new List<MessageBox>(),
+                    ReadOnly = true
+                
+                };
             }
 
             return Page();

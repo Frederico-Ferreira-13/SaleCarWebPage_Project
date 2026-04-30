@@ -6,19 +6,20 @@
     align-items: center;
     justify-content: center;
     perspective: 1000px;
+    background: radial-gradient(circle at center, #1a1a1a 0%, var(--black-deep) 100%);
 }
 
 .logout-container {
-    background: rgba(15, 15, 15, 0.4);
+    background: var(--black-card);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(212, 175, 55, 0.2);
+    border: 1px solid var(--border-subtle);
     padding: 60px 40px;
     border-radius: 30px;
     text-align: center;
     max-width: 500px;
     width: 90%;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
     animation: fadeInScale 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -34,32 +35,42 @@
     }
 }
 
+/* Ícone de Saída com Brilho Dourado */
+.logout-icon-wrapper {
+    margin-bottom: 30px;
+    font-size: 4.5rem;
+    color: var(--gold);
+    filter: drop-shadow(0 0 15px var(--gold-glow));
+    display: inline-block;
+}
+
 .logout-header h2 {
-    color: #fff;
+    color: var(--white);
     font-size: 2.5rem;
-    font-weight: 700;
+    font-weight: 800;
     margin-bottom: 15px;
     letter-spacing: -1px;
-    background: linear-gradient(to right, #fff, #d4af37);
+    /* Gradiente do Branco para o Dourado para um toque refinado */
+    background: linear-gradient(to right, var(--white), var(--gold-light));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .logout-header p {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
     font-size: 1.1rem;
     margin-bottom: 40px;
 }
 
-/* Estilo do Botão de Saída Premium */
+/* --- Botão de Saída (Lógica do btn-premium) --- */
 .logout-btn {
-    background: linear-gradient(135deg, #d4af37 0%, #aa8928 100%);
-    color: #000;
-    border: none;
+    background: var(--gold-gradient);
+    color: var(--black);
+    border: 1px solid var(--border-gold);
     padding: 18px 40px;
     border-radius: 15px;
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 2px;
     cursor: pointer;
@@ -68,46 +79,52 @@
     align-items: center;
     justify-content: center;
     gap: 15px;
-    transition: all 0.4s ease;
-    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+    transition: all var(--transition-speed) ease;
+    box-shadow: 0 10px 20px var(--gold-glow);
 }
 
 .logout-btn:hover {
+    background: var(--gold-hover);
     transform: translateY(-3px);
     box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
-    filter: brightness(1.1);
 }
 
 .logout-btn i {
     font-size: 1.3rem;
-    transition: transform 0.4s ease;
+    transition: transform var(--transition-speed) ease;
 }
 
 .logout-btn:hover i {
-    transform: translateX(5px);
+    transform: translateX(8px); /* Animação do ícone ao sair */
 }
 
-/* Botão Cancelar Minimalista */
+/* --- Botão Cancelar (Minimalista e Elegante) --- */
 .cancel-btn {
     display: inline-block;
     margin-top: 25px;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-muted);
     text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: var(--transition-speed);
     border-bottom: 1px solid transparent;
 }
 
 .cancel-btn:hover {
-    color: #d4af37;
-    border-bottom: 1px solid #d4af37;
+    color: var(--gold);
+    border-bottom: 1px solid var(--gold);
+    opacity: 1;
 }
 
-/* Ícone de Diamante/Símbolo de Saída */
-.logout-icon-wrapper {
-    margin-bottom: 30px;
-    font-size: 4rem;
-    color: #d4af37;
-    filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.5));
+/* Ajuste para ecrãs pequenos */
+@media (max-width: 480px) {
+    .logout-container {
+        padding: 40px 25px;
+    }
+
+    .logout-header h2 {
+        font-size: 1.8rem;
+    }
 }

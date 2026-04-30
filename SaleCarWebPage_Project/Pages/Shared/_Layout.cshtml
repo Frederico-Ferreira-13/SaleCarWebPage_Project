@@ -66,9 +66,9 @@
                    Ajustado: Aponta para /viewCar. 
                    No Code-behind do viewCar, deves tratar o id nulo para mostrar a Inbox. 
                 *@
-                <li class="list @IsActive("/viewCar")">
+                <li class="list @IsActive("/messagesPage")">
                     <b></b><b></b>
-                    <a asp-page="/viewCar">
+                    <a asp-page="/messagesPage">
                         <span class="icon"><ion-icon name="chatbubbles-outline"></ion-icon></span>
                         <span class="title">Mensagens</span>
                     </a>
@@ -198,5 +198,46 @@
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    @* RODAPÉ DE COPYRIGHT *@
+    <footer>
+        <i class="fa-solid fa-shield-halved text-gold"></i>
+        &nbsp; &copy; @DateTime.Now.Year Luxury Cars &mdash; Desenvolvido por
+        <span class="highlight">Frederico Ferreira</span>
+        &amp;
+        <span class="highlight">Fábio Salgado</span>.
+        Todos os direitos reservados.
+    </footer>
+
+    <div id="gdpr-banner" style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        background: rgba(15, 15, 15, 0.9); backdrop-filter: blur(10px);
+        border: 1px solid var(--border-subtle); padding: 12px 25px; border-radius: 50px;
+        display: flex; align-items: center; gap: 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+    
+        <span style="color: var(--white); font-size: 0.8rem; white-space: nowrap;">
+            Utilizamos cookies para garantir a melhor experiência premium.
+            <a href="/Privacy" style="color: var(--gold); text-decoration: none; font-weight: bold;">Saber mais.</a>
+        </span>
+    
+        <button onclick="acceptGDPR()" style="background: var(--gold-gradient); border: none; padding: 5px 15px;
+            border-radius: 20px; font-size: 0.7rem; font-weight: 800; cursor: pointer; text-transform: uppercase;">
+            Aceitar
+        </button>
+    </div>
+
+    <script>
+        function acceptGDPR() {
+        localStorage.setItem('gdpr_accepted', 'true');
+        document.getElementById('gdpr-banner').style.display = 'none';
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+        if (localStorage.getItem('gdpr_accepted') === 'true') {
+        document.getElementById('gdpr-banner').style.display = 'none';
+        }
+        });
+    </script>
+
 </body>
 </html>
+

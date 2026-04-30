@@ -10,49 +10,81 @@
 
 .btn-garage {
     background: rgba(0, 0, 0, 0.6);
-    border: 1px solid #d4af37; /* Mantendo a borda dourada inicial */
-    color: #d4af37;
+    border: 1px solid var(--gold);
+    color: var(--gold);
     width: 45px;
     height: 45px;
-    border-radius: 10px; /* Estilo quadrado moderno que tinhas no card */
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    backdrop-filter: blur(5px);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(5px);   
+    transition: all var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+
 .btn-garage i {
     font-size: 1.2rem;
     transition: transform 0.3s ease;
 }
 
-/* Estado Ativo: Quando o carro está nos favoritos */
-.btn-garage.is-in-garage {
-    background: #d4af37;
-    color: #000;
-    border-color: #fff;
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-}
-
 .btn-garage:hover {
     transform: scale(1.1);
-    border-color: #d4af37;
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    border-color: var(--gold-light);
+    box-shadow: 0 0 15px var(--gold-glow);
+}
+
+/* --- Estado Ativo (Na Garagem) --- */
+.btn-garage.is-in-garage {
+    background: var(--gold-gradient);
+    color: var(--black);
+    border-color: var(--white);
+    box-shadow: 0 0 20px var(--gold-glow);
 }
 
 .btn-garage.is-in-garage:hover {
-    background: #f1c40f;
+    background: var(--gold-hover);
+    transform: scale(1.1) rotate(5deg); /* Pequena rotação para feedback visual */
 }
 
-/* Estilo específico para a viewCar (onde o botão é largo e tem texto) */
+/* --- Estilo para viewCar (Botão Largo com Texto) --- */
 .favorite-action-premium .btn-garage {
     width: 100%;
     height: auto;
     padding: 15px;
     border-radius: 12px;
-    gap: 10px;
+    gap: 12px;
     text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 1px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    font-size: 0.9rem;
+}
+
+/* Ícone dentro do botão largo */
+.favorite-action-premium .btn-garage i {
+    font-size: 1.4rem;
+}
+
+/* Efeito de brilho passar pelo botão quando está ativo */
+.btn-garage.is-in-garage::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: rotate(45deg);
+    animation: shineGarage 4s infinite;
+    pointer-events: none;
+}
+
+@keyframes shineGarage {
+    0% {
+        transform: translateX(-150%) rotate(45deg);
+    }
+
+    20%, 100% {
+        transform: translateX(150%) rotate(45deg);
+    }
 }

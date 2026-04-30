@@ -4,7 +4,8 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    z-index: 999;
+    z-index: 99;
+    background: radial-gradient(circle at center, #1a1a1a 0%, var(--black-deep) 100%);
 }
 
 .error-content {
@@ -13,18 +14,19 @@
     background: var(--black-card) !important;
     padding: 70px 50px;
     border-radius: 30px;
-    border: 1px solid rgba(232, 233, 235, 0.2);
+    border: 1px solid var(--border-subtle);
     backdrop-filter: blur(20px);
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
     text-align: center;
 }
 
+/* Ícone com animação e brilho dourado */
 .error-icon {
     font-size: 8rem !important;
-    color: var(--silver-main) !important;
+    color: var(--gold) !important;
     margin-bottom: 30px;
     display: block;
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
+    filter: drop-shadow(0 0 15px var(--gold-glow));
     animation: rotateGear 8s linear infinite;
 }
 
@@ -37,16 +39,16 @@
     letter-spacing: 2px;
 }
 
+/* Destaque usando o gradiente dourado do styles.css */
 .highlight {
-    background: var(--silver-gradient) !important;
+    background: var(--gold-gradient) !important;
     -webkit-background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
     display: inline-block;
 }
 
 .error-message {
-    color: var(--silver-main) !important;
-    opacity: 0.8;
+    color: var(--text-secondary) !important;
     font-size: 1.1rem !important;
     line-height: 1.8;
     margin-bottom: 40px;
@@ -60,39 +62,41 @@
     align-items: center;
 }
 
+/* Botão Principal - Sincronizado com o btn-premium */
 .error-btn-main {
-    /* Copia a lógica do teu btn-premium mas garante que não há conflitos */
-    background: var(--silver-gradient) !important;
-    color: #1a1a1a !important;
+    background: var(--gold-gradient) !important;
+    color: var(--black) !important;
     border-radius: 20px !important;
     padding: 15px 45px !important;
     font-weight: 700 !important;
     text-transform: uppercase;
     text-decoration: none !important;
-    transition: all 0.4s ease;
+    transition: all var(--transition-speed) ease;
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    border: 1px solid var(--border-gold) !important;
+    box-shadow: 0 4px 15px var(--gold-glow);
 }
 
-    .error-btn-main:hover {
-        background: var(--silver-hover) !important;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1) !important;
-    }
+.error-btn-main:hover {
+    background: var(--gold-hover) !important;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4) !important;
+}
 
+/* Link de voltar atrás secundário */
 .btn-back-link {
-    color: var(--silver-main) !important;
+    color: var(--gold) !important;
     text-decoration: none !important;
     font-weight: 500;
-    opacity: 0.6;
-    transition: 0.3s;
+    opacity: 0.7;
+    transition: var(--transition-speed);
 }
 
 .btn-back-link:hover {
     opacity: 1;
-    text-decoration: underline !important;
+    text-shadow: 0 0 8px var(--gold-glow);
 }
 
 @keyframes rotateGear {
@@ -102,5 +106,20 @@
 
     to {
         transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 600px) {
+    .luxury-text {
+        font-size: 1.8rem !important;
+    }
+
+    .error-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .error-content {
+        padding: 40px 20px;
     }
 }

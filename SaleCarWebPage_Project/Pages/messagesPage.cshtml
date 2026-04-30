@@ -1,0 +1,105 @@
+﻿@page
+@model SaleCarWebPage_Project.Pages.messagesPageModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Mensagens";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/messageBox.css" asp-append-version="true" />
+}
+
+<div style="max-width: 900px; margin: 0 auto; padding: 20px;">
+    <h2 style="color: #d4af37; margin-bottom: 30px;">
+        <i class="fa-solid fa-comments"></i> As Minhas Mensagens
+    </h2>
+
+    @if (!Model.Conversations.Any())
+    {
+        <div style="text-align: center; color: #aaa; padding: 60px 20px;">
+            <i class="fa-solid fa-inbox" style="font-size: 3rem; margin-bottom: 15px; display: block;"></i>
+            <p>Ainda não tens mensagens.</p>
+        </div>
+    }
+    else
+    {
+        int i = 0;
+        @foreach (var conv in Model.Conversations)
+        {
+            var collapseId = $"conv-{conv.CarId}-{conv.OtherPartyId}";
+            var lastMsg = conv.MessageBoxData.ChatHistory
+                .OrderByDescending(m => m.SentDate).FirstOrDefault();
+            i++;
+
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(212,175,55,0.2);
+                border-radius: 16px; margin-bottom: 16px; overflow: hidden;">
+
+                @* CABEÇALHO CLICÁVEL *@
+                <div onclick="toggleConv('@collapseId')"
+                     style="display: flex; align-items: center; gap: 15px; padding: 15px 20px;
+                    cursor: pointer; background: rgba(0,0,0,0.2);
+                    transition: background 0.2s;"
+                     onmouseover="this.style.background='rgba(212,175,55,0.08)'"
+                     onmouseout="this.style.background='rgba(0,0,0,0.2)'">
+
+                    @* IMAGEM DO CARRO *@
+                    <img src="@conv.CarImage" alt="@conv.CarName"
+                         style="width: 65px; height: 45px; object-fit: cover; border-radius: 8px;
+                    border: 1px solid rgba(212,175,55,0.3); flex-shrink: 0;" />
+
+                    @* INFO *@
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="color: #d4af37;">@conv.CarName</strong>
+                            <small style="color: #555; flex-shrink: 0; margin-left: 10px;">
+                                @(lastMsg?.SentDate.ToString("dd/MM HH:mm") ?? "")
+                            </small>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+                            <span style="color: #aaa; font-size: 0.85rem;">
+                                <i class="fa-solid fa-user" style="color: #d4af37; font-size: 0.75rem;"></i>
+                                @conv.OtherPartyName
+                            </span>
+                            @if (lastMsg != null)
+                            {
+                                <small style="color: #555; font-size: 0.8rem; white-space: nowrap;
+                                    overflow: hidden; text-overflow: ellipsis; max-width: 200px;">
+                                    @(lastMsg.MessageText.Length > 40
+                                        ? lastMsg.MessageText.Substring(0, 40) + "..."
+                                        : lastMsg.MessageText)
+                                </small>
+                            }
+                        </div>
+                    </div>
+
+                    @* SETA *@
+                    <i class="fa-solid fa-chevron-down" id="arrow-@collapseId"
+                       style="color: #d4af37; transition: transform 0.3s; flex-shrink: 0;"></i>
+                </div>
+
+                @* CONTEÚDO COLAPSÁVEL *@
+                <div id="@collapseId" style="display: none; border-top: 1px solid rgba(255,255,255,0.05);">
+                    <div style="padding: 10px;">
+                        <partial name="_messageBox" model="conv.MessageBoxData" />
+                    </div>
+                    <div style="padding: 8px 20px 12px; text-align: right;">
+                        <a href="/viewCar/@conv.CarId"
+                               style="color: #666; font-size: 0.8rem; text-decoration: none;">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver anúncio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+<script>
+    function toggleConv(id) {
+        const content = document.getElementById(id);
+        const arrow = document.getElementById('arrow-' + id);
+        const isOpen = content.style.display !== 'none';
+        content.style.display = isOpen ? 'none' : 'block';
+        arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+</script>

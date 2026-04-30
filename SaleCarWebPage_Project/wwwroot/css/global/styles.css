@@ -4,65 +4,106 @@
     --black-card: #151515;
     --black-deep: #050505;
     --sidebar-bg: #151515;
-    --silver-main: #e8e9eb;
-    --silver-gradient: linear-gradient(135deg, #cfd1d3 0%, #ffffff 50%, #b8babd 100%);
-    --silver-hover: linear-gradient(135deg, #ffffff 0%, #e8e9eb 50%, #d1d3d5 100%);
-    --white: #fff;
-    --transition-speed: 0.6s;
-    --gold-glow: rgba(255, 255, 255, 0.15);
+    --gold: #d4af37;
+    --gold-light: #f2d06b;
+    --gold-dark: #aa8928;
+    --gold-gradient: linear-gradient(135deg, #aa8928 0%, #d4af37 50%, #f2d06b 100%);
+    --gold-hover: linear-gradient(135deg, #f2d06b 0%, #d4af37 50%, #aa8928 100%);
+    --gold-glow: rgba(212, 175, 55, 0.25);
+    --white: #ffffff;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.6);
+    --text-muted: rgba(255, 255, 255, 0.3);
+    --border-subtle: rgba(212, 175, 55, 0.15);
+    --border-gold: rgba(212, 175, 55, 0.4);
     --status-approved: #00ff88;
     --status-pending: #ffcc00;
+    --transition-speed: 0.4s;
 }
 
 /* --- ESTILOS DE BASE --- */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: var(--black);
-    color: var(--silver-main);
+    color: var(--text-primary);
     margin: 0;
     overflow-x: hidden;
 }
 
 /* --- ELEMENTOS REUTILIZÁVEIS --- */
 .btn-premium, .btn-silver {
-    background: var(--silver-gradient);
-    color: #1a1a1a; /* Texto bem escuro para contraste no metal */
+    background: var(--gold-gradient);
+    color: #0d0d0d;
     border-radius: 20px;
     padding: 12px 45px;
     font-weight: 700;
     text-transform: uppercase;
     transition: all 0.4s ease;
     cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.4); /* Borda de brilho */
+    border: 1px solid rgba(212, 175, 55, 0.5);
     display: inline-block;
     text-align: center;
     text-decoration: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
     letter-spacing: 1px;
 }
 
-.btn-premium:hover, .btn-silver:hover {
-    background: var(--silver-hover);
+.btn-premium:hover, .btn-gold:hover {
+    background: var(--gold-hover);
     transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
-    border-color: #ffffff;
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.35);
+    border-color: var(--gold-light);
 }
 
 /* Inputs padrão para o tema Luxury */
-input {
-    background: rgba(255, 255, 255, 0.05);
+input, textarea, select {
+    background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--white);
     padding: 12px 15px;
     border-radius: 8px;
     outline: none;
     transition: 0.3s;
+    font-family: inherit;
 }
 
-input:focus {
-    border-color: var(--silver-main);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 10px rgba(232, 233, 235, 0.1);
+input:focus, textarea:focus, select:focus {
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.05);
+    box-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
 }
 
+card-dark {
+    background: var(--black-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 24px;
+    transition: border-color 0.3s;
+}
 
+.card-dark:hover {
+    border-color: var(--border-gold);
+}
+
+.text-gold {
+    color: var(--gold) !important;
+}
+
+.text-muted-luxury {
+    color: var(--text-muted);
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    border-top: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+footer span.highlight {
+    color: var(--gold);
+    opacity: 0.8;
+}

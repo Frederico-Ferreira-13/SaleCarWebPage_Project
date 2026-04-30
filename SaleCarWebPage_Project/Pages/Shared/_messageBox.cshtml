@@ -17,34 +17,48 @@
             {
                 bool isMeMain = currentUserId == mainMsg.SenderId.ToString();
 
-                <div class="thread-group mb-4" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                <div class="thread-group">
                     @* MENSAGEM RAIZ *@
                     <div class="chat-bubble @(isMeMain ? "bubble-sender" : "bubble-receiver")">
-                        <small class="d-block fw-bold">@mainMsg.Subject</small>
-                        <p>@mainMsg.MessageText</p>
+                        <small class="d-block fw-bold text-uppercase" style="font-size: 0.7rem; margin-bottom: 5px;">
+                            @mainMsg.Subject
+                        </small>
+                        <p class="m-0">@mainMsg.MessageText</p>
                         <time class="msg-date">@mainMsg.SentDate.ToString("dd/MM HH:mm")</time>
                     </div>
 
                     @* RESPOSTAS *@
                     @{
-                        var replies = Model.ChatHistory.Where(r => r.ParentMessageId == mainMsg.MessageBoxId).OrderBy(r => r.SentDate);
+                        var replies = Model.ChatHistory
+                            .Where(r => r.ParentMessageId == mainMsg.MessageBoxId)
+                            .OrderBy(r => r.SentDate);
                     }
                     @foreach (var reply in replies)
                     {
                         bool isMeReply = currentUserId == reply.SenderId.ToString();
-                        <div class="replies-container" style="margin-left: 30px; border-left: 2px solid #d4af37; padding-left: 10px;">
+                        <div class="replies-container">
                             <div class="chat-bubble @(isMeReply ? "bubble-sender" : "bubble-receiver")">
-                                <p>@reply.MessageText</p>
+                                <p class="m-0">@reply.MessageText</p>
                                 <time class="msg-date">@reply.SentDate.ToString("HH:mm")</time>
                             </div>
                         </div>
                     }
 
-                    @* BOTÃO RESPONDER (Aparece para o Dono ou Comprador responderem um ao outro) *@
-                    <div class="text-end mt-1">
-                        <button type="button" class="btn btn-sm btn-link text-gold" onclick="prepareReply(@mainMsg.MessageBoxId, '@mainMsg.Subject')">
-                            <i class="fa-solid fa-reply"></i> Responder
-                        </button>
+                    @* AÇÕES *@
+                    <div class="text-end mt-2">
+                        @if (!Model.ReadOnly)
+                        {
+                            <button type="button" class="btn btn-sm btn-link text-gold text-decoration-none"
+                                    onclick="prepareReply(@mainMsg.MessageBoxId, '@mainMsg.Subject')">
+                                <i class="fa-solid fa-reply"></i> Responder
+                            </button>
+                        }
+                        else
+                        {
+                            <a href="/messagesPage" class="btn btn-sm btn-link text-gold text-decoration-none">
+                                <i class="fa-solid fa-reply"></i> Ver Conversa
+                            </a>
+                        }
                     </div>
                 </div>
             }
@@ -52,36 +66,33 @@
         else
         {
             <div class="empty-chat text-center p-4">
+                <i class="fa-solid fa-ghost d-block mb-2" style="font-size: 2rem;"></i>
                 <p>Nenhuma mensagem encontrada.</p>
             </div>
         }
     </div>
 
-    @if (isAuthenticated)
+    @* FORM DE ENVIO *@
+    @if (isAuthenticated && !Model.ReadOnly)
     {
-        <div class="chat-input-area mt-3">
-            <form method="post"
-                  asp-page="/viewCar"
-                  asp-page-handler="SendMessage"
-                  asp-route-id="@Model.CarId">
+        <div class="chat-input-area">
+            <form method="post" asp-page="/viewCar" asp-page-handler="SendMessage" asp-route-id="@Model.CarId">
                 @Html.AntiForgeryToken()
-                
-                @* CAMPOS HIDDEN PARA O BINDING NO C# *@
                 <input type="hidden" name="CarId" value="@Model.CarId" />
                 <input type="hidden" name="ParentMessageId" id="parentMessageIdField" value="" />
 
-                @* INDICADOR DE RESPOSTA *@
-                <div id="reply-indicator" style="display:none;" class="alert alert-warning py-1 px-2 mb-2">
+                <div id="reply-indicator" style="display:none;" class="p-2 mb-3">
                     <small>A responder a: <strong id="reply-subject"></strong></small>
-                    <button type="button" class="btn-close btn-sm float-end" onclick="cancelReply()"></button>
+                    <button type="button" class="btn-close btn-close-white btn-sm float-end" onclick="cancelReply()"></button>
                 </div>
 
                 <div class="msg-input-group">
-                    <textarea name="MessageText" id="txtMessage" class="form-control" placeholder="Escreva a sua mensagem..." required></textarea>
+                    <textarea name="MessageText" id="txtMessage" class="form-control"
+                              placeholder="Escreva a sua mensagem premium..." required></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-dark w-100 mt-2">
-                    <i class="fa-solid fa-paper-plane"></i> ENVIAR
+                <button type="submit" class="btn-premium w-100 mt-3" style="border:none; width: 100%;">
+                    <i class="fa-solid fa-paper-plane"></i> ENVIAR MENSAGEM
                 </button>
             </form>
         </div>

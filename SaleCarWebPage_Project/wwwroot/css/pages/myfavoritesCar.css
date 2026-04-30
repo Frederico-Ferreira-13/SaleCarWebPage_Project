@@ -2,24 +2,27 @@
 .favorites-container {
     padding: 20px;
     max-width: 1400px;
-    margin: 0 auto;
+    margin: 40px auto;
 }
 
 .page-header {
-    margin-bottom: 40px;
+    margin-bottom: 50px;
+    text-align: center;
 }
 
 .silver-text {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: -1px;
+    letter-spacing: 2px;
+    color: var(--white);
 }
 
 .highlight {
-    background: var(--silver-gradient);
+    background: var(--gold-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    display: inline-block;
 }
 
 /* Grelha de Favoritos */
@@ -34,121 +37,165 @@
     background: var(--black-card);
     border-radius: 20px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s;
+    border: 1px solid var(--border-subtle);
+    transition: transform var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color var(--transition-speed), box-shadow var(--transition-speed);
 }
 
 .car-card-premium:hover {
-    transform: translateY(-10px);
-    border-color: var(--silver-main);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    transform: translateY(-12px);
+    border-color: var(--gold);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
 }
 
 /* Imagem e Tags */
 .image-wrapper {
     position: relative;
     height: 220px;
+    overflow: hidden;
 }
 
 .image-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.car-card-premium:hover .image-wrapper img {
+    transform: scale(1.1);
 }
 
 .price-tag {
     position: absolute;
     bottom: 15px;
     left: 15px;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-    padding: 5px 15px;
-    border-radius: 8px;
-    font-weight: 700;
-    color: var(--white);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-weight: 800;
+    color: var(--gold);
+    border: 1px solid var(--border-gold);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
+/* Botão de Remover com Feedback Visual Suave */
 .remove-fav {
     position: absolute;
     top: 15px;
     right: 15px;
-    background: rgba(255, 77, 77, 0.2);
-    border: none;
+    background: rgba(255, 77, 77, 0.15);
+    border: 1px solid rgba(255, 77, 77, 0.3);
     color: #ff4d4d;
-    font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    font-size: 1.4rem;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     backdrop-filter: blur(5px);
-    transition: 0.3s;
+    transition: var(--transition-speed);
+    z-index: 5;
 }
 
 .remove-fav:hover {
     background: #ff4d4d;
-    color: white;
+    color: var(--white);
+    transform: rotate(90deg);
 }
 
-/* Info do Carro */
+/* --- Informação do Carro --- */
 .car-info {
-    padding: 20px;
+    padding: 25px;
 }
 
 .car-info h3 {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     color: var(--white);
+    font-weight: 700;
 }
 
 .car-info h3 span {
-    color: var(--silver-main);
+    color: var(--gold);
     font-weight: 400;
+    font-size: 1.1rem;
+    margin-left: 5px;
 }
 
 .car-specs {
-    margin: 15px 0;
+    margin: 20px 0;
     display: flex;
-    gap: 15px;
-    color: rgba(255, 255, 255, 0.5);
+    justify-content: space-between;
+    color: var(--text-secondary);
     font-size: 0.85rem;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 15px;
+}
+
+.car-specs span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .car-specs ion-icon {
-    vertical-align: middle;
-    margin-right: 5px;
+    color: var(--gold);
+    font-size: 1.1rem;
 }
 
+/* Footer do Cartão e Botão */
 .card-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    padding-top: 15px;
+    padding: 0 25px 25px;
 }
 
-.btn-silver-small {
-    display: block;
+/* Botão que segue a lógica do btn-premium mas adaptado para o card */
+.btn-gold-small {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     width: 100%;
-    text-align: center;
-    background: var(--silver-gradient);
+    background: var(--gold-gradient);
     color: var(--black);
     text-decoration: none;
-    padding: 10px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.8rem;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.85rem;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: var(--transition-speed);
+    border: 1px solid var(--border-gold);
 }
 
-/* Estado Vazio */
+.btn-gold-small:hover {
+    background: var(--gold-hover);
+    box-shadow: 0 5px 15px var(--gold-glow);
+    transform: translateY(-2px);
+}
+
+/* --- Estado Vazio --- */
 .empty-state {
     text-align: center;
-    padding: 100px 20px;
+    padding: 120px 20px;
+    background: var(--black-card);
+    border-radius: 30px;
+    border: 1px dashed var(--border-subtle);
 }
 
 .empty-state ion-icon {
-    font-size: 5rem;
-    color: rgba(255, 255, 255, 0.1);
-    margin-bottom: 20px;
+    font-size: 6rem;
+    color: var(--gold);
+    opacity: 0.15;
+    margin-bottom: 25px;
+    filter: drop-shadow(0 0 20px var(--gold-glow));
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+    font-size: 1.2rem;
+    font-weight: 300;
 }

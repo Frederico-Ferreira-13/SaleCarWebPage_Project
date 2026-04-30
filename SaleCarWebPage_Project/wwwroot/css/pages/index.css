@@ -5,31 +5,51 @@
     padding: 0 20px;
 }
 
+/* --- Secção de Procura --- */
 .search-section {
     background: var(--black-card);
     padding: 40px;
     border-radius: 25px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
     margin-bottom: 50px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
+/* Barra de Pesquisa Principal */
 .main-search {
     display: flex;
     align-items: center;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-subtle);
     border-radius: 50px;
-    padding: 5px 10px;
+    padding: 8px 15px;
     margin-bottom: 30px;
+    transition: var(--transition-speed);
 }
 
-    .main-search input {
-        flex: 1;
-        border: none !important;
-        background: transparent !important;
-        box-shadow: none !important;
-    }
+.main-search:focus-within {
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.05);
+    box-shadow: 0 0 15px var(--gold-glow);
+}
 
+.main-search input {
+    flex: 1;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: var(--white);
+    padding: 10px 15px;
+    font-size: 1rem;
+}
+
+.main-search ion-icon {
+    font-size: 1.5rem;
+    color: var(--gold);
+    margin-left: 10px;
+}
+
+/* --- Grelha de Filtros --- */
 .filter-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -38,33 +58,66 @@
 
 .filter-group label {
     display: block;
-    font-size: 0.75rem;
-    color: var(--silver-main);
-    opacity: 0.6;
+    font-size: 0.7rem;
+    color: var(--gold); /* Labels em dourado para aspeto luxuoso */
+    opacity: 0.8;
     margin-bottom: 8px;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    font-weight: 700;
 }
 
+/* Selects personalizados via styles.css */
 .filter-group select {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 10px;
-    border-radius: 10px;
-    outline: none;
+    /* Herdando estilos globais de input/select do teu styles.css */
 }
 
+/* --- Grelha de Veículos --- */
 .cars-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 30px;
+    margin-bottom: 60px;
 }
 
+/* --- Títulos de Secção --- */
 .section-title {
-    font-size: 2rem;
+    font-size: 2.2rem;
     color: var(--white);
     margin-bottom: 40px;
     text-align: center;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+}
+
+/* Linha decorativa por baixo do título */
+.section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--gold-gradient);
+    margin: 15px auto 0;
+    border-radius: 2px;
+}
+
+/* Efeito de "Luxury Text" em títulos específicos da Home */
+.section-title span {
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Ajuste Responsivo */
+@media (max-width: 768px) {
+    .search-section {
+        padding: 25px;
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+    }
 }
