@@ -1,100 +1,137 @@
-﻿@model SaleCarWebPage_Project.Pages.Shared._messageBoxModel
+﻿@model Core.Model.MessagesViewModel
+@using Core.Model
 @using System.Security.Claims
+
 @{
-    var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    int.TryParse(userIdClaim, out int currentUserId);
     bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+
+    // A lógica de detetar se é inbox global ou chat de um carro específico
+    bool isGlobalInbox = Model.CarId == 0;
 }
 
 <div class="message-box-wrapper">
+    @* --- CABEÇALHO --- *@
     <div class="message-header">
-        <h4><i class="fa-solid fa-comments"></i> Mensagens</h4>
+        <h4>
+            <i class="fa-solid @(isGlobalInbox ? "fa-inbox" : "fa-comments")"></i>
+            @(isGlobalInbox ? "Minhas Conversas" : "Negociação do Anúncio")
+        </h4>
+        @if (!isGlobalInbox)
+        {
+            <span class="badge bg-outline-gold">Ref: #@Model.CarId</span>
+        }
     </div>
 
+    @* --- CONTEÚDO PRINCIPAL --- *@
     <div class="chat-conversation" id="chat-container">
+
         @if (Model.ChatHistory != null && Model.ChatHistory.Any())
         {
-            @foreach (var mainMsg in Model.ChatHistory.Where(m => m.ParentMessageId == null).OrderBy(x => x.SentDate))
+            if (isGlobalInbox)
             {
-                bool isMeMain = currentUserId == mainMsg.SenderId.ToString();
-
-                <div class="thread-group mb-4" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">
-                    @* MENSAGEM RAIZ *@
-                    <div class="chat-bubble @(isMeMain ? "bubble-sender" : "bubble-receiver")">
-                        <small class="d-block fw-bold">@mainMsg.Subject</small>
-                        <p>@mainMsg.MessageText</p>
-                        <time class="msg-date">@mainMsg.SentDate.ToString("dd/MM HH:mm")</time>
-                    </div>
-
-                    @* RESPOSTAS *@
-                    @{
-                        var replies = Model.ChatHistory.Where(r => r.ParentMessageId == mainMsg.MessageBoxId).OrderBy(r => r.SentDate);
-                    }
-                    @foreach (var reply in replies)
+                @* --- VISTA DE LISTA (INBOX GLOBAL PREMIUM) --- *@
+                <div class="inbox-list">
+                    @foreach (var conversation in Model.ChatHistory.OrderByDescending(x => x.SentDate))
                     {
-                        bool isMeReply = currentUserId == reply.SenderId.ToString();
-                        <div class="replies-container" style="margin-left: 30px; border-left: 2px solid #d4af37; padding-left: 10px;">
-                            <div class="chat-bubble @(isMeReply ? "bubble-sender" : "bubble-receiver")">
-                                <p>@reply.MessageText</p>
-                                <time class="msg-date">@reply.SentDate.ToString("HH:mm")</time>
+                        string displayTitle = $"Anúncio #{conversation.CarId}";
+
+                        <a href="/viewCar/@conversation.CarId" class="inbox-item-link">
+                            <div class="thread-group">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong class="text-gold d-block mb-1">@displayTitle</strong>
+                                        <span class="fw-bold text-white">@conversation.Subject</span>
+                                    </div>
+                                    <time class="msg-date">@conversation.SentDate.ToString("dd MMM, HH:mm")</time>
+                                </div>
+                                <div class="mt-2">
+                                    <p class="mb-0 text-truncate text-silver-muted">@conversation.MessageText</p>
+                                </div>
+                                @if (!conversation.IsRead && conversation.ReceiverId == currentUserId)
+                                {
+                                    <div class="new-msg-indicator">Nova Mensagem</div>
+                                }
+                            </div>
+                        </a>
+                    }
+                </div>
+            }
+            else
+            {
+                @* --- VISTA DE CHAT (ESTILO MENSAGEIRO DE LUXO) --- *@
+                @foreach (var mainMsg in Model.ChatHistory.Where(m => m.ParentMessageId == null).OrderBy(x => x.SentDate))
+                {
+                    bool isMeMain = currentUserId == mainMsg.SenderId;
+
+                    <div class="thread-wrapper mb-4">
+                        <div class="chat-bubble @(isMeMain ? "bubble-sender" : "bubble-receiver")">
+                            <div class="bubble-content">
+                                <small class="subject-tag">@mainMsg.Subject</small>
+                                <p>@mainMsg.MessageText</p>
+                                <time class="msg-date">@mainMsg.SentDate.ToString("dd/MM HH:mm")</time>
                             </div>
                         </div>
-                    }
 
-                    @* BOTÃO RESPONDER (Aparece para o Dono ou Comprador responderem um ao outro) *@
-                    <div class="text-end mt-1">
-                        <button type="button" class="btn btn-sm btn-link text-gold" onclick="prepareReply(@mainMsg.MessageBoxId, '@mainMsg.Subject')">
-                            <i class="fa-solid fa-reply"></i> Responder
-                        </button>
+                        @* RESPOSTAS (THREADS) *@
+                        @{
+                            var replies = Model.ChatHistory.Where(r => r.ParentMessageId == mainMsg.MessageBoxId).OrderBy(r => r.SentDate);
+                        }
+                        @foreach (var reply in replies)
+                        {
+                            bool isMeReply = currentUserId == reply.SenderId;
+                            <div class="replies-container">
+                                <div class="chat-bubble @(isMeReply ? "bubble-sender" : "bubble-receiver")">
+                                    <p>@reply.MessageText</p>
+                                    <time class="msg-date">@reply.SentDate.ToString("HH:mm")</time>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="chat-actions mt-1">
+                            <button type="button" class="btn-reply-minimal" onclick="prepareReply(@mainMsg.MessageBoxId, '@mainMsg.Subject')">
+                                <i class="fa-solid fa-share"></i> Responder
+                            </button>
+                        </div>
                     </div>
-                </div>
+                }
             }
         }
         else
         {
-            <div class="empty-chat text-center p-4">
-                <p>Nenhuma mensagem encontrada.</p>
+            @* --- ESTADO VAZIO --- *@
+            <div class="empty-chat-container">
+                <div class="empty-icon-glow">
+                    <i class="fa-solid fa-envelope-open"></i>
+                </div>
+                <h5>Sem mensagens de momento</h5>
+                <p>As suas interações sobre este anúncio aparecerão aqui.</p>
             </div>
         }
     </div>
 
-    @if (isAuthenticated)
+    @* --- ÁREA DE INPUT (APENAS NO CHAT DO CARRO) --- *@
+    @if (isAuthenticated && !isGlobalInbox)
     {
-        <div class="chat-input-area mt-3">
-            <form method="post" asp-page-handler="SendMessage">
+        <div class="chat-input-area">
+            <form method="post" asp-page-handler="SendMessage" id="msgForm">
                 @Html.AntiForgeryToken()
-                
-                @* CAMPOS HIDDEN PARA O BINDING NO C# *@
                 <input type="hidden" name="CarId" value="@Model.CarId" />
                 <input type="hidden" name="ParentMessageId" id="parentMessageIdField" value="" />
 
-                @* INDICADOR DE RESPOSTA *@
-                <div id="reply-indicator" style="display:none;" class="alert alert-warning py-1 px-2 mb-2">
-                    <small>A responder a: <strong id="reply-subject"></strong></small>
-                    <button type="button" class="btn-close btn-sm float-end" onclick="cancelReply()"></button>
+                <div id="reply-indicator" class="reply-status-bar" style="display:none;">
+                    <span><i class="fa-solid fa-reply"></i> A responder a: <strong id="reply-subject"></strong></span>
+                    <i class="fa-solid fa-xmark close-reply" onclick="cancelReply()"></i>
                 </div>
 
-                <div class="msg-input-group">
+                <div class="input-luxury-wrapper">
                     <textarea name="MessageText" id="txtMessage" class="form-control" placeholder="Escreva a sua mensagem..." required></textarea>
+                    <button type="submit" class="btn-send-gold">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
                 </div>
-
-                <button type="submit" class="btn btn-dark w-100 mt-2">
-                    <i class="fa-solid fa-paper-plane"></i> ENVIAR
-                </button>
             </form>
         </div>
     }
 </div>
-
-<script>
-    function prepareReply(parentId, subject) {
-        document.getElementById('parentMessageIdField').value = parentId;
-        document.getElementById('reply-subject').innerText = subject;
-        document.getElementById('reply-indicator').style.display = 'block';
-        document.getElementById('txtMessage').focus();
-    }
-
-    function cancelReply() {
-        document.getElementById('parentMessageIdField').value = '';
-        document.getElementById('reply-indicator').style.display = 'none';
-    }
-</script>

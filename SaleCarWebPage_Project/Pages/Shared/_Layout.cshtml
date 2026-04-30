@@ -61,6 +61,11 @@
                         <span class="title">Favoritos</span>
                     </a>
                 </li>
+
+                @* 
+                   Ajustado: Aponta para /viewCar. 
+                   No Code-behind do viewCar, deves tratar o id nulo para mostrar a Inbox. 
+                *@
                 <li class="list @IsActive("/viewCar")">
                     <b></b><b></b>
                     <a asp-page="/viewCar">
@@ -69,7 +74,6 @@
                     </a>
                 </li>
 
-                @* CORREÇÃO: Verifica se a Role é "1" ou "Admin" *@
                 @if (User.IsInRole("1") || User.IsInRole("Admin"))
                 {
                     <li class="list @IsActive("/pendingCar")">
@@ -129,7 +133,6 @@
             {
                 <div style="display: flex; flex-direction: column; align-items: flex-end;">
                     <span style="color: #d4af37; font-weight: 500;">Olá, @User.Identity.Name</span>
-                    @* CORREÇÃO: Verifica se a Role é "1" ou "Admin" no cabeçalho *@
                     @if (User.IsInRole("1") || User.IsInRole("Admin"))
                     {
                         <small style="color: #ff4d4d; font-size: 0.7em; text-transform: uppercase;">Administrador</small>
@@ -148,6 +151,23 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            @if (TempData["Success"] != null)
+            {
+                    <text>toastr.success('@TempData["Success"]');</text>
+            }
+            @if (TempData["Error"] != null)
+            {
+                    <text>toastr.error('@TempData["Error"]');</text>
+            }
+            @if (TempData["Info"] != null)
+            {
+                    <text>toastr.info('@TempData["Info"]');</text>
+            }
+        });
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {

@@ -9,6 +9,13 @@ using System.Security.Claims;
 
 namespace SaleCarWebPage_Project.Pages
 {
+    public class InboxConversation
+    {
+        public int CarId { get; set; }
+        public string CarName { get; set; } = string.Empty;
+        public DateTime LastMessageDate { get; set; }
+    }
+
     public class viewCarModel : PageModel
     {
         private readonly ICarService _carServices;
@@ -22,7 +29,7 @@ namespace SaleCarWebPage_Project.Pages
             IMessageBoxService messageService,
             ITokenService tokenService,
             ISaleService saleService,
-            ILogger<viewCarModel> logger) // Injeção corrigida
+            ILogger<viewCarModel> logger)
         {
             _carServices = carServices;
             _messageService = messageService;
@@ -31,8 +38,7 @@ namespace SaleCarWebPage_Project.Pages
             _logger = logger;
         }
 
-        public Car Car { get; set; } = default!;
-
+        public Car? Car { get; set; } = default!;
         public bool CanEdit { get; set; }
 
         [BindProperty]
@@ -52,19 +58,50 @@ namespace SaleCarWebPage_Project.Pages
             new SelectListItem { Value = "Avaliação de Retoma", Text = "Avaliação de Retoma" }
         };
 
-        public _messageBoxModel MessageBoxData { get; set; }
+        public MessagesViewModel MessageBoxData { get; set; } = new();
+        public List<InboxConversation> InboxConversations { get; set; } = new();
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id <= 0)
-            {
-                return RedirectToPage("/Index");
-            }
-
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
             int? currentUserId = userIdResult.IsSuccessful ? userIdResult.Value : null;
 
-            var result = await _carServices.GetCarByIdAsync(id, currentUserId);
+            // --- MODO 1: INBOX GLOBAL (sem id) ---
+            if (id == null || id <= 0)
+            {
+                if (!currentUserId.HasValue) return RedirectToPage("/auth");
+
+                var inboxResult = await _messageService.GetUserInboxAsync(currentUserId.Value);
+
+                if (inboxResult.IsSuccessful && inboxResult.Value != null)
+                {
+                    var messages = inboxResult.Value.ToList();
+
+                    // Alimentamos o MessageBoxData para usar o design da Partial View
+                    MessageBoxData = new MessagesViewModel
+                    {
+                        CarId = 0,
+                        ChatHistory = messages
+                    };
+
+                    // Mantemos a InboxConversations para compatibilidade lógica se necessário
+                    InboxConversations = messages
+                        .GroupBy(m => m.CarId)
+                        .Select(g => new InboxConversation
+                        {
+                            CarId = g.Key,
+                            CarName = g.OrderByDescending(m => m.SentDate).FirstOrDefault()?.Subject ?? $"Veículo #{g.Key}",
+                            LastMessageDate = g.Max(m => m.SentDate)
+                        })
+                        .ToList();
+                }
+
+                Car = null;
+                return Page();
+            }
+
+            // --- MODO 2: DETALHES DO CARRO (id presente) ---
+            var result = await _carServices.GetCarByIdAsync(id.Value, currentUserId);
 
             if (!result.IsSuccessful || result.Value == null)
             {
@@ -73,17 +110,15 @@ namespace SaleCarWebPage_Project.Pages
 
             Car = result.Value;
 
-            // --- LÓGICA DE PERMISSÃO CORRIGIDA ---
             var userRole = User.FindFirstValue(ClaimTypes.Role);
             bool isAdmin = userRole == "1";
             bool isOwner = currentUserId.HasValue && Car.ProviderId == currentUserId.Value;
 
             CanEdit = isAdmin || isOwner;
-            // -------------------------------------
 
             if (CanEdit)
             {
-                var proposalsResult = await _saleService.GetProposalsByCarIdAsync(id);
+                var proposalsResult = await _saleService.GetProposalsByCarIdAsync(id.Value);
                 if (proposalsResult.IsSuccessful)
                 {
                     Car.Proposals = proposalsResult.Value!.ToList();
@@ -92,18 +127,18 @@ namespace SaleCarWebPage_Project.Pages
 
             if (currentUserId.HasValue)
             {
-                var historyResult = await _messageService.GetChatHistoryAsync(id, currentUserId.Value);
+                var historyResult = await _messageService.GetChatHistoryAsync(id.Value, currentUserId.Value);
 
-                MessageBoxData = new _messageBoxModel
+                MessageBoxData = new MessagesViewModel
                 {
-                    CarId = id,
+                    CarId = id.Value,
                     ProviderId = Car.ProviderId,
                     ChatHistory = historyResult.Value?.ToList() ?? new List<MessageBox>()
                 };
             }
             else
             {
-                MessageBoxData = new _messageBoxModel { CarId = id, ChatHistory = new List<MessageBox>() };
+                MessageBoxData = new MessagesViewModel { CarId = id.Value, ChatHistory = new List<MessageBox>() };
             }
 
             return Page();
@@ -112,10 +147,7 @@ namespace SaleCarWebPage_Project.Pages
         public async Task<IActionResult> OnPostSendMessageAsync(int id)
         {
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
-            if (!userIdResult.IsSuccessful)
-            {
-                return Unauthorized();
-            }
+            if (!userIdResult.IsSuccessful) return Unauthorized();
 
             if (string.IsNullOrWhiteSpace(MessageText))
             {
@@ -123,16 +155,13 @@ namespace SaleCarWebPage_Project.Pages
             }
 
             var carResult = await _carServices.GetCarByIdAsync(id, userIdResult.Value);
-            if (!carResult.IsSuccessful || carResult.Value == null)
-                return NotFound();
+            if (!carResult.IsSuccessful || carResult.Value == null) return NotFound();
 
             int receiverId = carResult.Value.ProviderId;
 
             string resolvedSubject = ParentMessageId.HasValue
                 ? await GetParentSubjectAsync(ParentMessageId.Value)
-                : (string.IsNullOrWhiteSpace(Subject)
-                    ? $"Interesse no veículo #{id}"
-                    : Subject);
+                : (string.IsNullOrWhiteSpace(Subject) ? $"Interesse no veículo #{id}" : Subject);
 
             var result = await _messageService.SendMessageAsync(
                 carId: id,
@@ -159,7 +188,7 @@ namespace SaleCarWebPage_Project.Pages
         {
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
             if (!userIdResult.IsSuccessful)
-                return new JsonResult(new { success = false, message = "Sessão expirada. Faça login novamente." });
+                return new JsonResult(new { success = false, message = "Sessão expirada." });
 
             try
             {
