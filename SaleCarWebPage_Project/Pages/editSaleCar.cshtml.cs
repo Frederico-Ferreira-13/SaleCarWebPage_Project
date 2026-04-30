@@ -24,29 +24,29 @@ namespace SaleCarWebPage_Project.Pages
         }
 
         [BindProperty]
-        public Car CarToEdit { get; set; }
+        public Car CarToEdit { get; set; } = default!;
 
-        public SelectList BrandList { get; set; }
-        public SelectList FuelList { get; set; }
-        public SelectList TransmissionList { get; set; }
+        public SelectList BrandList { get; set; } = default!;
+        // Nota: FuelList e TransmissionList são usados para popular os rádios e selects no HTML
+        public SelectList FuelList { get; set; } = default!;
+        public SelectList TransmissionList { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
             if (id <= 0) return RedirectToIndex("ID de veículo inválido.");
-            
-            var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            int? currentUserId = int.TryParse(currentUserIdClaim, out int parsedId) ? parsedId : null;
 
-            var result = await _carService.GetCarByIdAsync(id, currentUserId);
+            // Obtemos o carro sem filtro de utilizador inicial para validar permissões manualmente
+            var result = await _carService.GetCarByIdAsync(id, null);
 
             if (!result.IsSuccessful || result.Value == null)
                 return RedirectToIndex("Veículo não encontrado.");
 
             var car = result.Value;
-            
+
+            // Verifica se o utilizador tem permissão (Dono ou Admin Role 1)
             var authCheck = await CheckUserPermissions(car.ProviderId);
             if (authCheck != null) return authCheck;
-           
+
             CarToEdit = car;
             await LoadListsAsync();
 
@@ -55,30 +55,52 @@ namespace SaleCarWebPage_Project.Pages
 
         public async Task<IActionResult> OnPostAsync(int id)
         {
+            // 1. Re-verificação de segurança no Post
+            var carCheck = await _carService.GetCarByIdAsync(id, null);
+            if (!carCheck.IsSuccessful || carCheck.Value == null)
+                return RedirectToIndex("Veículo não encontrado.");
+
+            var authCheck = await CheckUserPermissions(carCheck.Value.ProviderId);
+            if (authCheck != null) return authCheck;
+
+            // 2. Validação do ModelState
             if (!ModelState.IsValid)
             {
                 await LoadListsAsync();
                 return Page();
-            }            
+            }
 
+            // 3. Persistência das alterações
             var result = await _carService.UpdateCarAsync(id, CarToEdit);
-            
-            ModelState.AddModelError(string.Empty, "O método de atualização precisa de ser adicionado à ICarService.");
+
+            if (result.IsSuccessful)
+            {
+                TempData["SuccessMessage"] = "Anúncio atualizado com sucesso!";
+                // Redireciona para a página de detalhes do carro
+                return RedirectToPage("/viewCar", new { id = id });
+            }
+
+            // Tratamento de erro vindo do serviço (ex: erro de base de dados)
+            ModelState.AddModelError(string.Empty, result.Message ?? "Erro ao atualizar o veículo.");
             await LoadListsAsync();
             return Page();
-        }        
+        }
 
+        /// <summary>
+        /// Centraliza a lógica de permissões: Admin (Role 1) ou o próprio Dono do anúncio.
+        /// </summary>
         private async Task<IActionResult?> CheckUserPermissions(int ownerProviderId)
         {
             var currentUserIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (!int.TryParse(currentUserIdClaim, out int currentUserId))
                 return RedirectToPage("/auth");
-           
+
             var userResult = await _usersService.GetUserByIdAsync(currentUserId);
             var currentUser = userResult.Value;
 
-            bool isAdmin = currentUser?.UsersRoleId == 1;            
-            bool isOwner = ownerProviderId == currentUser?.UserId;
+            // Lógica: Se for Role 1 (Admin) ou se o ID do logado for igual ao Dono do carro
+            bool isAdmin = currentUser?.UsersRoleId == 1;
+            bool isOwner = ownerProviderId == currentUserId;
 
             if (!isAdmin && !isOwner)
             {
@@ -91,10 +113,12 @@ namespace SaleCarWebPage_Project.Pages
 
         private async Task LoadListsAsync()
         {
+            // Carrega marcas da BD
             var brands = await _brandService.GetAllBrandsAsync();
             if (brands?.IsSuccessful == true)
                 BrandList = new SelectList(brands.Value, "BrandId", "BrandName");
 
+            // Define listas estáticas para os seletores
             FuelList = new SelectList(new List<string> { "Gasolina", "Diesel", "Híbrido", "Elétrico" });
             TransmissionList = new SelectList(new List<string> { "Automática", "Manual" });
         }

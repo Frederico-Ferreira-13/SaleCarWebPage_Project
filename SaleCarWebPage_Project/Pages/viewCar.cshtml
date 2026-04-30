@@ -1,62 +1,90 @@
-﻿@page "{id:int}"
+﻿@page "{id:int?}"
 @model SaleCarWebPage_Project.Pages.viewCarModel
 @{
     Layout = "_Layout";
-    ViewData["Title"] = $"{Model.Car?.Model?.Brand?.BrandName} {Model.Car?.Model?.ModelName}";
+    ViewData["Title"] = Model.Car != null
+        ? $"{Model.Car?.Model?.Brand?.BrandName} {Model.Car?.Model?.ModelName}"
+        : "As Minhas Mensagens";
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/pages/viewCar.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pages/favoritesBottom.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pages/messageBox.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/pages/styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/global/styles.css" asp-append-version="true" />
 }
 
-
 <main class="car-view-container">
-    <div class="car-main-layout">
-        
-        @* LADO ESQUERDO: GALERIA E DETALHES *@
-        <div class="car-content-area">
-            <div class="car-image-frame">
-                <img src="@(Model.Car?.ImageUrl ?? "/img/cars/default-car.jpg")" alt="@Model.Car?.Model?.ModelName" class="main-car-img" />
-                <div class="car-status-badges">
-                    @if (Model.Car?.IsApproved == true)
-                    {
-                        <span class="badge-approved"><i class="fa-solid fa-check-double"></i> Verificado</span>
-                    }
-                    <span class="badge-category">@Model.Car?.Category</span>
+    @if (Model.Car == null)
+    {
+        @* --- MODO INBOX / MENSAGENS GERAIS (DESIGN PREMIUM) --- *@
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="inbox-premium-header mb-4 text-center">
+                        <h2 class="section-title"><i class="fa-solid fa-envelope-open-text"></i> Centro de Mensagens</h2>
+                        <p class="text-muted">Acompanhe as suas negociações e conversas ativas</p>
+                    </div>
+
+                    @* Chamamos a mesma Partial que usas no carro, mas aqui ela ocupa o ecrã todo *@
+                    <partial name="_messageBox" model="Model.MessageBoxData" />
                 </div>
             </div>
-            
-            <div class="details-section">
-                <h3 class="section-title"><i class="fa-solid fa-microchip"></i> Especificações Técnicas</h3>
-                <div class="details-grid">
-                    <div class="detail-box">
-                        <span class="detail-label">Matrícula</span>
-                        <span class="detail-value">@Model.Car?.PlateNumber</span>
-                    </div>
-                    <div class="detail-box">
-                        <span class="detail-label">Cor Exterior</span>
-                        <span class="detail-value">@Model.Car?.CarColor</span>
-                    </div>
-                    <div class="detail-box">
-                        <span class="detail-label">Tara (Peso)</span>
-                        <span class="detail-value">@Model.Car?.CarTare.ToString("N0") kg</span>
-                    </div>
-                    <div class="detail-box">
-                        <span class="detail-label">Cilindrada</span>
-                        <span class="detail-value">@Model.Car?.EngineCapacity cc</span>
+        </div>
+    }
+    else
+    {
+        @* --- MODO DETALHES DO CARRO --- *@
+        <div class="car-main-layout">
+
+            @* LADO ESQUERDO: GALERIA E DETALHES *@
+            <div class="car-content-area">
+                <div class="car-image-frame">
+                    <img src="@(Model.Car?.ImageUrl ?? "/img/cars/default-car.jpg")" alt="@Model.Car?.Model?.ModelName" class="main-car-img" />
+                    <div class="car-status-badges">
+                        @if (Model.Car?.IsApproved == true)
+                        {
+                            <span class="badge-approved"><i class="fa-solid fa-check-double"></i> Verificado</span>
+                        }
+                        <span class="badge-category">@Model.Car?.Category</span>
                     </div>
                 </div>
-            </div>
-            
-            <div class="details-section">
-                <h3 class="section-title"><i class="fa-solid fa-location-dot"></i> Localização do Veículo</h3>
-                <div class="address-card">
-                    <p><strong>@Model.Car?.Provider?.Address?.Locate</strong></p>
-                    <p>@Model.Car?.Provider?.Address?.City, @Model.Car?.Provider?.Address?.Country</p>
-                    <small>C.P: @Model.Car?.Provider?.Address?.PostalCode</small>
+
+                <div class="details-section">
+                    <h3 class="section-title"><i class="fa-solid fa-microchip"></i> Especificações Técnicas</h3>
+                    <div class="details-grid">
+                        <div class="detail-box">
+                            <span class="detail-label">Matrícula</span>
+                            <span class="detail-value">@Model.Car?.PlateNumber</span>
+                        </div>
+                        <div class="detail-box">
+                            <span class="detail-label">Cor Exterior</span>
+                            <span class="detail-value">@Model.Car?.CarColor</span>
+                        </div>
+                        <div class="detail-box">
+                            <span class="detail-label">Tara (Peso)</span>
+                            <span class="detail-value">@Model.Car?.CarTare.ToString("N0") kg</span>
+                        </div>
+                        <div class="detail-box">
+                            <span class="detail-label">Cilindrada</span>
+                            <span class="detail-value">@Model.Car?.EngineCapacity cc</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="details-section">
+                    <h3 class="section-title"><i class="fa-solid fa-location-dot"></i> Localização do Veículo</h3>
+                    <div class="address-card">
+                        @if (Model.Car?.Provider?.Address != null)
+                        {
+                            <p><strong>@Model.Car.Provider.Address.Locate</strong></p>
+                            <p>@Model.Car.Provider.Address.City, @Model.Car.Provider.Address.Country</p>
+                            <small>C.P: @Model.Car.Provider.Address.PostalCode</small>
+                        }
+                        else
+                        {
+                            <p>Localização sob consulta</p>
+                        }
                 </div>
             </div>
         </div>
@@ -102,103 +130,107 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="seller-card">
                 <div class="seller-header">
-                    <div class="seller-avatar-init">@Model.Car?.Provider?.NameProvider.Substring(0, 1)</div>
+                    <div class="seller-avatar-init">
+                        @(!string.IsNullOrEmpty(Model.Car?.Provider?.NameProvider)
+                                                ? Model.Car.Provider.NameProvider.Substring(0, 1).ToUpper()
+                                                : "V")
+                    </div>
                     <div class="seller-meta">
                         <span class="seller-type">Vendedor Profissional</span>
-                        <span class="seller-name">@Model.Car?.Provider?.NameProvider</span>
+                        <span class="seller-name">@(Model.Car?.Provider?.NameProvider ?? "Vendedor Particular")</span>
                     </div>
                 </div>
-                
-                @if (!string.IsNullOrEmpty(Model.Car?.Provider?.CompanyName))
-                {
-                    <p class="company-name"><i class="fa-solid fa-building"></i> @Model.Car?.Provider?.CompanyName</p>
-                }
 
-                @* LÓGICA DE VISIBILIDADE: DONO VS COMPRADOR *@
+                @if (!string.IsNullOrEmpty(Model.Car?.Provider?.CompanyName))
+                    {
+                        <p class="company-name"><i class="fa-solid fa-building"></i> @Model.Car.Provider.CompanyName</p>
+                    }
+
+                    @if (Model.CanEdit)
+                    {
+                        <div class="owner-panel">
+                            <h4 class="owner-title"><i class="fa-solid fa-bell"></i> Propostas Recebidas</h4>
+                            @if (Model.Car?.Proposals != null && Model.Car.Proposals.Any())
+                            {
+                                @foreach (var proposta in Model.Car.Proposals)
+                                {
+                                    <div class="proposal-item">
+                                        <p>
+                                            <strong>@(proposta.Client?.Name ?? "Utilizador #" + proposta.ClientId)</strong>
+                                            ofereceu <span class="prop-val">@proposta.FinalPrice.ToString("N0") €</span>
+                                        </p>
+                                        <small>
+                                            <i class="fa-solid fa-wallet"></i> @proposta.PaymentMethod |
+                                            <i class="fa-solid fa-clock"></i> @proposta.SaleDate.ToShortDateString()
+                                        </small>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="no-proposals">Ainda sem propostas recebidas.</p>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="offer-container">
+                            <button type="button" class="btn-make-offer" data-bs-toggle="modal" data-bs-target="#offerModal">
+                                <i class="fa-solid fa-hand-holding-dollar"></i> FAZER PROPOSTA OFICIAL
+                            </button>
+                        </div>
+                    }
+
+                    @* Chat do Carro *@
+                    <partial name="_messageBox" model="Model.MessageBoxData" />
+                </div>
+
+                <div class="favorite-action-premium">
+                    <button class="btn-garage @(Model.Car?.IsFavorite == true ? "is-in-garage" : "")"
+                            onclick="toggleGarage(@(Model.Car?.CarId ?? 0), this)">
+                        <i class="@(Model.Car?.IsFavorite == true ? "fa-solid fa-gem" : "fa-regular fa-gem")"></i>
+                        <span class="fav-text">
+                            @(Model.Car?.IsFavorite == true ? "Na minha Garagem" : "Guardar na Garagem")
+                        </span>
+                    </button>
+                </div>
+
                 @if (Model.CanEdit)
                 {
-                    <div class="owner-panel">
-                        <h4 class="owner-title"><i class="fa-solid fa-bell"></i> Propostas Recebidas</h4>
-                        @if (Model.Car?.Proposals != null && Model.Car.Proposals.Any())
-                        {
-                            @foreach (var proposta in Model.Car.Proposals)
-                            {
-                                <div class="proposal-item">
-                                    <p>
-                                        <strong>@(proposta.Client?.Name ?? "Utilizador #" + proposta.ClientId)</strong>
-                                        ofereceu <span class="prop-val">@proposta.FinalPrice.ToString("N0") €</span>
-                                    </p>
-                                    <small>
-                                        <i class="fa-solid fa-wallet"></i> @proposta.PaymentMethod |
-                                        <i class="fa-solid fa-clock"></i> @proposta.SaleDate.ToShortDateString()
-                                    </small>
-                                </div>
-                            }
-                        }
-                        else
-                        {
-                            <p class="no-proposals">Ainda sem propostas recebidas.</p>
-                        }
+                    <div class="edit-mode-notice">
+                        <a asp-page="/editSaleCar" asp-route-id="@Model.Car?.CarId" class="btn-gold-action">
+                            <i class="fa-solid fa-gears"></i> CONFIGURAR ANÚNCIO
+                        </a>
                     </div>
                 }
-                else
-                {
-                    <div class="offer-container">
-                        <button type="button" class="btn-make-offer" data-bs-toggle="modal" data-bs-target="#offerModal">
-                            <i class="fa-solid fa-hand-holding-dollar"></i> FAZER PROPOSTA OFICIAL
-                        </button>
-                    </div>
-                }
-
-                <partial name="_messageBox" model="Model.MessageBoxData" />
-            </div>
-
-            <div class="favorite-action-premium">
-                <button class="btn-garage @(Model.Car?.IsFavorite == true ? "is-in-garage" : "")"
-                        onclick="toggleGarage(@Model.Car?.CarId, this)">
-                    <i class="@(Model.Car?.IsFavorite == true ? "fa-solid fa-gem" : "fa-regular fa-gem")"></i>
-                    <span class="fav-text">
-                        @(Model.Car?.IsFavorite == true ? "Na minha Garagem" : "Guardar na Garagem")
-                    </span>
-                </button>
-            </div>
-
-            @if (Model.CanEdit)
-            {
-                <div class="edit-mode-notice" style="margin-top: 15px;">
-                    <a href="/editSaleCar/@Model.Car?.CarId" class="btn-gold-action"
-                           style="background: linear-gradient(45deg, #d4af37, #f2d06b); color: #000; width: 100%; display: block; text-align: center; font-weight: bold; text-decoration: none; padding: 10px 0; border-radius: 5px;">
-                        <i class="fa-solid fa-gears"></i> CONFIGURAR ANÚNCIO
-                    </a>
-                </div>
-            }
-        </aside>
-    </div>
+            </aside>
+        </div>
+    }
 </main>
 
-@* MODAL DE PROPOSTA: APENAS PARA QUEM NÃO É O DONO *@
-@if (!Model.CanEdit)
+@* MODAL DE PROPOSTA *@
+@if (Model.Car != null && !Model.CanEdit)
 {
     <div class="modal fade" id="offerModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm-custom">
             <div class="modal-content luxury-modal-slim">
                 <div class="modal-body">
                     <button type="button" class="btn-close-luxury" data-bs-dismiss="modal">×</button>
-                    
+
                     <div class="luxury-form-header">
-                        <input type="hidden" id="hiddenCarId" value="@Model.Car?.CarId" />
-                        <span class="luxury subtitle">Private Offer</span>
+                        <input type="hidden" id="hiddenCarId" value="@Model.Car.CarId" />
+                        <span class="luxury-subtitle">Private Offer</span>
                         <h2 class="luxury-title">Formalizar Proposta</h2>
                     </div>
 
                     <div class="luxury-input-group">
                         <label>Valor da Oferta (€)</label>
                         <input type="number" id="offerValue" class="luxury-input main-value"
-                               value="@Model.Car?.CarPrice"
-                               placeholder="@Model.Car?.CarPrice" step="500">
+                               value="@Model.Car.CarPrice"
+                               placeholder="@Model.Car.CarPrice" step="500">
                     </div>
 
                     <div class="row g-2">
@@ -219,7 +251,7 @@
                     <button type="button" class="btn-luxury-submit" onclick="submitOffer()">
                         ENVIAR PROPOSTA EXCLUSIVA
                     </button>
-                    
+
                     <p class="luxury-footer-text">
                         <i class="fa-solid fa-shield-check"></i> Ligação segura e privada ao vendedor
                     </p>
@@ -270,9 +302,6 @@
                 console.error("Erro na ligação:", error);
             }
         }
-        
-       
     </script>
-
     <script src="~/js/submitOffer.js" asp-append-version="true"></script>
 }

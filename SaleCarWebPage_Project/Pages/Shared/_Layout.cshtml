@@ -15,19 +15,14 @@
     <link rel="stylesheet" href="~/css/global/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/global/styles.css" asp-append-version="true" />
 
-    @* FontAwesome para o ícone do Diamante preenchido (Favoritos) *@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
-    @* Toastr para notificações do botão de favoritos *@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
     @await RenderSectionAsync("Styles", required: false)
 
-    @* Scripts essenciais - ATUALIZADO PARA V7 *@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
-   
 </head>
 <body class="luxury-theme">
 
@@ -52,7 +47,6 @@
                         <span class="title">Dashboard</span>
                     </a>
                 </li>
-                @* Texto alterado para Anunciar, mantendo o link para SaleCar *@
                 <li class="list @IsActive("/SaleCar")">
                     <b></b><b></b>
                     <a asp-page="/saleCar">
@@ -67,6 +61,11 @@
                         <span class="title">Favoritos</span>
                     </a>
                 </li>
+
+                @* 
+                   Ajustado: Aponta para /viewCar. 
+                   No Code-behind do viewCar, deves tratar o id nulo para mostrar a Inbox. 
+                *@
                 <li class="list @IsActive("/viewCar")">
                     <b></b><b></b>
                     <a asp-page="/viewCar">
@@ -75,7 +74,7 @@
                     </a>
                 </li>
 
-                @if (User.IsInRole("Admin"))
+                @if (User.IsInRole("1") || User.IsInRole("Admin"))
                 {
                     <li class="list @IsActive("/pendingCar")">
                         <b></b><b></b>
@@ -134,12 +133,11 @@
             {
                 <div style="display: flex; flex-direction: column; align-items: flex-end;">
                     <span style="color: #d4af37; font-weight: 500;">Olá, @User.Identity.Name</span>
-                    @if (User.IsInRole("Admin"))
+                    @if (User.IsInRole("1") || User.IsInRole("Admin"))
                     {
                         <small style="color: #ff4d4d; font-size: 0.7em; text-transform: uppercase;">Administrador</small>
                     }
                 </div>
-                @* Avatar agora também é um link para o perfil *@
                 <a asp-page="/profile" class="user-avatar" style="width: 35px; height: 35px; background: #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; text-decoration: none;">
                     <ion-icon name="person"></ion-icon>
                 </a>
@@ -155,29 +153,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-        tsParticles.load("tsparticles", {
-        fpsLimit: 60,
-        particles: {
-        number: { value: 12, density: { enable: true, area: 800 } },
-        color: { value: "#ffffff" },
-        shape: { type: "circle" },
-        opacity: {
-        value: { min: 0.05, max: 0.15 },
-        animation: { enable: true, speed: 0.5, sync: false }
-        },
-        size: { value: { min: 150, max: 400 } },
-        move: {
-        enable: true,
-        speed: 0.8,
-        direction: "top-right",
-        random: true,
-        outModes: { default: "out" }
-        },
-        shadow: { enable: true, blur: 50, color: "#ffffff" }
-        },
-        detectRetina: true
+        $(document).ready(function() {
+            @if (TempData["Success"] != null)
+            {
+                    <text>toastr.success('@TempData["Success"]');</text>
+            }
+            @if (TempData["Error"] != null)
+            {
+                    <text>toastr.error('@TempData["Error"]');</text>
+            }
+            @if (TempData["Info"] != null)
+            {
+                    <text>toastr.info('@TempData["Info"]');</text>
+            }
         });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            tsParticles.load("tsparticles", {
+                fpsLimit: 60,
+                particles: {
+                    number: { value: 12, density: { enable: true, area: 800 } },
+                    color: { value: "#ffffff" },
+                    shape: { type: "circle" },
+                    opacity: {
+                        value: { min: 0.05, max: 0.15 },
+                        animation: { enable: true, speed: 0.5, sync: false }
+                    },
+                    size: { value: { min: 150, max: 400 } },
+                    move: {
+                        enable: true,
+                        speed: 0.8,
+                        direction: "top-right",
+                        random: true,
+                        outModes: { default: "out" }
+                    },
+                    shadow: { enable: true, blur: 50, color: "#ffffff" }
+                },
+                detectRetina: true
+            });
         });
     </script>
 

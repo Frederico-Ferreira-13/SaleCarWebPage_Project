@@ -65,7 +65,6 @@ namespace SaleCarWebPage_Project.Pages
                 return Page();
             }
 
-            // CORREÇÃO: Primeiro declaramos a variável, depois validamos
             var user = authResult.Value;
 
             if (!user.IsApproved)
@@ -74,18 +73,27 @@ namespace SaleCarWebPage_Project.Pages
                 return Page();
             }
 
+            // --- ALTERAÇÃO PARA COMPATIBILIDADE COM PERMISSÕES ---
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.UsersRoleId == 1 ? "Admin" : "User")
+                // Guardamos o ID numérico da Role como string (ex: "1") 
+                // para que User.IsInRole("1") funcione no resto do projeto.
+                new Claim(ClaimTypes.Role, user.UsersRoleId.ToString())
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity));
+                new ClaimsPrincipal(claimsIdentity),
+                new AuthenticationProperties
+                {
+                    IsPersistent = true, // Mantém o utilizador logado após fechar o browser
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
+                });
 
             return LocalRedirect(returnUrl ?? "/Index");
         }
@@ -108,6 +116,13 @@ namespace SaleCarWebPage_Project.Pages
 
             ModelState.AddModelError(string.Empty, result.Message ?? "Erro ao registar.");
             return Page();
+        }
+
+        // Adicionado para facilitar o Logout
+        public async Task<IActionResult> OnPostLogoutAsync()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToPage("/Index");
         }
     }
 }

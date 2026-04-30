@@ -5,16 +5,66 @@
 }
 
 @section Styles {
-    @* Reutilizamos o CSS da SaleCar para manter a consistência *@
+    @* Reutilizamos o CSS da SaleCar para manter a consistência visual e o sistema de grids *@
     <link rel="stylesheet" href="~/css/pages/saleCar.css" asp-append-version="true" />
+    <style>
+        .badge-edit {
+            background: #d4af37;
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.7em;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+
+        .image-preview-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #imagePreview {
+            max-width: 300px;
+            border-radius: 15px;
+            border: 2px solid #d4af37;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #444;
+            color: #fff;
+            text-decoration: none;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .btn-cancel:hover {
+                background: rgba(255,255,255,0.1);
+                color: #fff;
+            }
+
+        .edit-actions-row {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+    </style>
 }
 
 <div class="sale-container">
     <div class="luxury-form-card">
         <div class="form-header">
             <span class="badge-edit">MODO EDIÇÃO</span>
-            <h3>@Model.CarToEdit.Model?.Brand?.BrandName @Model.CarToEdit.Model?.ModelName</h3>
-            <p style="color: #888;">Atualize os detalhes do seu anúncio exclusivo.</p>
+            <h3 class="mt-3">@Model.CarToEdit.Model?.Brand?.BrandName @Model.CarToEdit.Model?.ModelName</h3>
+            <p style="color: #888;">Refine os detalhes deste veículo exclusivo para manter o padrão premium.</p>
         </div>
 
         <form method="post">
@@ -23,76 +73,122 @@
 
             <div class="form-section-title">Informação Principal</div>
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-4">
                     <label>Marca</label>
                     <select asp-for="CarToEdit.Model.BrandId" class="form-control input-premium" asp-items="Model.BrandList">
                     </select>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label>Modelo (Texto)</label>
-                    <input type="text" asp-for="CarToEdit.Model.ModelName" class="form-control input-premium" />
+                <div class="col-md-6 mb-4">
+                    <label>Modelo</label>
+                    <input type="text" asp-for="CarToEdit.Model.ModelName" class="form-control input-premium" placeholder="Nome do modelo" />
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-4">
                     <label>Ano</label>
                     <input asp-for="CarToEdit.Year" class="form-control input-premium" type="number" />
                 </div>
-                <div class="col-md-4 mb-3">
-                    <label>Preço Atual (€)</label>
+                <div class="col-md-4 mb-4">
+                    <label>Preço (€)</label>
                     <input asp-for="CarToEdit.CarPrice" class="form-control input-premium" type="number" />
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-4 mb-4">
                     <label>Categoria</label>
-                    <input asp-for="CarToEdit.Category" class="form-control input-premium" placeholder="Ex: Sedan, SUV..." />
+                    <input asp-for="CarToEdit.Category" class="form-control input-premium" placeholder="Ex: Sedan, SUV, Cabrio..." />
                 </div>
             </div>
 
             <div class="form-section-title">Especificações Técnicas</div>
+
+            <div class="mb-4">
+                <label>Combustível</label>
+                <div class="luxury-selector-grid">
+                    @foreach (var fuel in new[] { "Gasolina", "Diesel", "Híbrido", "Elétrico" })
+                    {
+                        <label>
+                            <input type="radio" asp-for="CarToEdit.TypeOfFuel" value="@fuel" class="luxury-radio">
+                            <div class="luxury-card">
+                                <ion-icon name="@(fuel switch { "Gasolina" => "water-outline", "Diesel" => "leaf-outline", "Híbrido" => "infinite-outline", _ => "flash-outline" })"></ion-icon>
+                                <span>@fuel</span>
+                            </div>
+                        </label>
+                    }
+                </div>
+            </div>
+
             <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label>Combustível</label>
-                    <select asp-for="CarToEdit.TypeOfFuel" class="form-control input-premium" asp-items="Model.FuelList"></select>
-                </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-7 mb-4">
                     <label>Transmissão</label>
-                    <select asp-for="CarToEdit.Transmission" class="form-control input-premium" asp-items="Model.TransmissionList"></select>
+                    <div class="luxury-selector-grid">
+                        <label>
+                            <input type="radio" asp-for="CarToEdit.Transmission" value="Manual" class="luxury-radio">
+                            <div class="luxury-card">
+                                <ion-icon name="settings-outline"></ion-icon>
+                                <span>Manual</span>
+                            </div>
+                        </label>
+                        <label>
+                            <input type="radio" asp-for="CarToEdit.Transmission" value="Automática" class="luxury-radio">
+                            <div class="luxury-card">
+                                <ion-icon name="speedometer-outline"></ion-icon>
+                                <span>Automática</span>
+                            </div>
+                        </label>
+                    </div>
                 </div>
-                <div class="col-md-4 mb-3">
+                <div class="col-md-5 mb-4">
                     <label>Quilómetros (Km)</label>
                     <input asp-for="CarToEdit.Kilometers" class="form-control input-premium" type="number" />
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-4">
                     <label>Matrícula</label>
-                    <input asp-for="CarToEdit.PlateNumber" class="form-control input-premium" />
+                    <input asp-for="CarToEdit.PlateNumber" class="form-control input-premium" placeholder="00-AA-00" />
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-4">
                     <label>Cor Exterior</label>
-                    <input asp-for="CarToEdit.CarColor" class="form-control input-premium" />
+                    <input asp-for="CarToEdit.CarColor" class="form-control input-premium" placeholder="Ex: Preto Metalizado" />
                 </div>
             </div>
 
-            <div class="form-section-title">Visual</div>
+            <div class="form-section-title">Visual e Imagem</div>
             <div class="row">
-                <div class="col-md-12 mb-3">
+                <div class="col-md-12 mb-4">
                     <label>URL da Imagem Principal</label>
-                    <input asp-for="CarToEdit.ImageUrl" class="form-control input-premium" />
-                    <div class="mt-2 text-center">
-                        <img src="@Model.CarToEdit.ImageUrl" style="max-width: 200px; border-radius: 10px; border: 1px solid #d4af37;" />
+                    <input asp-for="CarToEdit.ImageUrl" class="form-control input-premium" id="imageUrlInput" placeholder="https://link-da-imagem.jpg" />
+
+                    <div class="image-preview-container">
+                        <p style="font-size: 0.8em; color: #888; margin-bottom: 10px;">Pré-visualização do Veículo:</p>
+                        <img src="@Model.CarToEdit.ImageUrl" id="imagePreview" alt="Pré-visualização" onerror="this.src='/images/placeholder-car.jpg';" />
                     </div>
                 </div>
             </div>
 
             <div class="edit-actions-row">
-                <a href="/viewCar/@Model.CarToEdit.CarId" class="btn-cancel">Cancelar</a>
-                <button type="submit" class="btn-publish-luxury">
-                    Guardar Alterações
+                <a href="/viewCar/@Model.CarToEdit.CarId" class="btn-cancel">
+                    <ion-icon name="close-outline" style="margin-right: 8px;"></ion-icon> Cancelar
+                </a>
+                <button type="submit" class="btn-publish-luxury" style="flex: 2;">
+                    <ion-icon name="checkmark-done-outline" style="margin-right: 8px;"></ion-icon> Guardar Alterações
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Atualização da imagem em tempo real ao editar o URL
+        const urlInput = document.getElementById('imageUrlInput');
+        const imgPreview = document.getElementById('imagePreview');
+
+        urlInput.addEventListener('input', function() {
+            if (this.value.trim() !== "") {
+                imgPreview.src = this.value;
+            }
+        });
+    </script>
+}
