@@ -69,7 +69,7 @@ namespace SaleCarWebPage_Project.Pages
 
             Car = result.Value;
 
-            CanEdit = User.IsInRole("1") || (currentUserId.HasValue && Car.ProviderId == currentUserId.Value);
+            CanEdit = User.IsInRole("1") || (currentUserId.HasValue && Car.Provider?.UserId == currentUserId.Value);
 
             if (CanEdit)
             {

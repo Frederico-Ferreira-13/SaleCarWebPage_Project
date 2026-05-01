@@ -17,18 +17,17 @@
 <main class="car-view-container">
     @if (Model.Car == null)
     {
-        @* --- MODO INBOX / MENSAGENS GERAIS (DESIGN PREMIUM) --- *@
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <div class="inbox-premium-header mb-4 text-center">
-                        <h2 class="section-title"><i class="fa-solid fa-envelope-open-text"></i> Centro de Mensagens</h2>
-                        <p class="text-muted">Acompanhe as suas negociações e conversas ativas</p>
-                    </div>
+        @* --- MODO INBOX / MENSAGENS GERAIS --- *@
+        <div class="inbox-container">
+            <header class="inbox-premium-header">
+                <h2 class="section-title">
+                    <i class="fa-solid fa-envelope-open-text"></i> Centro de Mensagens
+                </h2>
+                <p class="section-subtitle">Acompanhe as suas negociações e conversas ativas</p>
+            </header>
 
-                    @* Chamamos a mesma Partial que usas no carro, mas aqui ela ocupa o ecrã todo *@
-                    <partial name="_messageBox" model="Model.MessageBoxData" />
-                </div>
+            <div class="inbox-content">
+                <partial name="_messageBox" model="Model.MessageBoxData" />
             </div>
         </div>
     }
@@ -50,7 +49,7 @@
                     </div>
                 </div>
 
-                <div class="details-section">
+                <section class="details-section">
                     <h3 class="section-title"><i class="fa-solid fa-microchip"></i> Especificações Técnicas</h3>
                     <div class="details-grid">
                         <div class="detail-box">
@@ -70,81 +69,92 @@
                             <span class="detail-value">@Model.Car?.EngineCapacity cc</span>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <div class="details-section">
+                <section class="details-section">
                     <h3 class="section-title"><i class="fa-solid fa-location-dot"></i> Localização do Veículo</h3>
                     <div class="address-card">
                         @if (Model.Car?.Provider?.Address != null)
                         {
-                            <p><strong>@Model.Car.Provider.Address.Locate</strong></p>
-                            <p>@Model.Car.Provider.Address.City, @Model.Car.Provider.Address.Country</p>
-                            <small>C.P: @Model.Car.Provider.Address.PostalCode</small>
+                            <p class="address-main">@Model.Car.Provider.Address.Locate</p>
+                            <p class="address-sub">@Model.Car.Provider.Address.City, @Model.Car.Provider.Address.Country</p>
+                            <small class="postal-code">C.P: @Model.Car.Provider.Address.PostalCode</small>
                         }
                         else
                         {
-                            <p>Localização sob consulta</p>
+                            <p class="no-location">Localização sob consulta</p>
                         }
-                </div>
-            </div>
-        </div>
-
-        @* LADO DIREITO: SIDEBAR *@
-        <aside class="car-specs-sidebar">
-            <div class="specs-header">
-                <span class="brand-label">@Model.Car?.Model?.Brand?.BrandName</span>
-                <h1>@Model.Car?.Model?.ModelName</h1>
-                <div class="price-container">
-                    <span class="currency">€</span>
-                    <span class="amount">@Model.Car?.CarPrice.ToString("N0")</span>
-                </div>
+                    </div>
+                </section>
             </div>
 
-            <div class="quick-specs-grid">
-                <div class="q-spec">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <div>
-                        <label>Ano</label>
-                        <span class="spec-value">@Model.Car?.Year</span>
+            @* LADO DIREITO: SIDEBAR *@
+            <aside class="car-specs-sidebar">
+                <header class="specs-header">
+                    <span class="brand-label">@Model.Car?.Model?.Brand?.BrandName</span>
+                    <h1 class="car-title">@Model.Car?.Model?.ModelName</h1>
+                    <div class="price-container">
+                        <span class="currency">€</span>
+                        <span class="amount">@Model.Car?.CarPrice.ToString("N0")</span>
                     </div>
-                </div>
-                <div class="q-spec">
-                    <i class="fa-solid fa-gauge-high"></i>
-                    <div>
-                        <label>Kms</label>
-                        <span class="spec-value">@Model.Car?.Kilometers.ToString("N0") km</span>
-                    </div>
-                </div>
-                <div class="q-spec">
-                    <i class="fa-solid fa-gas-pump"></i>
-                    <div>
-                        <label>Combustível</label>
-                        <span class="spec-value">@Model.Car?.TypeOfFuel</span>
-                    </div>
-                </div>
-                <div class="q-spec">
-                    <i class="fa-solid fa-circle-dot"></i>
-                    <div>
-                        <label>Caixa</label>
-                        <span class="spec-value">@Model.Car?.Transmission</span>
-                    </div>
-                </div>
-            </div>
+                </header>
 
-            <div class="seller-card">
-                <div class="seller-header">
-                    <div class="seller-avatar-init">
-                        @(!string.IsNullOrEmpty(Model.Car?.Provider?.NameProvider)
-                                                ? Model.Car.Provider.NameProvider.Substring(0, 1).ToUpper()
-                                                : "V")
+                <div class="quick-specs-grid">
+                    <div class="q-spec">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <div class="q-spec-data">
+                            <label>Ano</label>
+                            <span class="spec-value">@Model.Car?.Year</span>
+                        </div>
                     </div>
-                    <div class="seller-meta">
-                        <span class="seller-type">Vendedor Profissional</span>
-                        <span class="seller-name">@(Model.Car?.Provider?.NameProvider ?? "Vendedor Particular")</span>
+                    <div class="q-spec">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        <div class="q-spec-data">
+                            <label>Kms</label>
+                            <span class="spec-value">@Model.Car?.Kilometers.ToString("N0") km</span>
+                        </div>
+                    </div>
+                    <div class="q-spec">
+                        <i class="fa-solid fa-gas-pump"></i>
+                        <div class="q-spec-data">
+                            <label>Combustível</label>
+                            <span class="spec-value">@Model.Car?.TypeOfFuel</span>
+                        </div>
+                    </div>
+                    <div class="q-spec">
+                        <i class="fa-solid fa-circle-dot"></i>
+                        <div class="q-spec-data">
+                            <label>Caixa</label>
+                            <span class="spec-value">@Model.Car?.Transmission</span>
+                        </div>
                     </div>
                 </div>
 
-                @if (!string.IsNullOrEmpty(Model.Car?.Provider?.CompanyName))
+                <div class="seller-card">
+                    <div class="seller-header">
+                        <div class="seller-avatar-wrapper">
+                            @if (Model.Car?.Provider?.User != null && !string.IsNullOrEmpty(Model.Car.Provider.User.ProfilePicture))
+                            {
+                                <img src="@Model.Car.Provider.User.ProfilePicture" alt="Vendedor" class="seller-avatar-img">
+                            }
+                            else
+                            {
+                                <div class="seller-avatar-init">
+                                    @(!string.IsNullOrEmpty(Model.Car?.Provider?.NameProvider)
+                                        ? Model.Car.Provider.NameProvider.Substring(0, 1).ToUpper()
+                                        : "V")
+                                </div>
+                            }
+                            <div class="online-indicator"></div>
+                        </div>
+
+                        <div class="seller-meta">
+                            <span class="seller-type">Vendedor Profissional</span>
+                            <span class="seller-name">@(Model.Car?.Provider?.NameProvider ?? "Vendedor Particular")</span>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Car?.Provider?.CompanyName))
                     {
                         <p class="company-name"><i class="fa-solid fa-building"></i> @Model.Car.Provider.CompanyName</p>
                     }
@@ -155,19 +165,21 @@
                             <h4 class="owner-title"><i class="fa-solid fa-bell"></i> Propostas Recebidas</h4>
                             @if (Model.Car?.Proposals != null && Model.Car.Proposals.Any())
                             {
-                                @foreach (var proposta in Model.Car.Proposals)
-                                {
-                                    <div class="proposal-item">
-                                        <p>
-                                            <strong>@(proposta.Client?.Name ?? "Utilizador #" + proposta.ClientId)</strong>
-                                            ofereceu <span class="prop-val">@proposta.FinalPrice.ToString("N0") €</span>
-                                        </p>
-                                        <small>
-                                            <i class="fa-solid fa-wallet"></i> @proposta.PaymentMethod |
-                                            <i class="fa-solid fa-clock"></i> @proposta.SaleDate.ToShortDateString()
-                                        </small>
-                                    </div>
-                                }
+                                <div class="proposals-list">
+                                    @foreach (var proposta in Model.Car.Proposals)
+                                    {
+                                        <div class="proposal-card-mini">
+                                            <div class="prop-info">
+                                                <span class="prop-user">@(proposta.Client?.Name ?? "Utilizador #" + proposta.ClientId)</span>
+                                                <span class="prop-price">@proposta.FinalPrice.ToString("N0") €</span>
+                                            </div>
+                                            <div class="prop-details">
+                                                <span><i class="fa-solid fa-wallet"></i> @proposta.PaymentMethod</span>
+                                                <span><i class="fa-solid fa-clock"></i> @proposta.SaleDate.ToShortDateString()</span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
                             }
                             else
                             {
@@ -233,18 +245,14 @@
                                placeholder="@Model.Car.CarPrice" step="500">
                     </div>
 
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <div class="luxury-input-group">
-                                <label>NIF (Opcional)</label>
-                                <input type="text" id="offerNif" class="luxury-input" placeholder="000 000 000" maxlength="9">
-                            </div>
+                    <div class="luxury-input-row">
+                        <div class="luxury-input-group">
+                            <label>NIF (Opcional)</label>
+                            <input type="text" id="offerNif" class="luxury-input" placeholder="000 000 000" maxlength="9">
                         </div>
-                        <div class="col-6">
-                            <div class="luxury-input-group">
-                                <label>Contacto</label>
-                                <input type="tel" id="offerContact" class="luxury-input" placeholder="912 345 678">
-                            </div>
+                        <div class="luxury-input-group">
+                            <label>Contacto</label>
+                            <input type="tel" id="offerContact" class="luxury-input" placeholder="912 345 678">
                         </div>
                     </div>
 
@@ -252,9 +260,9 @@
                         ENVIAR PROPOSTA EXCLUSIVA
                     </button>
 
-                    <p class="luxury-footer-text">
+                    <footer class="luxury-modal-footer">
                         <i class="fa-solid fa-shield-check"></i> Ligação segura e privada ao vendedor
-                    </p>
+                    </footer>
                 </div>
             </div>
         </div>
