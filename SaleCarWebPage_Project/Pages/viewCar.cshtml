@@ -169,30 +169,35 @@
                                     @foreach (var proposta in Model.Car.Proposals)
                                     {
                                         <div class="proposal-card-mini">
-                                            <div class="prop-info">
-                                                <span class="prop-user">@(proposta.Client?.Name ?? "Utilizador #" + proposta.ClientId)</span>
+                                            <div class="prop-main-info">
+                                                @* Se o Name vier nulo, tentamos o UserName do Identity *@
+                                                <span class="prop-user">
+                                                    <i class="fa-solid fa-user-tag"></i>
+                                                    @(proposta.Client?.ClientName ?? proposta.Client?.User?.UserName ?? "Utilizador Indisponível")
+                                                </span>
                                                 <span class="prop-price">@proposta.FinalPrice.ToString("N0") €</span>
                                             </div>
-                                            <div class="prop-details">
-                                                <span><i class="fa-solid fa-wallet"></i> @proposta.PaymentMethod</span>
-                                                <span><i class="fa-solid fa-clock"></i> @proposta.SaleDate.ToShortDateString()</span>
+                                            <div class="prop-meta">
+                                                <span class="prop-detail"><i class="fa-solid fa-wallet"></i> @proposta.PaymentMethod</span>
+                                                <span class="prop-detail"><i class="fa-solid fa-calendar-day"></i> @proposta.SaleDate.ToString("dd/MM/yyyy")</span>
                                             </div>
+                                            @if (proposta.Client?.Contact != null)
+                                            {
+                                                <div class="prop-contact">
+                                                    <i class="fa-solid fa-phone"></i> @proposta.Client.Contact.PhoneNumber
+                                                </div>
+                                            }
                                         </div>
                                     }
                                 </div>
                             }
                             else
                             {
-                                <p class="no-proposals">Ainda sem propostas recebidas.</p>
+                                <div class="no-proposals-empty">
+                                    <i class="fa-solid fa-box-open"></i>
+                                    <p>Ainda sem propostas recebidas.</p>
+                                </div>
                             }
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="offer-container">
-                            <button type="button" class="btn-make-offer" data-bs-toggle="modal" data-bs-target="#offerModal">
-                                <i class="fa-solid fa-hand-holding-dollar"></i> FAZER PROPOSTA OFICIAL
-                            </button>
                         </div>
                     }
 

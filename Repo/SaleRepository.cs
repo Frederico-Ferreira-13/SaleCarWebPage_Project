@@ -31,10 +31,13 @@ namespace SaleCarWebPage_Project.Repo
         public async Task<IEnumerable<Sale>> GetProposalsByCarIdAsync(int carId)
         {
             return await _context.Set<Sale>()
-                                 .Include(s => s.Client) 
-                                 .Where(s => s.CarId == carId)
-                                 .OrderByDescending(s => s.SaleDate)
-                                 .ToListAsync();
+                    .Include(s => s.Client)
+                        .ThenInclude(c => c.User)
+                    .Include(s => s.Client)
+                        .ThenInclude(c => c.Contact)
+                    .Where(s => s.CarId == carId)
+                    .OrderByDescending(s => s.SaleDate)
+                    .ToListAsync();
         }
     }
 }

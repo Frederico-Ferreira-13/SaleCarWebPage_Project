@@ -93,7 +93,10 @@ namespace Services
                 var proposals = await _unitOfWork.Sales.GetByCarIdAsync(carId);
 
                 var allSales = await _unitOfWork.Sales.GetAllAsync();
-                var carProposals = allSales.Where(s => s.CarId == carId).ToList();
+                var carProposals = allSales
+                    .Where(s => s.CarId == carId)
+                    .OrderByDescending(s => s.SaleDate)
+                    .ToList();
 
                 return Result<IEnumerable<Sale>>.Success(carProposals);
             }

@@ -17,9 +17,9 @@ namespace Core.Model
         public decimal FinalPrice { get; private set; }
         public DateTime PurchaseDate { get; private set; }
         public string PaymentMethod { get; private set; } = string.Empty;
-        
+
         [ForeignKey("ClientId")]
-        public virtual Users? Client { get; private set; }
+        public virtual Client? Client { get; private set; }
 
         public Sale() { }
 
