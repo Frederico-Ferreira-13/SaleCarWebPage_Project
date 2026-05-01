@@ -48,7 +48,9 @@ namespace SaleCarWebPage_Project.Pages
             new SelectListItem { Value = "Avaliação de Retoma", Text = "Avaliação de Retoma" }
         };
 
-        public _messageBoxModel MessageBoxData { get; set; }        
+        public _messageBoxModel MessageBoxData { get; set; }
+
+        public _proposalBoxModel ProposalBoxData { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -102,6 +104,15 @@ namespace SaleCarWebPage_Project.Pages
                 
                 };
             }
+
+            ProposalBoxData = new _proposalBoxModel
+            {
+                CarId = id,
+                CurrentUserId = currentUserId,
+                IsSellerView = CanEdit,                
+                ProposalHistory = Car.Proposals?.ToList() ?? new List<Sale>(),
+                ReadOnly = false
+            };
 
             return Page();
         }
@@ -186,7 +197,8 @@ namespace SaleCarWebPage_Project.Pages
                     DateTime.Now,
                     offerValue,
                     DateTime.Now,
-                    $"Proposta via Web - Contacto: {contact}"
+                    $"Proposta via Web - Contacto: {contact}",
+                    $"Contacto do interessado: {contact}"
                 );
 
                 var result = await _saleService.AddAsync(newProposal);

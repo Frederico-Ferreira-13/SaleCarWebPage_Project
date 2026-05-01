@@ -90,15 +90,9 @@ namespace Services
         {
             try
             {
-                var proposals = await _unitOfWork.Sales.GetByCarIdAsync(carId);
+                var proposals = await _unitOfWork.Sales.GetProposalsByCarIdAsync(carId);               
 
-                var allSales = await _unitOfWork.Sales.GetAllAsync();
-                var carProposals = allSales
-                    .Where(s => s.CarId == carId)
-                    .OrderByDescending(s => s.SaleDate)
-                    .ToList();
-
-                return Result<IEnumerable<Sale>>.Success(carProposals);
+                return Result<IEnumerable<Sale>>.Success(proposals);
             }
             catch (Exception ex)
             {
@@ -121,6 +115,9 @@ namespace Services
             var client = clients.FirstOrDefault(c => c.UserId == userId);
             if (client != null) return client.ClientId;
 
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
+            string realName = user?.Name ?? "Utilizador Desconhecido";
+
             // 2. Se não existe, vamos tentar copiar os dados do perfil de Provider (Vendedor)
             var providers = await _unitOfWork.Providers.GetAllAsync();
             var provider = providers.FirstOrDefault(p => p.UserId == userId);
@@ -142,13 +139,43 @@ namespace Services
             {
                 // Se nem como provider existe (user novo), cria com dados genéricos 
                 // ou redireciona para completar perfil
-                newClient = new Client("Utilizador Registado", "000000000", 1, userId, 1);
+                newClient = new Client(realName, "000000000", 1, userId, 1);
             }
 
             await _unitOfWork.Clients.AddAsync(newClient);
             await _unitOfWork.CommitAsync();
 
             return newClient.ClientId;
+        }
+
+        public async Task<Result<IEnumerable<Sale>>> GetAllAsync()
+        {
+            try
+            {
+                // Busca todas as vendas/propostas através do repositório
+                var sales = await _unitOfWork.Sales.GetAllAsync();
+                return Result<IEnumerable<Sale>>.Success(sales);
+            }
+            catch (Exception ex)
+            {
+                return Result<IEnumerable<Sale>>.Failure(Error.InternalServer($"Erro ao obter propostas: {ex.Message}"));
+            }
+        }
+
+        public async Task<Result<IEnumerable<Sale>>> GetProposalsByUserIdAsync(int userId)
+        {
+            try
+            {                
+                var allSales = await _unitOfWork.Sales.GetAllAsync();
+                
+                var userSales = allSales.Where(s => s.ClientId == userId || s.CarId != 0);
+
+                return Result<IEnumerable<Sale>>.Success(userSales);
+            }
+            catch (Exception ex)
+            {
+                return Result<IEnumerable<Sale>>.Failure(Error.InternalServer($"Erro: {ex.Message}"));
+            }
         }
     }
 }

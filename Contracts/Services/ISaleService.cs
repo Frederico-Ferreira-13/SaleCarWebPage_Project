@@ -21,5 +21,11 @@ namespace Contracts.Services
         Task<int?> GetClientIdByUserIdAsync(int userId);
 
         Task<int> EnsureClientProfileExistsAsync(int userId);
+
+        Task<Result<IEnumerable<Sale>>> GetAllAsync();
+
+        Task<Result<IEnumerable<Sale>>> GetProposalsByUserIdAsync(int userId);
+
+
     }
 }

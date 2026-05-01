@@ -1,0 +1,141 @@
+﻿@page "{carId:int?}"
+@model SaleCarWebPage_Project.Pages.NegotiationsModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Negociar Veículo";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/messageBox.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/proposal.css" asp-append-version="true" />    
+}
+
+<div class="negotiations-container">
+    <header class="negotiations-header">
+        <h2 class="gold-title">
+            <i class="fa-solid fa-handshake"></i> NEGOCIAÇÕES ATIVAS
+        </h2>
+    </header>
+
+    @if (!Model.Negotiations.Any())
+    {
+        <div class="empty-state">
+            <i class="fa-solid fa-folder-open empty-icon"></i>
+            <p>Ainda não iniciaste nenhuma negociação.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var neg in Model.Negotiations)
+        {
+            var collapseId = $"neg-{neg.SaleId}";
+            
+            <div class="conv-card shadow-lg">
+                @* CABEÇALHO *@
+                <div onclick="toggleConv('@collapseId')" class="conv-header">
+                    
+                    <div class="car-image-wrapper">
+                        <img src="@neg.CarImage" alt="@neg.CarName" class="car-thumb" />
+                        @if (!neg.IsRead)
+                        {
+                            <span class="unread-indicator"></span>
+                        }
+                    </div>
+
+                    <div class="header-info">
+                        <div class="header-top-row">
+                            <span class="car-name">@neg.CarName</span>
+                            <span class="proposal-value">@neg.LastOfferValue.ToString("C0")</span>
+                        </div>
+                        <div class="header-bottom-row">
+                            <span class="user-info">
+                                <i class="fa-solid fa-user-circle"></i> @neg.OtherPartyName
+                            </span>
+                            <span class="negotiation-status">
+                                @(neg.IsAccepted ? "Proposta Aceite" : "Aguardar Resposta")
+                            </span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down conv-arrow" id="arrow-@collapseId"></i>
+                </div>
+
+                @* CONTEÚDO EXPANSÍVEL *@
+                <div id="@collapseId" class="conv-content" style="display: none;">
+                    <div class="negotiation-grid">
+                        
+                        @* COLUNA ESQUERDA: HISTÓRICO *@
+                        <div class="proposal-column">
+                            <span class="section-label">Histórico de Ofertas</span>
+                            <div class="proposal-timeline">
+                                @foreach (var offer in neg.Offers)
+                                {
+                                    <div class="proposal-item">
+                                        <div class="proposal-badge"><i class="fa-solid fa-check"></i></div>
+                                        <div class="proposal-content">                                            
+                                            <div class="proposal-value-small">@offer.FinalPrice.ToString("C0")</div>                                            
+                                            <div class="proposal-date">@offer.SaleDate.ToString("dd MMM, HH:mm")</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        @* COLUNA DIREITA: CHAT *@
+                        <div class="chat-column">
+                            <span class="section-label">Mensagens de Apoio</span>
+                            <div class="chat-scroll-area">
+                                <partial name="_messageBox" model="neg.MessageBoxData" />
+                            </div>
+                        </div>
+                    </div>
+
+                    @* RODAPÉ DE AÇÕES *@
+                    <div class="negotiation-footer">
+                        <a href="/viewCar/@neg.CarId" class="back-link">
+                            <i class="fa-solid fa-arrow-left"></i> Ver Anúncio
+                        </a>
+
+                        <div class="footer-actions">
+                            @if (!neg.IsAccepted)
+                            {
+                                @if (neg.ProposalData.IsSellerView) // Precisas desta flag no teu Model de negociações
+                                {
+                                    <button class="btn-accept-luxury" onclick="handleProposal(@neg.SaleId, 'accept')">
+                                        <i class="fa-solid fa-check"></i> ACEITAR
+                                    </button>
+                                    <button class="btn-decline-luxury" onclick="handleProposal(@neg.SaleId, 'decline')">
+                                        RECUSAR
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="btn-action-luxury" data-bs-toggle="modal" data-bs-target="#offerModal">
+                                        MELHORAR OFERTA
+                                    </button>
+                                }
+                            }
+                            else
+                            {
+                                <span class="status-badge-success"><i class="fa-solid fa-circle-check"></i> NEGÓCIO FECHADO</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function toggleConv(id) {
+            const content = document.getElementById(id);
+            const arrow = document.getElementById('arrow-' + id);
+            const isOpen = content.style.display !== 'none';
+            
+            content.style.display = isOpen ? 'none' : 'block';
+            arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+    </script>
+}
+

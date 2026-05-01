@@ -12,18 +12,19 @@ namespace Core.Model
         [Key]
         public int SaleId { get; private set; }
         public int CarId { get; private set; }
-        public int ClientId { get; private set; }        
+        public int? ClientId { get; private set; }        
         public DateTime SaleDate { get; private set; }
         public decimal FinalPrice { get; private set; }
         public DateTime PurchaseDate { get; private set; }
         public string PaymentMethod { get; private set; } = string.Empty;
+        public string Observations { get; private set; } = string.Empty;
 
         [ForeignKey("ClientId")]
         public virtual Client? Client { get; private set; }
 
         public Sale() { }
 
-        public Sale(int carId, int clientId, DateTime saleDate, decimal finalPrice, DateTime purchaseDate, string paymentMethod)
+        public Sale(int carId, int? clientId, DateTime saleDate, decimal finalPrice, DateTime purchaseDate, string paymentMethod, string observations = "")
         {
             ValidateSaleData(carId, clientId, saleDate, finalPrice, purchaseDate, paymentMethod);
             CarId = carId;
@@ -32,9 +33,10 @@ namespace Core.Model
             FinalPrice = finalPrice;
             PurchaseDate = purchaseDate;
             PaymentMethod = paymentMethod;
+            Observations = observations;
         }
 
-        public Sale(int saleId, int carId, int clientId, DateTime saleDate, decimal finalPrice, DateTime purchaseDate, string paymentMethod)
+        public Sale(int saleId, int carId, int? clientId, DateTime saleDate, decimal finalPrice, DateTime purchaseDate, string paymentMethod)
             : this(carId, clientId, saleDate, finalPrice, purchaseDate, paymentMethod)
         {
             if (saleId <= 0)
@@ -45,7 +47,7 @@ namespace Core.Model
             SaleId = saleId;
         }       
 
-        public void UpdateSale(int newCarId, int newClientId, DateTime newSaleDate, decimal newFinalPrice, DateTime newPurchaseDate, string newPaymentMethod)
+        public void UpdateSale(int newCarId, int? newClientId, DateTime newSaleDate, decimal newFinalPrice, DateTime newPurchaseDate, string newPaymentMethod)
         {
             ValidateSaleData(newCarId, newClientId, newSaleDate, newFinalPrice, newPurchaseDate, newPaymentMethod);
 
@@ -57,7 +59,7 @@ namespace Core.Model
             PaymentMethod = newPaymentMethod;
         }
 
-        private static void ValidateSaleData(int carId, int clientId, DateTime saleDate, decimal finalPrice, DateTime purchaseDate, string paymentMethod)
+        private static void ValidateSaleData(int carId, int? clientId, DateTime saleDate, decimal finalPrice, DateTime purchaseDate, string paymentMethod)
         {
             if (carId <= 0)
             {

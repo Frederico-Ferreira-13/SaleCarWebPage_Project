@@ -1,0 +1,33 @@
+﻿@model SaleCarWebPage_Project.Pages.Shared._proposalBoxModel
+
+<div class="proposal-card-luxury">
+    <div class="proposal-header-luxury">
+        <div class="title-group">
+            <i class="fa-solid fa-clock-rotate-left gold-icon"></i>
+            <h4 class="luxury-label">HISTÓRICO DE OFERTAS</h4>
+        </div>
+    </div>
+
+    <div class="proposal-body-luxury">
+        @if (Model.ProposalHistory != null && Model.ProposalHistory.Any())
+        {
+            <div class="luxury-timeline">
+                @foreach (var proposal in Model.ProposalHistory.OrderByDescending(p => p.SaleDate))
+                {
+                    <div class="luxury-item @(proposal == Model.ProposalHistory.First() ? "latest-proposal" : "")">
+                        <div class="item-details">
+                            <span class="item-price">@proposal.FinalPrice.ToString("N0") €</span>
+                            <span class="item-date">@proposal.SaleDate.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="luxury-empty">
+                <p>Sem propostas efetuadas.</p>
+            </div>
+        }
+    </div>
+</div>

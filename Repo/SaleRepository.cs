@@ -32,11 +32,10 @@ namespace SaleCarWebPage_Project.Repo
         {
             return await _context.Set<Sale>()
                     .Include(s => s.Client)
-                        .ThenInclude(c => c.User)
-                    .Include(s => s.Client)
-                        .ThenInclude(c => c.Contact)
+                    .ThenInclude(cl => cl.User)
                     .Where(s => s.CarId == carId)
                     .OrderByDescending(s => s.SaleDate)
+                    .AsNoTracking()
                     .ToListAsync();
         }
     }

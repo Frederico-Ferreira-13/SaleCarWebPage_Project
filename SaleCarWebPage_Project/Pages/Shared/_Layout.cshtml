@@ -61,16 +61,20 @@
                         <span class="title">Favoritos</span>
                     </a>
                 </li>
-
-                @* 
-                   Ajustado: Aponta para /viewCar. 
-                   No Code-behind do viewCar, deves tratar o id nulo para mostrar a Inbox. 
-                *@
+                
                 <li class="list @IsActive("/messagesPage")">
                     <b></b><b></b>
                     <a asp-page="/messagesPage">
                         <span class="icon"><ion-icon name="chatbubbles-outline"></ion-icon></span>
                         <span class="title">Mensagens</span>
+                    </a>
+                </li>
+
+                <li class="list @IsActive("/Negotiations")">
+                    <b></b><b></b>
+                    <a asp-page="/Negotiations">
+                        <span class="icon"><i class="fa-solid fa-handshake"></i></span>
+                        <span class="title">Negociações</span>
                     </a>
                 </li>
 
