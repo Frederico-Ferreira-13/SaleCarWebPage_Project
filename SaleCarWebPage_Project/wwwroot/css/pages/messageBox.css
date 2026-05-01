@@ -30,17 +30,7 @@
     font-weight: 800;
 }
 
-/* --- LISTA DE CONVERSAS (Inbox) --- */
-.thread-group {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid var(--border-subtle);
-    border-radius: 18px;
-    padding: 20px;
-    transition: all var(--transition-speed) ease;
-    margin-bottom: 20px;
-}
-
-/* --- ÁREA DE CHAT --- */
+/* --- THREADS E CONVERSA --- */
 .chat-conversation {
     display: flex;
     flex-direction: column;
@@ -50,29 +40,42 @@
     padding-right: 10px;
 }
 
-/* Scrollbar Estilo Gold */
-.chat-conversation::-webkit-scrollbar {
-    width: 4px;
+    .chat-conversation::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .chat-conversation::-webkit-scrollbar-thumb {
+        background: var(--gold-gradient);
+        border-radius: 10px;
+    }
+
+.thread-group {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: 18px;
+    padding: 20px 20px 16px 20px;
+    transition: all var(--transition-speed) ease;
+    margin-bottom: 20px;
 }
 
-.chat-conversation::-webkit-scrollbar-thumb {
-    background: var(--gold-gradient);
-    border-radius: 10px;
-}
+    .thread-group:hover {
+        border-color: var(--border-gold);
+        background: rgba(212, 175, 55, 0.02);
+    }
 
-/* Balões de Mensagem */
+/* --- BALÕES DE MENSAGEM --- */
 .chat-bubble {
     padding: 15px 20px;
     border-radius: 18px;
     max-width: 85%;
     font-size: 0.95rem;
     position: relative;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 .bubble-sender {
     background: var(--gold-gradient);
-    color: var(--black) !important; /* Texto escuro no balão dourado */
+    color: #000 !important;
     align-self: flex-end;
     border-bottom-right-radius: 4px;
     box-shadow: 0 4px 15px var(--gold-glow);
@@ -82,7 +85,7 @@
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-subtle);
     align-self: flex-start;
-    color: var(--text-primary);
+    color: #e0e0e0;
     border-bottom-left-radius: 4px;
 }
 
@@ -91,53 +94,342 @@
     border-left: 2px solid var(--gold);
     padding-left: 15px;
     margin-top: 10px;
+    position: relative;
 }
 
-/* --- INPUT E FORMULÁRIO --- */
+/* --- FORMULÁRIOS E INPUTS --- */
 .chat-input-area {
     margin-top: 25px;
     border-top: 1px solid var(--border-subtle);
     padding-top: 25px;
 }
 
-/* Override do form-control para o tema escuro */
-.chat-input-area .form-control {
-    background: rgba(0, 0, 0, 0.3) !important;
-    border: 1px solid var(--border-subtle) !important;
-    color: var(--white) !important;
-    border-radius: 12px;
-    padding: 15px;
-    transition: var(--transition-speed);
+.msg-input-group {
+    position: relative;
 }
 
-.chat-input-area .form-control:focus {
-    border-color: var(--gold) !important;
-    box-shadow: 0 0 15px var(--gold-glow) !important;
+/* Estilo unificado para todas as textareas (Nova msg, Edição e Resposta) */
+.message-box-wrapper textarea.form-control {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid var(--border-gold) !important;
+    border-radius: 16px !important;
+    color: #fff !important;
+    padding: 15px 20px !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+    width: 100% !important;
+    resize: none !important;
+    transition: all 0.3s ease !important;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Indicador de Resposta */
-#reply-indicator {
-    background: rgba(212, 175, 55, 0.1);
-    border: 1px solid var(--gold);
+    .message-box-wrapper textarea.form-control:focus {
+        border-color: var(--gold) !important;
+        background: rgba(212, 175, 55, 0.04) !important;
+        box-shadow: 0 0 20px var(--gold-glow), inset 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+        outline: none !important;
+    }
+
+/* --- BOTÕES LUXURY --- */
+.btn-send-luxury {
+    width: 100%;
+    margin-top: 15px;
+    padding: 16px 24px;
+    background: var(--gold-gradient);
+    color: #000;
+    border: none;
+    border-radius: 14px;
+    font-weight: 900;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.25);
+}
+
+    .btn-send-luxury:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(212, 175, 55, 0.5);
+        filter: brightness(1.08);
+    }
+
+.btn-action-luxury {
+    background: transparent;
+    border-radius: 20px;
+    padding: 6px 18px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+    text-decoration: none;
+    height: 32px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
     color: var(--gold);
-    border-radius: 10px;
 }
 
-/* --- ELEMENTOS DE TEXTO --- */
-.msg-date {
+    .btn-action-luxury:hover {
+        background: rgba(212, 175, 55, 0.1);
+        border-color: var(--gold);
+        box-shadow: 0 0 12px var(--gold-glow);
+    }
+
+/* Botões de Ação do Formulário (Guardar/Cancelar) */
+.btn-save-edit {
+    background: var(--gold-gradient);
+    color: #000;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-cancel-edit {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.4);
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+    .btn-cancel-edit:hover {
+        border-color: rgba(255,255,255,0.4);
+        color: #fff;
+    }
+
+/* --- CLASSES DE UTILIDADE (PARA LIMPAR O HTML) --- */
+.chat-with-label {
+    font-size: 0.8rem;
+    color: rgba(212, 175, 55, 0.6);
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+    .chat-with-label i {
+        font-size: 0.7rem;
+        margin-right: 4px;
+    }
+
+.msg-subject {
     display: block;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    margin-bottom: 5px;
+}
+
+.msg-meta {
+    display: flex;
+    justify-content: flex-end; /* Sender padrão */
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.bubble-receiver .msg-meta {
+    justify-content: flex-start; /* Receiver alinha à esquerda */
+}
+
+.msg-date {
     font-size: 0.7rem;
     opacity: 0.7;
-    margin-top: 5px;
     font-weight: 600;
     text-transform: uppercase;
 }
 
-.text-gold {
-    color: var(--gold) !important;
+.sender-name {
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+.btn-mini-edit-trigger {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: inherit;
+    opacity: 0.5;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+    .btn-mini-edit-trigger:hover {
+        opacity: 1;
+    }
+
+.inline-edit-form {
+    display: none;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.inline-reply-container {
+    display: none;
+    margin-top: 15px;
+    padding-left: 30px;
+}
+
+.form-actions-end {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+    justify-content: flex-end;
+}
+
+.new-thread-label {
+    color: rgba(212, 175, 55, 0.5);
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+    font-style: italic;
+}
+
+.msg-actions-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(212, 175, 55, 0.1);
+    align-items: center;
 }
 
 .empty-chat {
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.3);
     font-style: italic;
+    padding: 40px 20px;
+}
+
+.empty-chat i {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* Textarea dentro dos forms inline */
+.reply-form-wrapper textarea,
+[id^="reply-form-"] textarea,
+[id^="edit-form-"] textarea {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    border-radius: 12px !important;
+    color: #fff !important;
+    padding: 12px 16px !important;
+    width: 100% !important;
+    resize: none !important;
+    font-size: 0.9rem !important;
+    transition: 0.3s !important;
+}
+
+[id^="reply-form-"] textarea:focus,
+[id^="edit-form-"] textarea:focus {
+    border-color: var(--gold) !important;
+    outline: none !important;
+    box-shadow: 0 0 12px var(--gold-glow) !important;
+}
+
+/* --- LISTA DE CONVERSAS (LIST VIEW) --- */
+.conv-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+    .conv-card:hover {
+        border-color: var(--gold);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+        transform: translateY(-2px);
+    }
+
+.conv-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 20px;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease;
+}
+
+    .conv-header:hover {
+        background: rgba(212, 175, 55, 0.08) !important;
+    }
+
+.conv-car-img {
+    width: 65px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    flex-shrink: 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.conv-title {
+    color: var(--gold);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.conv-user {
+    color: #fff; /* Nome do utilizador com mais destaque */
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+    .conv-user i {
+        color: var(--gold);
+        margin-right: 5px;
+    }
+
+.conv-last-date {
+    color: var(--gold);
+    opacity: 0.7;
+    font-weight: 700;
+    font-size: 0.75rem;
+}
+
+.conv-preview-text {
+    color: #ccc; /* Mais claro para leitura no fundo escuro */
+    font-size: 0.85rem;
+}
+
+.conv-arrow {
+    color: var(--gold);
+    transition: transform 0.3s;
+    filter: drop-shadow(0 0 5px var(--gold-glow));
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-bubble {
+    animation: slideUp 0.4s ease-out;
 }

@@ -10,5 +10,6 @@ namespace SaleCarWebPage_Project.Pages.Shared
         public List<MessageBox> ChatHistory { get; set; } = new();
         public bool ReadOnly { get; set; } = false;
         public Dictionary<int, string> UserNames { get; set; } = new();
+        public string OtherPartyName { get; set; } = string.Empty;
     }
 }

@@ -190,5 +190,30 @@ namespace Services
                     Error.InternalServer($"Erro ao enviar mensagem: {ex.Message}"));
             }
         }
+
+        public async Task<Result> EditMessageAsync(int messageId, int currentUserId, string newText)
+        {
+            var message = await _unitOfWork.MessageBox.GetByIdAsync(messageId);
+
+            if (message == null || !message.IsActive)
+                return Result.Failure(Error.NotFound(ErrorCodes.NotFound, "Mensagem não encontrada."));
+
+            if (message.SenderId != currentUserId)
+                return Result.Failure(Error.Unauthorized(ErrorCodes.AuthUnauthorized, "Não pode editar mensagens de outro utilizador."));
+
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                message.UpdateMessage(message.Subject, newText); // usa o método já existente na entidade
+                await _unitOfWork.MessageBox.UpdateAsync(message);
+                await _unitOfWork.CommitAsync();
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                _unitOfWork.Rollback();
+                return Result.Failure(Error.InternalServer($"Erro ao editar mensagem: {ex.Message}"));
+            }
+        }
     }
 }

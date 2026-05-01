@@ -25,5 +25,7 @@ namespace Contracts.Services
 
         Task<Result<MessageBox>> SendMessageAsync(int carId, int senderId, int receiverId, string subject,
             string messageText, int? parentMessageId = null);
+
+        Task<Result> EditMessageAsync(int messageId, int currentUserId, string newText);
     }
 }

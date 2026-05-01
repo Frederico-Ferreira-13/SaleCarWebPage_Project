@@ -28,6 +28,10 @@ namespace SaleCarWebPage_Project.Pages
 
         public List<ConversationGroup> Conversations { get; set; } = new();
 
+        [BindProperty] public string MessageText { get; set; } = string.Empty;
+        [BindProperty] public string Subject { get; set; } = string.Empty;
+        [BindProperty] public int? ParentMessageId { get; set; }
+
         public class ConversationGroup
         {
             public int CarId { get; set; }
@@ -62,13 +66,11 @@ namespace SaleCarWebPage_Project.Pages
                 var carResult = await _carService.GetCarByIdAsync(group.Key.CarId, currentUserId);
                 var car = carResult.IsSuccessful ? carResult.Value : null;
 
-                // Buscar nome do outro utilizador
                 string otherPartyName = "Utilizador";
                 var userResult = await _usersService.GetUserByIdAsync(group.Key.OtherPartyId);
                 if (userResult.IsSuccessful)
                     otherPartyName = userResult.Value.Name;
 
-                // Histórico completo desta conversa
                 var historyResult = await _messageService.GetChatHistoryAsync(
                     group.Key.CarId, currentUserId);
 
@@ -88,22 +90,92 @@ namespace SaleCarWebPage_Project.Pages
                     CarImage = car?.ImageUrl ?? "/img/cars/default-car.jpg",
                     OtherPartyId = group.Key.OtherPartyId,
                     OtherPartyName = otherPartyName,
+                    
                     MessageBoxData = new _messageBoxModel
                     {
                         CarId = group.Key.CarId,
                         ProviderId = car?.ProviderId,
                         ChatHistory = filteredHistory,
-                        ReadOnly = false
+                        ReadOnly = false,
+                        OtherPartyName = otherPartyName
                     }
                 });
             }
 
             Conversations = Conversations
                 .OrderByDescending(c => c.MessageBoxData.ChatHistory
-                    .MaxBy(m => m.SentDate)?.SentDate ?? DateTime.MinValue)
+                    .OrderByDescending(m => m.SentDate)
+                    .FirstOrDefault()?.SentDate ?? DateTime.MinValue)
                 .ToList();
 
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostSendMessageAsync(int id)
+        {
+            var userIdResult = await _tokenService.GetUserIdFromContextAsync();
+            if (!userIdResult.IsSuccessful) return Unauthorized();
+
+            if (string.IsNullOrWhiteSpace(MessageText))
+                return RedirectToPage();
+
+            var carResult = await _carService.GetCarByIdAsync(id, userIdResult.Value);
+            if (!carResult.IsSuccessful || carResult.Value == null)
+                return RedirectToPage();
+
+            int senderId = userIdResult.Value;
+            int receiverId;
+
+            if (ParentMessageId.HasValue)
+            {
+                var parentResult = await _messageService.GetMessageDetailAsync(
+                    ParentMessageId.Value, senderId);
+
+                if (!parentResult.IsSuccessful) return RedirectToPage();
+
+                var parentMsg = parentResult.Value;
+                receiverId = parentMsg.SenderId == senderId
+                    ? parentMsg.ReceiverId
+                    : parentMsg.SenderId;
+            }
+            else
+            {
+                receiverId = carResult.Value.ProviderId;
+            }
+
+            string resolvedSubject = ParentMessageId.HasValue
+                ? await GetParentSubjectAsync(ParentMessageId.Value)
+                : (string.IsNullOrWhiteSpace(Subject)
+                    ? $"Interesse no veículo #{id}"
+                    : Subject);
+
+            await _messageService.SendMessageAsync(
+                carId: id,
+                senderId: senderId,
+                receiverId: receiverId,
+                subject: resolvedSubject,
+                messageText: MessageText,
+                parentMessageId: ParentMessageId
+            );
+
+            return RedirectToPage(); // ← fica na messagesPage
+        }
+
+        private async Task<string> GetParentSubjectAsync(int parentId)
+        {
+            var result = await _messageService.GetMessageDetailAsync(parentId, 0);
+            return result.IsSuccessful ? result.Value.Subject : "Re: mensagem anterior";
+        }
+
+        public async Task<IActionResult> OnPostEditMessageAsync(int messageId, string newText)
+        {
+            var userIdResult = await _tokenService.GetUserIdFromContextAsync();
+            if (!userIdResult.IsSuccessful) return Unauthorized();
+
+            if (string.IsNullOrWhiteSpace(newText)) return RedirectToPage();
+
+            await _messageService.EditMessageAsync(messageId, userIdResult.Value, newText);
+            return RedirectToPage();
         }
     }
 }

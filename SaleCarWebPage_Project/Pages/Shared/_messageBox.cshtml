@@ -1,37 +1,70 @@
 ﻿@model SaleCarWebPage_Project.Pages.Shared._messageBoxModel
 @using System.Security.Claims
+@using Core.Model
 @{
     var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     bool isAuthenticated = User.Identity?.IsAuthenticated ?? false;
+    var chatHistory = Model.ChatHistory as IEnumerable<MessageBox> ?? new List<MessageBox>();
 }
 
 <div class="message-box-wrapper">
     <div class="message-header">
         <h4><i class="fa-solid fa-comments"></i> Mensagens</h4>
+        @if (!string.IsNullOrEmpty(Model.OtherPartyName))
+        {
+            <span class="chat-with-label">
+                <i class="fa-solid fa-user"></i>
+                Conversa com @Model.OtherPartyName
+            </span>
+        }
     </div>
 
     <div class="chat-conversation" id="chat-container">
-        @if (Model.ChatHistory != null && Model.ChatHistory.Any())
+        @if (chatHistory.Any())
         {
-            @foreach (var mainMsg in Model.ChatHistory.Where(m => m.ParentMessageId == null).OrderBy(x => x.SentDate))
+            @foreach (var mainMsg in chatHistory.Where(m => m.ParentMessageId == null).OrderBy(x => x.SentDate))
             {
                 bool isMeMain = currentUserId == mainMsg.SenderId.ToString();
 
-                <div class="thread-group">
-                    @* MENSAGEM RAIZ *@
+                <div class="thread-group" id="thread-@mainMsg.MessageBoxId">
+
+                    @* --- MENSAGEM PRINCIPAL --- *@
                     <div class="chat-bubble @(isMeMain ? "bubble-sender" : "bubble-receiver")">
-                        <small class="d-block fw-bold text-uppercase" style="font-size: 0.7rem; margin-bottom: 5px;">
-                            @mainMsg.Subject
-                        </small>
+                        <small class="msg-subject">@mainMsg.Subject</small>
                         <p class="m-0">@mainMsg.MessageText</p>
-                        <time class="msg-date">@mainMsg.SentDate.ToString("dd/MM HH:mm")</time>
+                        
+                        <div class="msg-meta">
+                            <span class="sender-name">@(isMeMain ? "Eu" : Model.OtherPartyName)</span>
+                            <time class="msg-date">@mainMsg.SentDate.ToString("dd/MM HH:mm")</time>
+                        </div>
+
+                        @if (isMeMain && !Model.ReadOnly)
+                        {
+                            <button type="button" class="btn-mini-edit-trigger" onclick="toggleEditForm('@mainMsg.MessageBoxId')">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                        }
                     </div>
 
-                    @* RESPOSTAS *@
+                    @* FORM DE EDIÇÃO (PRINCIPAL) *@
+                    @if (isMeMain && !Model.ReadOnly)
+                    {
+                        <div id="edit-form-@mainMsg.MessageBoxId" class="inline-edit-form">
+                            <form method="post" asp-page="/messagesPage" asp-page-handler="EditMessage">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="messageId" value="@mainMsg.MessageBoxId" />
+                                <textarea name="newMessageText" class="form-control">@mainMsg.MessageText</textarea>
+                                <div class="form-actions-end">
+                                    <button type="button" class="btn-cancel-edit" onclick="cancelEdit('@mainMsg.MessageBoxId')">Cancelar</button>
+                                    <button type="submit" class="btn-save-edit">Guardar</button>
+                                </div>
+                            </form>
+                        </div>
+                    }
+
+                    @* --- RESPOSTAS --- *@
                     @{
-                        var replies = Model.ChatHistory
-                            .Where(r => r.ParentMessageId == mainMsg.MessageBoxId)
-                            .OrderBy(r => r.SentDate);
+                        var replies = chatHistory.Where(r => r.ParentMessageId == mainMsg.MessageBoxId).OrderBy(r => r.SentDate);
                     }
                     @foreach (var reply in replies)
                     {
@@ -39,23 +72,64 @@
                         <div class="replies-container">
                             <div class="chat-bubble @(isMeReply ? "bubble-sender" : "bubble-receiver")">
                                 <p class="m-0">@reply.MessageText</p>
-                                <time class="msg-date">@reply.SentDate.ToString("HH:mm")</time>
+                                <div class="msg-meta reply-meta">
+                                    <span class="sender-name">@(isMeReply ? "Eu" : Model.OtherPartyName)</span>
+                                    <time class="msg-date">@reply.SentDate.ToString("HH:mm")</time>
+                                </div>
+
+                                @if (isMeReply && !Model.ReadOnly)
+                                {
+                                    <button type="button" class="btn-mini-edit-trigger" onclick="toggleEditForm('@reply.MessageBoxId')">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                }
                             </div>
+
+                            @* FORM DE EDIÇÃO (RESPOSTA) *@
+                            @if (isMeReply && !Model.ReadOnly)
+                            {
+                                <div id="edit-form-@reply.MessageBoxId" class="inline-edit-form">
+                                    <form method="post" asp-page="/messagesPage" asp-page-handler="EditMessage">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="messageId" value="@reply.MessageBoxId" />
+                                        <textarea name="newMessageText" class="form-control">@reply.MessageText</textarea>
+                                        <div class="form-actions-end">
+                                            <button type="button" class="btn-cancel-edit" onclick="cancelEdit('@reply.MessageBoxId')">Cancelar</button>
+                                            <button type="submit" class="btn-save-edit">Guardar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            }
                         </div>
                     }
 
-                    @* AÇÕES *@
-                    <div class="text-end mt-2">
+                    @* --- FORM DE RESPOSTA INLINE --- *@
+                    @if (!Model.ReadOnly)
+                    {
+                        <div id="reply-form-@mainMsg.MessageBoxId" class="inline-reply-container">
+                            <form method="post" asp-page="/messagesPage" asp-page-handler="SendMessage" asp-route-id="@Model.CarId">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="CarId" value="@Model.CarId" />
+                                <input type="hidden" name="ParentMessageId" value="@mainMsg.MessageBoxId" />
+                                <textarea name="MessageText" class="form-control" placeholder="Escreva a sua resposta..."></textarea>
+                                <div class="form-actions-end">
+                                    <button type="button" class="btn-cancel-edit" onclick="closeReplyForm('@mainMsg.MessageBoxId')">Cancelar</button>
+                                    <button type="submit" class="btn-save-edit"><i class="fa-solid fa-paper-plane"></i> Enviar Resposta</button>
+                                </div>
+                            </form>
+                        </div>
+                    }
+
+                    <div class="msg-actions-row">
                         @if (!Model.ReadOnly)
                         {
-                            <button type="button" class="btn btn-sm btn-link text-gold text-decoration-none"
-                                    onclick="prepareReply(@mainMsg.MessageBoxId, '@mainMsg.Subject')">
+                            <button type="button" class="btn-action-luxury btn-reply-luxury" onclick="toggleReplyForm('@mainMsg.MessageBoxId')">
                                 <i class="fa-solid fa-reply"></i> Responder
                             </button>
                         }
                         else
                         {
-                            <a href="/messagesPage" class="btn btn-sm btn-link text-gold text-decoration-none">
+                            <a href="/messagesPage" class="btn-action-luxury btn-reply-luxury">
                                 <i class="fa-solid fa-reply"></i> Ver Conversa
                             </a>
                         }
@@ -66,33 +140,29 @@
         else
         {
             <div class="empty-chat text-center p-4">
-                <i class="fa-solid fa-ghost d-block mb-2" style="font-size: 2rem;"></i>
+                <i class="fa-solid fa-ghost d-block mb-2"></i>
                 <p>Nenhuma mensagem encontrada.</p>
             </div>
         }
     </div>
 
-    @* FORM DE ENVIO *@
+    @* --- NOVO TÓPICO --- *@
     @if (isAuthenticated && !Model.ReadOnly)
     {
-        <div class="chat-input-area">
-            <form method="post" asp-page="/viewCar" asp-page-handler="SendMessage" asp-route-id="@Model.CarId">
+        <div class="chat-input-area" id="new-message-area">
+            <p class="new-thread-label">
+                <i class="fa-solid fa-plus-circle"></i> Iniciar novo tópico
+            </p>
+            <form method="post" asp-page="/messagesPage" asp-page-handler="SendMessage" asp-route-id="@Model.CarId">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="CarId" value="@Model.CarId" />
-                <input type="hidden" name="ParentMessageId" id="parentMessageIdField" value="" />
-
-                <div id="reply-indicator" style="display:none;" class="p-2 mb-3">
-                    <small>A responder a: <strong id="reply-subject"></strong></small>
-                    <button type="button" class="btn-close btn-close-white btn-sm float-end" onclick="cancelReply()"></button>
-                </div>
-
+                <input type="hidden" name="ParentMessageId" value="" />
                 <div class="msg-input-group">
-                    <textarea name="MessageText" id="txtMessage" class="form-control"
-                              placeholder="Escreva a sua mensagem premium..." required></textarea>
+                    <textarea name="MessageText" id="txtMessage" class="form-control" rows="4" placeholder="Escreva a sua mensagem..." required></textarea>
                 </div>
-
-                <button type="submit" class="btn-premium w-100 mt-3" style="border:none; width: 100%;">
-                    <i class="fa-solid fa-paper-plane"></i> ENVIAR MENSAGEM
+                <button type="submit" class="btn-send-luxury">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>ENVIAR MENSAGEM</span>
                 </button>
             </form>
         </div>
@@ -100,15 +170,32 @@
 </div>
 
 <script>
-    function prepareReply(parentId, subject) {
-        document.getElementById('parentMessageIdField').value = parentId;
-        document.getElementById('reply-subject').innerText = subject;
-        document.getElementById('reply-indicator').style.display = 'block';
-        document.getElementById('txtMessage').focus();
+    function toggleReplyForm(msgId) {
+        const form = document.getElementById('reply-form-' + msgId);
+        const isVisible = form.style.display !== 'none';
+        
+        // Fecha todos os outros forms de resposta para manter a UI limpa
+        document.querySelectorAll('[id^="reply-form-"]').forEach(f => f.style.display = 'none');
+        
+        form.style.display = isVisible ? 'none' : 'block';
+        if (!isVisible) {
+            form.querySelector('textarea').focus();
+            form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
     }
 
-    function cancelReply() {
-        document.getElementById('parentMessageIdField').value = '';
-        document.getElementById('reply-indicator').style.display = 'none';
+    function closeReplyForm(msgId) {
+        document.getElementById('reply-form-' + msgId).style.display = 'none';
+    }
+
+    function toggleEditForm(msgId) {
+        const form = document.getElementById('edit-form-' + msgId);
+        const isVisible = form.style.display !== 'none';
+        form.style.display = isVisible ? 'none' : 'block';
+        if (!isVisible) form.querySelector('textarea').focus();
+    }
+
+    function cancelEdit(msgId) {
+        document.getElementById('edit-form-' + msgId).style.display = 'none';
     }
 </script>
