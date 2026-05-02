@@ -130,6 +130,51 @@ namespace SaleCarWebPage_Project.Pages
 
             Console.WriteLine($"[DEBUG] Negociações carregadas: {Negotiations.Count}");
             return Page();
-        }       
+        }
+
+        public async Task<IActionResult> OnPostAcceptAsync(int saleId)
+        {
+            var userIdResult = await _tokenService.GetUserIdFromContextAsync();
+            if (!userIdResult.IsSuccessful) return Unauthorized();
+
+            var result = await _saleService.AcceptProposalAsync(saleId, userIdResult.Value);
+
+            if (result.IsSuccessful)
+                TempData["Success"] = "Proposta aceite com sucesso!";
+            else
+                TempData["Error"] = result.Message ?? "Erro ao aceitar proposta.";
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostDeclineAsync(int saleId)
+        {
+            var userIdResult = await _tokenService.GetUserIdFromContextAsync();
+            if (!userIdResult.IsSuccessful) return Unauthorized();
+
+            var result = await _saleService.DeclineProposalAsync(saleId, userIdResult.Value);
+
+            if (result.IsSuccessful)
+                TempData["Success"] = "Proposta recusada.";
+            else
+                TempData["Error"] = result.Message ?? "Erro ao recusar proposta.";
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostCounterOfferAsync(int saleId, decimal counterValue)
+        {
+            var userIdResult = await _tokenService.GetUserIdFromContextAsync();
+            if (!userIdResult.IsSuccessful) return Unauthorized();
+
+            var result = await _saleService.CreateCounterOfferAsync(saleId, userIdResult.Value, counterValue);
+
+            if (result.IsSuccessful)
+                TempData["Success"] = $"Contra-proposta de {counterValue:C0} enviada!";
+            else
+                TempData["Error"] = result.Message ?? "Erro ao criar contra-proposta.";
+
+            return RedirectToPage();
+        }
     }    
 }

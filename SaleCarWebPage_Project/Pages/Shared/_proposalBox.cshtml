@@ -2,22 +2,67 @@
 
 <div class="proposal-card-luxury">
     <div class="proposal-header-luxury">
-        <div class="title-group">
-            <i class="fa-solid fa-clock-rotate-left gold-icon"></i>
-            <h4 class="luxury-label">HISTÓRICO DE OFERTAS</h4>
-        </div>
+        <i class="fa-solid fa-clock-rotate-left gold-icon"></i>
+        <h4 class="luxury-label">HISTÓRICO DE OFERTAS</h4>
     </div>
 
     <div class="proposal-body-luxury">
         @if (Model.ProposalHistory != null && Model.ProposalHistory.Any())
         {
             <div class="luxury-timeline">
-                @foreach (var proposal in Model.ProposalHistory.OrderByDescending(p => p.SaleDate))
+                @{
+                    var sortedHistory = Model.ProposalHistory.OrderByDescending(p => p.SaleDate).ToList();
+                    var oldestProposal = sortedHistory.Last();
+                }
+
+                @foreach (var proposal in sortedHistory)
                 {
-                    <div class="luxury-item @(proposal == Model.ProposalHistory.First() ? "latest-proposal" : "")">
-                        <div class="item-details">
-                            <span class="item-price">@proposal.FinalPrice.ToString("N0") €</span>
-                            <span class="item-date">@proposal.SaleDate.ToString("dd/MM/yyyy HH:mm")</span>
+                    bool isLatest = proposal == sortedHistory.First();
+                    // Se não for a proposta mais antiga do histórico, é uma contra-proposta
+                    bool isCounterOffer = proposal != oldestProposal;
+
+                    <div class="proposal-item @(isLatest ? "latest" : "")" id="item-@proposal.SaleId">
+                        <div class="proposal-dot"></div>
+                        <div class="proposal-content">
+                            <div class="proposal-main" @(isLatest && !Model.ReadOnly ? $"onclick=\"toggleActions({proposal.SaleId}, true)\"" : "")>
+                                
+                                @if (isCounterOffer)
+                                {
+                                    <span class="proposal-value counter-value">@proposal.FinalPrice.ToString("N0") €</span>
+                                    <span class="renegotiated-badge"><i class="fa-solid fa-rotate"></i> Renegociado</span>
+                                }
+                                else
+                                {
+                                    <span class="proposal-value">@proposal.FinalPrice.ToString("N0") €</span>
+                                }
+                                
+                                <span class="proposal-date">@proposal.SaleDate.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+
+                            @if (isLatest && !Model.ReadOnly)
+                            {
+                                <div class="quick-actions-panel" id="actions-@proposal.SaleId" style="display: none;">
+                                    <div class="proposal-actions">
+                                        <button type="button" class="btn-luxury-accept" onclick="handleAction(@proposal.SaleId, 'accept')">
+                                            <i class="fa-solid fa-check"></i> ACEITAR
+                                        </button>
+                                        <button type="button" class="btn-luxury-decline" onclick="handleAction(@proposal.SaleId, 'decline')">
+                                            <i class="fa-solid fa-xmark"></i> RECUSAR
+                                        </button>
+                                        <button type="button" class="btn-luxury-counter" onclick="showInlineCounter(@proposal.SaleId)">
+                                            <i class="fa-solid fa-hand-holding-dollar"></i> CONTRA-PROPOSTA
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="inline-counter-input" id="inline-counter-@proposal.SaleId" style="display: none;">
+                                        <input type="number" class="luxury-input" id="val-@proposal.SaleId"
+                                               placeholder="Novo valor em €" step="500">
+                                        <button type="button" class="btn-send-inline" onclick="submitInlineCounter(@proposal.SaleId)">
+                                            <i class="fa-solid fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 }

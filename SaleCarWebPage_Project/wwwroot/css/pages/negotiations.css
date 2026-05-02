@@ -23,7 +23,7 @@
     gap: 15px;
 }
 
-/* Card Principal */
+/* ====================== CONVERSATION CARDS ====================== */
 .conv-card {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(212, 175, 55, 0.25);
@@ -63,6 +63,17 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
+.header-info {
+    flex-grow: 1;
+}
+
+.header-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
 .car-name {
     font-size: 1.25rem;
     font-weight: 700;
@@ -84,6 +95,12 @@
     font-weight: 600;
 }
 
+.conv-arrow {
+    color: var(--gold);
+    transition: transform 0.3s ease;
+}
+
+/* ====================== GRID E COLUNAS ====================== */
 .conv-content {
     padding: 25px;
     background: rgba(0, 0, 0, 0.2);
@@ -103,25 +120,203 @@
     border: 1px solid rgba(212, 175, 55, 0.1);
 }
 
-.negotiation-footer {
+.section-label {
+    display: block;
+    color: var(--gold);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    opacity: 0.8;
+}
+
+/* ====================== PROPOSAL BOX - INTERNAL ====================== */
+.proposal-item {
+    position: relative;
+    margin-bottom: 26px;
+}
+
+    /* Destaque para a proposta mais recente dentro do histórico */
+    .proposal-item.latest .proposal-content {
+        border-left: 4px solid var(--gold);
+        box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
+        background: rgba(212, 175, 55, 0.03);
+    }
+
+.proposal-content {
+    background: var(--dark-bg);
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border-gold);
+    transition: all 0.3s ease;
+}
+
+.proposal-main {
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+    .proposal-main:hover {
+        opacity: 0.8;
+    }
+
+.renegotiated-badge {
+    display: inline-block;
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--gold);
+    font-size: 0.65rem;
+    padding: 2px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    text-transform: uppercase;
+    margin-top: 5px;
+    font-weight: 700;
+}
+
+/* ====================== PAINEL DE AÇÕES RÁPIDAS ====================== */
+.quick-actions-panel {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed rgba(212, 175, 55, 0.2);
+    animation: slideDown 0.3s ease-out;
+}
+
+.proposal-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-luxury-accept,
+.btn-luxury-decline,
+.btn-luxury-counter {
+    padding: 10px 20px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-luxury-accept, .btn-luxury-counter {
+    background: var(--gold-gradient);
+    color: #000;
+}
+
+.btn-luxury-decline {
+    background: #111;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+}
+
+/* Input Inline para Contra-proposta */
+.inline-counter-input {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    animation: fadeIn 0.3s ease;
+}
+
+.luxury-input {
+    flex: 1;
+    background: #000;
+    border: 1px solid var(--gold);
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.btn-send-inline {
+    background: var(--gold-gradient);
+    border: none;
+    border-radius: 8px;
+    padding: 0 15px;
+    cursor: pointer;
+    color: #000;
+}
+
+/* ====================== MODAL CUSTOMIZADO ====================== */
+.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal-content {
+    background: var(--black-card);
+    border: 1px solid var(--gold);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
+}
+
+.modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(212, 175, 55, 0.15);
+    margin-bottom: 25px;
+    color: var(--gold);
 }
 
-.back-link {
-    color: #aaa;
-    text-decoration: none;
+.btn-cancel-luxury {
+    background: transparent;
+    border: 1px solid rgba(212,175,55,0.4);
+    color: var(--gold);
+    padding: 10px 24px;
+    border-radius: 12px;
+    cursor: pointer;
 }
 
-    .back-link:hover {
-        color: var(--gold);
+.btn-luxury-gold {
+    background: var(--gold-gradient);
+    color: #000;
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+}
+
+/* ====================== ANIMAÇÕES & RESPONSIVO ====================== */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
     }
 
-/* Responsivo */
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 @media (max-width: 992px) {
     .negotiation-grid {
         grid-template-columns: 1fr;
@@ -130,5 +325,9 @@
     .car-thumb {
         width: 75px;
         height: 50px;
+    }
+
+    .gold-title {
+        font-size: 1.6rem;
     }
 }

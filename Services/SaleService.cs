@@ -187,6 +187,90 @@ namespace Services
             {
                 return Result<IEnumerable<Sale>>.Failure(Error.InternalServer($"Erro: {ex.Message}"));
             }
-        }        
+        }
+
+        public async Task<Result> AcceptProposalAsync(int saleId, int userId)
+        {
+            try
+            {
+                var sale = await _unitOfWork.Sales.GetByIdAsync(saleId);
+                if (sale == null)
+                    return Result.Failure(Error.InternalServer("Proposta não encontrada."));
+
+                var car = await _unitOfWork.Cars.GetByIdAsync(sale.CarId);
+                if (car == null || car.Provider?.UserId != userId)
+                    return Result.Failure(Error.InternalServer("Não tem permissão para aceitar esta proposta."));
+
+                // Aqui podes marcar a proposta como aceite e desativar o carro
+                // Exemplo:
+                car.Deactivate();
+                await _unitOfWork.Cars.UpdateAsync(car);
+                await _unitOfWork.CommitAsync();
+
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(Error.InternalServer($"Erro ao aceitar proposta: {ex.Message}"));
+            }
+        }
+
+        public async Task<Result> DeclineProposalAsync(int saleId, int userId)
+        {
+            try
+            {
+                var sale = await _unitOfWork.Sales.GetByIdAsync(saleId);
+                if (sale == null)
+                    return Result.Failure(Error.InternalServer("Proposta não encontrada."));
+
+                var car = await _unitOfWork.Cars.GetByIdAsync(sale.CarId);
+                if (car == null || car.Provider?.UserId != userId)
+                    return Result.Failure(Error.InternalServer("Não tem permissão."));
+
+                // Por agora só removemos ou marcamos como recusada
+                // Podes adicionar um campo IsDeclined no futuro
+                await _unitOfWork.Sales.DeleteAsync(saleId);
+                await _unitOfWork.CommitAsync();
+
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(Error.InternalServer($"Erro ao recusar proposta: {ex.Message}"));
+            }
+        }
+
+        public async Task<Result> CreateCounterOfferAsync(int saleId, int userId, decimal counterValue)
+        {
+            try
+            {
+                var originalSale = await _unitOfWork.Sales.GetByIdAsync(saleId);
+                if (originalSale == null)
+                    return Result.Failure(Error.InternalServer("Proposta original não encontrada."));
+
+                var car = await _unitOfWork.Cars.GetByIdAsync(originalSale.CarId);
+                if (car == null || car.Provider?.UserId != userId)
+                    return Result.Failure(Error.InternalServer("Não tem permissão para fazer contra-proposta."));
+
+                var newSale = new Sale(
+                    originalSale.CarId,
+                    originalSale.ClientId ?? 0,
+                    DateTime.UtcNow,
+                    counterValue,
+                    DateTime.UtcNow,
+                    "Contra-proposta",
+                    $"Contra-proposta à oferta anterior de {originalSale.FinalPrice:C0}"
+                );
+
+                await _unitOfWork.Sales.AddAsync(newSale);
+                await _unitOfWork.CommitAsync();
+
+                return Result.Success();
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure(Error.InternalServer($"Erro ao criar contra-proposta: {ex.Message}"));
+            }
+        }
     }
 }

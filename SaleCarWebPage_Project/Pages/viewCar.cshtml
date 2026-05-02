@@ -11,10 +11,8 @@
     <link rel="stylesheet" href="~/css/pages/viewCar.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pages/favoritesBottom.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pages/messageBox.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/pages/proposal.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/pages/negotiations.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/proposal.css" asp-append-version="true" />    
     <link rel="stylesheet" href="~/css/global/styles.css" asp-append-version="true" />
-
 }
 
 <main class="car-view-container">
@@ -36,7 +34,7 @@
     {
         <div class="car-main-layout">
 
-            @* LADO ESQUERDO *@
+            <!-- ESQUERDA: Imagem + Detalhes -->
             <div class="car-content-area">
                 <div class="car-image-frame">
                     <img src="@(Model.Car?.ImageUrl ?? "/img/cars/default-car.jpg")"
@@ -97,7 +95,7 @@
                 </section>
             </div>
 
-            @* LADO DIREITO: SIDEBAR *@
+            <!-- DIREITA: Sidebar -->
             <aside class="car-specs-sidebar">
                 <header class="specs-header">
                     <span class="brand-label">@Model.Car?.Model?.Brand?.BrandName</span>
@@ -121,17 +119,13 @@
 
                 <div class="seller-card">
                     <div class="seller-header">
-                        <div class="seller-meta">
-                            <span class="seller-type">Vendedor</span>
-                            <span class="seller-name">@(Model.Car?.Provider?.NameProvider ?? "Particular")</span>
-                        </div>
+                        <span class="seller-type">Vendedor</span>
+                        <span class="seller-name">@(Model.Car?.Provider?.NameProvider ?? "Particular")</span>
                     </div>
 
-                    @* ÁREA PRIVADA DE NEGOCIAÇÃO *@
                     @if (User.Identity!.IsAuthenticated)
                     {
-                        @* PROPOSTAS — só leitura para o vendedor *@
-                        @if (Model.CanEdit && Model.Car?.Proposals != null && Model.Car.Proposals.Any())
+                        @if (Model.CanEdit && Model.Car?.Proposals?.Any() == true)
                         {
                             <div class="owner-panel">
                                 <h4 class="owner-title">
@@ -144,9 +138,7 @@
                                             <div class="prop-main-info">
                                                 <span class="prop-user">
                                                     <i class="fa-solid fa-user-tag"></i>
-                                                    @(proposta.Client?.ClientName
-                                                        ?? proposta.Client?.User?.UserName
-                                                        ?? "Utilizador")
+                                                    @(proposta.Client?.ClientName ?? proposta.Client?.User?.UserName ?? "Utilizador")
                                                 </span>
                                                 <span class="prop-price">@proposta.FinalPrice.ToString("N0") €</span>
                                             </div>
@@ -159,13 +151,6 @@
                                                     @proposta.SaleDate.ToString("dd/MM/yyyy")
                                                 </span>
                                             </div>
-                                            @if (proposta.Client?.Contact != null)
-                                            {
-                                                <div class="prop-contact">
-                                                    <i class="fa-solid fa-phone"></i>
-                                                    @proposta.Client.Contact.PhoneNumber
-                                                </div>
-                                            }
                                         </div>
                                     }
                                 </div>
@@ -173,10 +158,8 @@
                         }
                         else if (!Model.CanEdit)
                         {
-                            @* BOTÃO PROPOSTA — apenas compradores *@
                             <div class="offer-container">
-                                <button type="button" class="btn-make-offer"
-                                        data-bs-toggle="modal" data-bs-target="#offerModal">
+                                <button type="button" class="btn-make-offer" data-bs-toggle="modal" data-bs-target="#offerModal">
                                     <i class="fa-solid fa-hand-holding-dollar"></i>
                                     FAZER PROPOSTA OFICIAL
                                 </button>
@@ -185,10 +168,8 @@
 
                         <hr class="luxury-divider" />
 
-                        @* LINK PARA NEGOCIAÇÕES *@
                         <div class="view-negotiations-link">
-                            <a asp-page="/Negotiations" asp-route-carId="@Model.Car?.CarId"
-                                class="btn-manage-negotiations">
+                            <a asp-page="/Negotiations" asp-route-carId="@Model.Car?.CarId" class="btn-manage-negotiations">
                                 <i class="fa-solid fa-handshake"></i>
                                 <span>GERIR NEGOCIAÇÕES</span>
                             </a>
@@ -196,7 +177,6 @@
 
                         <hr class="luxury-divider" />
 
-                        @* MENSAGENS *@
                         <div class="chat-section">
                             <h4 class="owner-title">
                                 <i class="fa-solid fa-comments"></i> Mensagens Privadas
@@ -211,7 +191,7 @@
                             <a href="/auth" class="btn-luxury-submit">LOGIN / REGISTO</a>
                         </div>
                     }
-                }
+                </div>
 
                 <div class="favorite-action-premium">
                     <button class="btn-garage @(Model.Car?.IsFavorite == true ? "is-in-garage" : "")"
@@ -225,7 +205,7 @@
     }
 </main>
 
-@* MODAL DE PROPOSTA *@
+<!-- MODAL -->
 @if (Model.Car != null && !Model.CanEdit)
 {
     <div class="modal fade" id="offerModal" tabindex="-1" aria-hidden="true">
@@ -234,7 +214,6 @@
                 <div class="modal-body">
                     <button type="button" class="btn-close-luxury" data-bs-dismiss="modal">×</button>
                     <div class="luxury-form-header">
-                        <input type="hidden" id="hiddenCarId" value="@Model.Car.CarId" />
                         <h2 class="luxury-title">Enviar Proposta</h2>
                     </div>
                     <div class="luxury-input-group">

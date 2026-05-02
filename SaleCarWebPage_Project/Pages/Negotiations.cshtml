@@ -2,7 +2,7 @@
 @model SaleCarWebPage_Project.Pages.NegotiationsModel
 @{
     Layout = "_Layout";
-    ViewData["Title"] = "Negociar Veículo";
+    ViewData["Title"] = "Negociações Ativas";
 }
 
 @section Styles {
@@ -31,14 +31,11 @@
         {
             var collapseId = $"neg-{neg.CarId}";
             
-            <div class="conv-card shadow-lg">
-                @* CABEÇALHO *@
+            <div class="conv-card">
                 <div onclick="toggleConv('@collapseId')" class="conv-header">
-                    
                     <div class="car-image-wrapper">
-                        <img src="@neg.CarImage" alt="@neg.CarName" class="car-thumb" />                        
+                        <img src="@neg.CarImage" alt="@neg.CarName" class="car-thumb" />
                     </div>
-
                     <div class="header-info">
                         <div class="header-top-row">
                             <span class="car-name">@neg.CarName</span>
@@ -48,7 +45,7 @@
                             <span class="user-info">
                                 <i class="fa-solid fa-user-circle"></i> @neg.OtherPartyName
                             </span>
-                            <span class="negotiation-status">
+                            <span class="negotiation-status @(neg.IsSeller ? "status-seller" : "status-buyer")">
                                 @(neg.IsSeller ? "Vendedor" : "Comprador")
                             </span>
                         </div>
@@ -56,17 +53,13 @@
                     <i class="fa-solid fa-chevron-down conv-arrow" id="arrow-@collapseId"></i>
                 </div>
 
-                @* CONTEÚDO EXPANSÍVEL *@
                 <div id="@collapseId" class="conv-content" style="display: none;">
                     <div class="negotiation-grid">
-                        
-                        @* COLUNA ESQUERDA: HISTÓRICO *@
                         <div class="proposal-column">
                             <span class="section-label">Histórico de Ofertas</span>
                             <partial name="_proposalBox" model="neg.ProposalData" />
                         </div>
 
-                        @* COLUNA DIREITA: CHAT *@
                         <div class="chat-column">
                             <span class="section-label">Mensagens de Apoio</span>
                             <div class="chat-scroll-area">
@@ -75,34 +68,37 @@
                         </div>
                     </div>
 
-                    @* RODAPÉ DE AÇÕES *@
                     <div class="negotiation-footer">
                         <a href="/viewCar/@neg.CarId" class="back-link">
                             <i class="fa-solid fa-arrow-left"></i> Ver Anúncio
                         </a>
-
-                        <div class="footer-actions">
-                            @if (neg.IsSeller)
-                            {
-                                <button class="btn-accept-luxury" onclick="handleProposal(@neg.CarId, 'accept')">
-                                    <i class="fa-solid fa-check"></i> ACEITAR
-                                </button>
-                                <button class="btn-decline-luxury" onclick="handleProposal(@neg.CarId, 'decline')">
-                                    RECUSAR
-                                </button>
-                            }
-                            else
-                            {
-                                <button class="btn-action-luxury" data-bs-toggle="modal" data-bs-target="#offerModal">
-                                    MELHORAR OFERTA
-                                </button>
-                            }
-                        </div>
                     </div>
                 </div>
             </div>
         }
     }
+</div>
+
+<div id="counterModal" class="custom-modal">
+    <div class="custom-modal-content">
+        <div class="modal-header">
+            <h5>Fazer Contra-Proposta</h5>
+            <span class="close-modal" onclick="closeCounterModal()">×</span>
+        </div>
+        <div class="modal-body">
+            <div class="luxury-input-group">
+                <label>Valor da Contra-Proposta (€)</label>
+                <input type="number" id="counterValueInput" class="luxury-input main-value"
+                       step="1000" placeholder="Ex: 315000" autofocus>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel-luxury" onclick="closeCounterModal()">Cancelar</button>
+            <button type="button" class="btn-luxury-gold" onclick="submitCounterOffer()">
+                <i class="fa-solid fa-paper-plane"></i> Enviar
+            </button>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
@@ -116,9 +112,104 @@
             arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
         }
 
-        function handleProposal(carId, action) {
-            alert(`Ação ${action} para o carro ${carId}`);
+        let currentSaleId = 0;
+
+        function handleAction(saleId, action) {
+            currentSaleId = saleId;
+
+            if (action === 'counter') {
+                document.getElementById('counterValueInput').value = '';
+                document.getElementById('counterModal').style.display = 'flex';
+            }
+            else {
+                const text = action === 'accept' ? 'ACEITAR' : 'RECUSAR';
+                if (confirm(`Tem certeza que deseja ${text} esta proposta?`)) {
+                    const handler = action === 'accept' ? 'Accept' : 'Decline';
+                    fetch(`?handler=${handler}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                        },
+                        body: JSON.stringify({ saleId: saleId })
+                    }).then(r => {
+                        if (r.ok) location.reload();
+                    });
+                }
+            }
+        }
+
+        function closeCounterModal() {
+            document.getElementById('counterModal').style.display = 'none';
+        }
+
+        function submitCounterOffer() {
+            const value = parseFloat(document.getElementById('counterValueInput').value);
+            if (!value || value <= 0) {
+                alert("Por favor insira um valor válido!");
+                return;
+            }
+
+            fetch('?handler=CounterOffer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({ saleId: currentSaleId, counterValue: value })
+            }).then(r => {
+                if (r.ok) {
+                    closeCounterModal();
+                    location.reload();
+                }
+            });
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('counterModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCounterModal();
+        });
+
+        function toggleActions(saleId, isLatest) {
+            if (!isLatest) return; // Só permite ações na proposta mais recente
+
+            const panel = document.getElementById(`actions-${saleId}`);
+            const isVisible = panel.style.display === 'block';
+
+            // Fechar todos os outros painéis primeiro para manter limpo
+            document.querySelectorAll('.quick-actions-panel').forEach(p => p.style.display = 'none');
+
+            // Toggle do atual
+            panel.style.display = isVisible ? 'none' : 'block';
+        }
+
+        function showInlineCounter(saleId) {
+            // Esconde os botões normais e mostra o input de valor
+            document.querySelector(`#actions-${saleId} .proposal-actions`).style.display = 'none';
+            document.getElementById(`inline-counter-${saleId}`).style.display = 'flex';
+            document.getElementById(`val-${saleId}`).focus();
+        }
+
+        async function submitInlineCounter(saleId) {
+            const newValue = document.getElementById(`val-${saleId}`).value;
+            if (!newValue || newValue <= 0) {
+                alert("Insira um valor válido!");
+                return;
+            }
+
+            // Aqui usas a tua lógica de fetch que já tinhas no modal
+            const response = await fetch('?handler=CounterOffer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({ saleId: saleId, counterValue: parseFloat(newValue) })
+            });
+
+            if (response.ok) {
+                location.reload(); // Ao recarregar, o novo valor aparecerá com o estilo "counter-value"
+            }
         }
     </script>
 }
-

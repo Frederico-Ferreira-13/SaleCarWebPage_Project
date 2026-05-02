@@ -1,73 +1,262 @@
-﻿/* ====================== PROPOSAL BOX ====================== */
+﻿/* ====================== PROPOSAL BOX - LUXURY ====================== */
+
+.proposal-card-luxury {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(212, 175, 55, 0.18);
+    border-radius: 16px;
+    padding: 22px;
+    height: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
 
 .proposal-header-luxury {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid var(--border-subtle);
+    gap: 12px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
 }
 
 .luxury-label {
     color: var(--gold);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 800;
-    letter-spacing: 2px;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
+    margin: 0;
 }
 
-.proposal-timeline {
+.gold-icon {
+    color: var(--gold);
+    font-size: 1.3rem;
+}
+
+/* ====================== TIMELINE ====================== */
+.luxury-timeline {
     position: relative;
-    padding: 10px 0;
+    padding-left: 28px;
 }
 
-    .proposal-timeline::before {
+    .luxury-timeline::before {
         content: '';
         position: absolute;
-        left: 15px;
-        top: 10px;
+        left: 11px;
+        top: 8px;
         bottom: 10px;
-        width: 2px;
-        background: linear-gradient(to bottom, var(--gold), rgba(212,175,55,0.1));
+        width: 3px;
+        background: linear-gradient(to bottom, var(--gold), rgba(212, 175, 55, 0.08));
+        border-radius: 3px;
     }
 
 .proposal-item {
     position: relative;
-    padding-left: 45px;
-    margin-bottom: 20px;
+    margin-bottom: 26px;
 }
 
-.proposal-badge {
+.proposal-dot {
     position: absolute;
-    left: 8px;
-    top: 4px;
-    background: var(--black-deep);
-    border: 2px solid var(--gold);
-    color: var(--gold);
-    width: 22px;
-    height: 22px;
+    left: -28px;
+    top: 7px;
+    width: 16px;
+    height: 16px;
+    background: var(--gold);
+    border: 3px solid #111;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     z-index: 2;
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
 }
 
-.proposal-value-small {
-    font-size: 1.15rem;
-    font-weight: 700;
+/* ====================== CONTEÚDO DA PROPOSTA ====================== */
+.proposal-content {
+    background: var(--dark-bg);
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border-gold);
+    transition: all 0.3s ease;
+}
+
+/* Destaque para a proposta mais recente */
+.proposal-item.latest .proposal-content {
+    border-left: 4px solid var(--gold);
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
+    background: rgba(212, 175, 55, 0.03);
+}
+
+.proposal-item:hover .proposal-content {
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.06);
+    transform: translateX(6px);
+}
+
+.proposal-main {
+    margin-bottom: 8px;
+}
+
+.proposal-value {
+    font-size: 1.45rem;
+    font-weight: 800;
     color: #fff;
+    display: block;
 }
 
 .proposal-date {
-    font-size: 0.75rem;
-    color: #888;
+    font-size: 0.78rem;
+    color: #999;
 }
 
+/* ====================== BADGES & STATUS ====================== */
+.renegotiated-badge {
+    display: inline-block;
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--gold);
+    font-size: 0.65rem;
+    padding: 2px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    text-transform: uppercase;
+    margin-top: 5px;
+    font-weight: 700;
+}
+
+.latest-badge {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 3px 12px;
+    background: #22c55e;
+    color: #000;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 30px;
+}
+
+/* ====================== PAINEL DE AÇÕES ====================== */
+.quick-actions-panel {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed rgba(212, 175, 55, 0.2);
+    animation: slideDown 0.3s ease-out;
+}
+
+.proposal-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Botões de Luxo */
+.btn-luxury-accept,
+.btn-luxury-decline,
+.btn-luxury-counter {
+    padding: 10px 20px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Aceitar & Contra-proposta (Dourado) */
+.btn-luxury-accept, .btn-luxury-counter {
+    background: var(--gold-gradient);
+    color: #000;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+    .btn-luxury-accept:hover, .btn-luxury-counter:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+    }
+
+/* Recusar (Dark Gold) */
+.btn-luxury-decline {
+    background: #111;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+}
+
+    .btn-luxury-decline:hover {
+        background: #1a1a1a;
+        color: #fff;
+        border-color: #fff;
+    }
+
+/* ====================== INPUT INLINE ====================== */
+.inline-counter-input {
+    margin-top: 15px;
+    display: flex;
+    gap: 8px;
+    animation: fadeIn 0.3s ease;
+}
+
+.luxury-input {
+    flex: 1;
+    background: #000;
+    border: 1px solid var(--gold);
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+    .luxury-input:focus {
+        outline: none;
+        box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+
+.btn-send-inline {
+    background: var(--gold-gradient);
+    border: none;
+    padding: 0 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #000;
+    transition: transform 0.2s;
+}
+
+    .btn-send-inline:hover {
+        transform: scale(1.05);
+    }
+
+/* ====================== ANIMAÇÕES & VAZIO ====================== */
 .luxury-empty {
     text-align: center;
-    padding: 40px 20px;
-    color: rgba(255,255,255,0.4);
+    padding: 50px 20px;
+    color: rgba(255, 255, 255, 0.35);
     font-style: italic;
+}
+
+    .luxury-empty i {
+        font-size: 2.2rem;
+        margin-bottom: 12px;
+        display: block;
+        opacity: 0.4;
+    }
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }

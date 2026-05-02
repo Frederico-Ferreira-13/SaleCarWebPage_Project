@@ -52,7 +52,7 @@
     height: auto;
     display: block;
     object-fit: cover;
-    transition: transform 0.8s cubic-bezier(0.4,0,0.2,1);
+    transition: transform 0.8s ease;
 }
 
 .car-image-frame:hover .main-car-img {
@@ -77,23 +77,21 @@
     letter-spacing: 3px;
     font-weight: 800;
     font-size: 0.85rem;
-    margin-bottom: 10px;
-    display: block;
 }
 
 .car-title {
     color: var(--white);
     font-size: 2.8rem;
-    margin: 10px 0;
+    margin: 10px 0 20px;
     font-weight: 800;
-    line-height: 1.1;
+    line-height: 1.05;
 }
 
 .price-container {
     margin: 25px 0;
     display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 8px;
     color: var(--gold);
 }
 
@@ -101,9 +99,83 @@
     font-size: 3.5rem;
     font-weight: 900;
     letter-spacing: -2px;
-    filter: drop-shadow(0 0 15px var(--gold-glow));
 }
 
+/* ==========================================================================
+   4. PROPOSTAS RECEBIDAS (MELHORADO)
+   ========================================================================== */
+.owner-panel {
+    margin: 25px 0 30px;
+}
+
+.owner-title {
+    color: var(--gold);
+    font-size: 1.15rem;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.proposals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+proposal-card-mini {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 16px;
+    padding: 18px;
+    transition: all 0.3s ease;
+}
+
+.proposal-card-mini:hover {
+    border-color: var(--gold);
+    background: rgba(212, 175, 55, 0.06);
+    transform: translateY(-2px);
+}
+
+.prop-main-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.prop-user {
+    color: #ddd;
+    font-weight: 600;
+}
+
+    .prop-user i {
+        color: var(--gold);
+        margin-right: 6px;
+    }
+
+.prop-price {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--gold);
+}
+
+.prop-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.82rem;
+    color: #aaa;
+}
+
+.prop-detail {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* ==========================================================================
+   5. OUTROS ELEMENTOS
+   ========================================================================== */
 .quick-specs-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -112,53 +184,6 @@
     padding: 30px 0;
     border-top: 1px solid var(--border-subtle);
     border-bottom: 1px solid var(--border-subtle);
-}
-
-/* ==========================================================================
-   4. COMPONENTE: GERIR NEGOCIAÇÕES (CORREÇÃO DE CORES/LINKS)
-   ========================================================================== */
-.view-negotiations-link {
-    margin-top: 20px;
-    width: 100%;
-}
-
-.btn-manage-negotiations {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 10px;
-    width: 100%;
-    padding: 14px;
-    background: rgba(212, 175, 55, 0.05);
-    border: 1px solid var(--border-gold);
-    color: var(--gold) !important; /* Resolve o problema do roxo */
-    text-decoration: none !important;
-    font-weight: 700;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-}
-
-    .btn-manage-negotiations:hover {
-        background: var(--gold-gradient);
-        color: var(--black) !important;
-        border-color: transparent;
-        box-shadow: 0 5px 15px var(--gold-glow);
-    }
-
-/* ==========================================================================
-   5. DETALHES TÉCNICOS E LOCALIZAÇÃO (GRID)
-   ========================================================================== */
-.details-section {
-    margin-top: 50px;
-}
-
-.details-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
-    gap: 20px;
 }
 
 .detail-box {
@@ -172,102 +197,48 @@
     .detail-box:hover {
         transform: translateY(-8px);
         border-color: var(--gold);
-        background: rgba(212,175,55,0.03);
     }
 
 .address-card {
     background: var(--black-card);
     border: 1px solid var(--border-subtle);
-    border-left: 3px solid var(--gold);
+    border-left: 4px solid var(--gold);
     border-radius: 16px;
-    padding: 20px 24px;
-    margin-top: 10px;
+    padding: 22px 26px;
 }
-
-/* ==========================================================================
-   6. BOTÃO DE GARAGEM (FAVORITOS)
-   ========================================================================== */
-.favorite-action-premium {
-    margin-top: 20px;
-}
-
-.btn-garage {
-    width: 100%;
-    padding: 16px;
-    border-radius: 15px;
-    border: 1px solid var(--border-gold);
-    background: transparent;
-    color: var(--gold);
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: all 0.4s ease;
-}
-
-    .btn-garage.is-in-garage {
-        background: var(--gold-gradient);
-        color: var(--black);
-        border: none;
-    }
 
 .luxury-divider {
     border: none;
     border-top: 1px solid var(--border-subtle);
-    margin: 20px 0;
-}
-
-.view-negotiations-link {
-    text-align: center;
-    margin-bottom: 5px;
+    margin: 25px 0;
 }
 
 .btn-manage-negotiations {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
-    color: var(--gold);
-    text-decoration: none;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    padding: 10px 20px;
-    border: 1px solid var(--border-gold);
-    border-radius: 20px;
-    transition: all 0.3s ease;
-    width: 100%;
     justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px;
+    background: rgba(212, 175, 55, 0.05);
+    border: 1px solid var(--border-gold);
+    color: var(--gold) !important;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-radius: 14px;
+    transition: all 0.3s ease;
 }
 
     .btn-manage-negotiations:hover {
-        background: rgba(212,175,55,0.1);
-        box-shadow: 0 0 15px var(--gold-glow);
-        color: var(--gold);
+        background: var(--gold-gradient);
+        color: #000 !important;
+        border-color: transparent;
     }
 
-.login-notice {
-    text-align: center;
-    padding: 20px;
-    color: var(--text-muted);
-    font-size: 0.9rem;
-}
-
-    .login-notice p {
-        margin-bottom: 15px;
-    }
-
-.chat-section {
-    margin-top: 5px;
-}
-
-/* ==========================================================================
-   7. RESPONSIVIDADE
-   ========================================================================== */
+/* Responsividade */
 @media (max-width: 992px) {
     .car-main-layout {
         flex-direction: column;
@@ -275,12 +246,10 @@
 
     .car-specs-sidebar {
         position: static;
-        width: 100%;
-        padding: 25px;
     }
 
     .car-title {
-        font-size: 2.2rem;
+        font-size: 2.3rem;
     }
 
     .amount {
