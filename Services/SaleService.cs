@@ -90,13 +90,25 @@ namespace Services
         {
             try
             {
-                var proposals = await _unitOfWork.Sales.GetProposalsByCarIdAsync(carId);               
-
+                var proposals = await _unitOfWork.Sales.GetProposalsByCarIdAsync(carId);
                 return Result<IEnumerable<Sale>>.Success(proposals);
             }
             catch (Exception ex)
             {
                 return Result<IEnumerable<Sale>>.Failure(Error.InternalServer($"Erro: {ex.Message}"));
+            }
+        }
+
+        public async Task<Result<IEnumerable<Sale>>> GetUserNegotiationsAsync(int userId, HashSet<int> myCarIds)
+        {
+            try
+            {
+                var sales = await _unitOfWork.Sales.GetUserNegotiationsAsync(userId, myCarIds);
+                return Result<IEnumerable<Sale>>.Success(sales);
+            }
+            catch (Exception ex)
+            {
+                return Result<IEnumerable<Sale>>.Failure(Error.InternalServer($"Erro ao obter negociações: {ex.Message}"));
             }
         }
 
@@ -166,8 +178,7 @@ namespace Services
         {
             try
             {                
-                var allSales = await _unitOfWork.Sales.GetAllAsync();
-                
+                var allSales = await _unitOfWork.Sales.GetAllAsync();                
                 var userSales = allSales.Where(s => s.ClientId == userId || s.CarId != 0);
 
                 return Result<IEnumerable<Sale>>.Success(userSales);
@@ -176,6 +187,6 @@ namespace Services
             {
                 return Result<IEnumerable<Sale>>.Failure(Error.InternalServer($"Erro: {ex.Message}"));
             }
-        }
+        }        
     }
 }

@@ -73,13 +73,10 @@ namespace SaleCarWebPage_Project.Pages
 
             CanEdit = User.IsInRole("1") || (currentUserId.HasValue && Car.Provider?.UserId == currentUserId.Value);
 
-            if (CanEdit)
+            var proposalsResult = await _saleService.GetProposalsByCarIdAsync(id);
+            if (proposalsResult.IsSuccessful)
             {
-                var proposalsResult = await _saleService.GetProposalsByCarIdAsync(id);
-                if (proposalsResult.IsSuccessful)
-                {
-                    Car.Proposals = proposalsResult.Value!.ToList();
-                }
+                Car.Proposals = proposalsResult.Value!.ToList();
             }
 
             if (currentUserId.HasValue)

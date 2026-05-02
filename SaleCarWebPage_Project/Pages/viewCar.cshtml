@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/css/pages/favoritesBottom.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pages/messageBox.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/pages/proposal.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/negotiations.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/global/styles.css" asp-append-version="true" />
 
 }
@@ -128,30 +129,78 @@
 
                     @* ÁREA PRIVADA DE NEGOCIAÇÃO *@
                     @if (User.Identity!.IsAuthenticated)
-                    {                        
-                        <div class="negotiation-section">
-                            <h4 class="owner-title"><i class="fa-solid fa-handshake"></i> Negociação de Valores</h4>
-                            
-                            @if (!Model.CanEdit)
-                            {
-                                <button type="button" class="btn-make-offer w-100 mb-3" data-bs-toggle="modal" data-bs-target="#offerModal">
-                                    <i class="fa-solid fa-plus"></i> NOVA PROPOSTA
-                                </button>
-                            }                           
-                            
-                            <div class="view-negotiations-link mt-2">
-                                <a asp-page="/Negotiations" asp-route-carId="@Model.Car?.CarId" class="btn-manage-negotiations">
-                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                                    <span>GERIR NEGOCIAÇÕES</span>
-                                </a>
+                    {
+                        @* PROPOSTAS — só leitura para o vendedor *@
+                        @if (Model.CanEdit && Model.Car?.Proposals != null && Model.Car.Proposals.Any())
+                        {
+                            <div class="owner-panel">
+                                <h4 class="owner-title">
+                                    <i class="fa-solid fa-bell"></i> Propostas Recebidas
+                                </h4>
+                                <div class="proposals-list">
+                                    @foreach (var proposta in Model.Car.Proposals)
+                                    {
+                                        <div class="proposal-card-mini">
+                                            <div class="prop-main-info">
+                                                <span class="prop-user">
+                                                    <i class="fa-solid fa-user-tag"></i>
+                                                    @(proposta.Client?.ClientName
+                                                        ?? proposta.Client?.User?.UserName
+                                                        ?? "Utilizador")
+                                                </span>
+                                                <span class="prop-price">@proposta.FinalPrice.ToString("N0") €</span>
+                                            </div>
+                                            <div class="prop-meta">
+                                                <span class="prop-detail">
+                                                    <i class="fa-solid fa-wallet"></i> @proposta.PaymentMethod
+                                                </span>
+                                                <span class="prop-detail">
+                                                    <i class="fa-solid fa-calendar-day"></i>
+                                                    @proposta.SaleDate.ToString("dd/MM/yyyy")
+                                                </span>
+                                            </div>
+                                            @if (proposta.Client?.Contact != null)
+                                            {
+                                                <div class="prop-contact">
+                                                    <i class="fa-solid fa-phone"></i>
+                                                    @proposta.Client.Contact.PhoneNumber
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
                             </div>
+                        }
+                        else if (!Model.CanEdit)
+                        {
+                            @* BOTÃO PROPOSTA — apenas compradores *@
+                            <div class="offer-container">
+                                <button type="button" class="btn-make-offer"
+                                        data-bs-toggle="modal" data-bs-target="#offerModal">
+                                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                                    FAZER PROPOSTA OFICIAL
+                                </button>
+                            </div>
+                        }
+
+                        <hr class="luxury-divider" />
+
+                        @* LINK PARA NEGOCIAÇÕES *@
+                        <div class="view-negotiations-link">
+                            <a asp-page="/Negotiations" asp-route-carId="@Model.Car?.CarId"
+                                class="btn-manage-negotiations">
+                                <i class="fa-solid fa-handshake"></i>
+                                <span>GERIR NEGOCIAÇÕES</span>
+                            </a>
                         </div>
 
                         <hr class="luxury-divider" />
 
-                        @* 2. ÁREA DE MENSAGENS (Privada) *@
+                        @* MENSAGENS *@
                         <div class="chat-section">
-                            <h4 class="owner-title"><i class="fa-solid fa-comments"></i> Mensagens Privadas</h4>
+                            <h4 class="owner-title">
+                                <i class="fa-solid fa-comments"></i> Mensagens Privadas
+                            </h4>
                             <partial name="_messageBox" model="Model.MessageBoxData" />
                         </div>
                     }
@@ -162,7 +211,7 @@
                             <a href="/auth" class="btn-luxury-submit">LOGIN / REGISTO</a>
                         </div>
                     }
-                </div>
+                }
 
                 <div class="favorite-action-premium">
                     <button class="btn-garage @(Model.Car?.IsFavorite == true ? "is-in-garage" : "")"

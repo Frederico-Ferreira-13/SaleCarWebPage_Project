@@ -215,6 +215,56 @@
         border: none;
     }
 
+.luxury-divider {
+    border: none;
+    border-top: 1px solid var(--border-subtle);
+    margin: 20px 0;
+}
+
+.view-negotiations-link {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.btn-manage-negotiations {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border: 1px solid var(--border-gold);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    width: 100%;
+    justify-content: center;
+}
+
+    .btn-manage-negotiations:hover {
+        background: rgba(212,175,55,0.1);
+        box-shadow: 0 0 15px var(--gold-glow);
+        color: var(--gold);
+    }
+
+.login-notice {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+    .login-notice p {
+        margin-bottom: 15px;
+    }
+
+.chat-section {
+    margin-top: 5px;
+}
+
 /* ==========================================================================
    7. RESPONSIVIDADE
    ========================================================================== */

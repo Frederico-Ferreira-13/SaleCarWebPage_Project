@@ -26,6 +26,6 @@ namespace Contracts.Services
 
         Task<Result<IEnumerable<Sale>>> GetProposalsByUserIdAsync(int userId);
 
-
+        Task<Result<IEnumerable<Sale>>> GetUserNegotiationsAsync(int userId, HashSet<int> myCarIds);
     }
 }

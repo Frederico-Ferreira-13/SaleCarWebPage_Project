@@ -17,6 +17,8 @@ namespace Core.Model
         public decimal FinalPrice { get; private set; }
         public DateTime PurchaseDate { get; private set; }
         public string PaymentMethod { get; private set; } = string.Empty;
+        
+        [NotMapped]
         public string Observations { get; private set; } = string.Empty;
 
         [ForeignKey("ClientId")]

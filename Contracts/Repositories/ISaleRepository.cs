@@ -10,5 +10,6 @@ namespace Contracts.Repositories
         Task<IEnumerable<Sale>> GetByClientIdAsync(int clientId);
         Task<Sale?> GetByCarIdAsync(int carId);
         Task<IEnumerable<Sale>> GetProposalsByCarIdAsync(int carId);
+        Task<IEnumerable<Sale>> GetUserNegotiationsAsync(int userId, HashSet<int> userCarIds);
     }
 }

@@ -1,25 +1,9 @@
-﻿/* --- proposal.css --- */
-
-/* --- ESTILOS DE NEGOCIAÇÃO E PROPOSTAS (LUXURY) --- */
-
-/* 1. CONTENTORES E CABEÇALHO */
-.negotiations-container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.gold-title {
-    color: var(--gold);
-    font-weight: 800;
-    letter-spacing: -1px;
-    text-transform: uppercase;
-}
+﻿/* ====================== PROPOSAL BOX ====================== */
 
 .proposal-header-luxury {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 20px;
     padding-bottom: 15px;
     border-bottom: 1px solid var(--border-subtle);
@@ -27,182 +11,63 @@
 
 .luxury-label {
     color: var(--gold);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 800;
     letter-spacing: 2px;
     text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 10px;
 }
 
-.gold-icon {
-    color: var(--gold);
-    filter: drop-shadow(0 0 5px var(--gold-glow));
-}
-
-/* 2. CARD DE NEGOCIAÇÃO */
-.conv-card {
-    background: var(--black-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: 16px;
-    margin-bottom: 20px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-}
-
-    .conv-card:hover {
-        border-color: var(--border-gold);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    }
-
-/* 3. GRELHA E COLUNAS */
-.negotiation-grid {
-    display: grid;
-    grid-template-columns: 1.2fr 1.8fr;
-    border-top: 1px solid var(--border-subtle);
-}
-
-.proposal-column {
-    padding: 20px;
-    background: var(--black-deep);
-    border-right: 1px solid var(--border-subtle);
-}
-
-/* 4. TIMELINE DE PROPOSTAS */
 .proposal-timeline {
-    padding: 10px 5px;
     position: relative;
+    padding: 10px 0;
 }
 
     .proposal-timeline::before {
         content: '';
         position: absolute;
+        left: 15px;
         top: 10px;
         bottom: 10px;
-        left: 15px;
-        width: 1px;
-        background: linear-gradient(to bottom, var(--gold) 0%, rgba(212,175,55,0.05) 100%);
+        width: 2px;
+        background: linear-gradient(to bottom, var(--gold), rgba(212,175,55,0.1));
     }
 
 .proposal-item {
     position: relative;
-    margin-bottom: 25px;
-    padding-left: 40px;
+    padding-left: 45px;
+    margin-bottom: 20px;
 }
 
 .proposal-badge {
     position: absolute;
-    left: 6px;
+    left: 8px;
     top: 4px;
     background: var(--black-deep);
-    border: 1px solid var(--gold);
+    border: 2px solid var(--gold);
     color: var(--gold);
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.6rem;
     z-index: 2;
-    box-shadow: 0 0 8px var(--gold-glow);
-}
-
-.proposal-content {
-    background: rgba(255, 255, 255, 0.02);
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid var(--border-subtle);
-    transition: all 0.3s ease;
-}
-
-.proposal-item:hover .proposal-content {
-    border-color: var(--gold);
-    background: rgba(212, 175, 55, 0.05);
 }
 
 .proposal-value-small {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 700;
-    color: var(--white);
-    display: block;
+    color: #fff;
 }
 
 .proposal-date {
-    font-size: 0.7rem;
-    color: var(--text-muted);
+    font-size: 0.75rem;
+    color: #888;
 }
 
-/* 5. BOTÕES DE AÇÃO (ESTILO LUXURY - SEM CORES SÓLIDAS) */
-.proposal-actions-luxury {
-    display: flex;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.btn-proposal-accept, .btn-proposal-decline {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-subtle);
-    color: var(--white);
-    padding: 10px 15px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 0.7rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    flex: 1;
-    cursor: pointer;
-}
-
-/* Efeito Glow Verde para Aceitar */
-.btn-proposal-accept:hover {
-    border-color: #28a745;
-    color: #28a745;
-    box-shadow: 0 0 20px rgba(40, 167, 69, 0.2);
-    background: rgba(40, 167, 69, 0.05);
-    transform: translateY(-2px);
-}
-
-/* Efeito Glow Vermelho para Recusar */
-.btn-proposal-decline:hover {
-    border-color: #dc3545;
-    color: #dc3545;
-    box-shadow: 0 0 20px rgba(220, 53, 69, 0.2);
-    background: rgba(220, 53, 69, 0.05);
-    transform: translateY(-2px);
-}
-
-/* Botão de Nova Oferta (Dourado) */
-.btn-luxury-gold {
-    background: var(--gold-gradient);
-    color: var(--black);
-    border: none;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    width: 100%;
-    transition: all 0.3s ease;
-}
-
-.btn-luxury-gold:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px var(--gold-glow);
-}
-
-/* 6. ESTADOS VAZIOS */
 .luxury-empty {
     text-align: center;
-    padding: 30px;
-    color: var(--text-muted);
-}
-
-.luxury-empty i {
-    font-size: 2rem;
-    margin-bottom: 10px;
-    display: block;
-    opacity: 0.3;
+    padding: 40px 20px;
+    color: rgba(255,255,255,0.4);
+    font-style: italic;
 }

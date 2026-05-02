@@ -1,0 +1,134 @@
+﻿/* ====================== NEGOTIATIONS PAGE - LUXURY ====================== */
+
+.negotiations-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.negotiations-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.gold-title {
+    color: var(--gold);
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Card Principal */
+.conv-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 20px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+    .conv-card:hover {
+        border-color: var(--gold);
+        box-shadow: 0 15px 40px rgba(212, 175, 55, 0.15);
+        transform: translateY(-4px);
+    }
+
+.conv-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 25px;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.25);
+    transition: background 0.3s ease;
+}
+
+    .conv-header:hover {
+        background: rgba(212, 175, 55, 0.08);
+    }
+
+.car-thumb {
+    width: 90px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.car-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.proposal-value {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--gold);
+}
+
+.negotiation-status {
+    font-size: 0.85rem;
+    padding: 4px 14px;
+    border-radius: 30px;
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--gold);
+    font-weight: 600;
+}
+
+.conv-content {
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.negotiation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.proposal-column, .chat-column {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 16px;
+    padding: 20px;
+    border: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.negotiation-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.back-link {
+    color: #aaa;
+    text-decoration: none;
+}
+
+    .back-link:hover {
+        color: var(--gold);
+    }
+
+/* Responsivo */
+@media (max-width: 992px) {
+    .negotiation-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .car-thumb {
+        width: 75px;
+        height: 50px;
+    }
+}

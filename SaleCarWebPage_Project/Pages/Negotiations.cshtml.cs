@@ -24,58 +24,89 @@ namespace SaleCarWebPage_Project.Pages
             _messageService = messageService;
         }
 
-        public List<NegotiationItemViewModel> Negotiations { get; set; } = new();
+        public List<NegotiationGroup> Negotiations { get; set; } = new();
+
+        public class NegotiationGroup
+        {
+            public int CarId { get; set; }
+            public string CarName { get; set; } = string.Empty;
+            public string CarImage { get; set; } = "/img/cars/default-car.jpg";
+            public string OtherPartyName { get; set; } = "Utilizador";
+            public decimal LastOfferValue { get; set; }
+            public bool IsSeller { get; set; }
+            public DateTime LastActivity { get; set; }
+
+            public _proposalBoxModel ProposalData { get; set; } = new();
+            public _messageBoxModel MessageBoxData { get; set; } = new();
+        }
 
         public async Task<IActionResult> OnGetAsync(int? carId)
         {
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
-            if (!userIdResult.IsSuccessful) return RedirectToPage("/auth");
+            if (!userIdResult.IsSuccessful) 
+                return RedirectToPage("/auth");
+
             int currentUserId = userIdResult.Value;
 
-            var allProposalsResult = await _saleService.GetAllAsync(); // Ou um método mais específico
-            if (!allProposalsResult.IsSuccessful) return Page();
+            var myCarsResult = await _carService.GetCarsByUserIdAsync(currentUserId);
+            var myCarIds = myCarsResult.IsSuccessful
+                ? myCarsResult.Value.Select(c => c.CarId).ToHashSet()
+                : new HashSet<int>();
 
-            var userNegotiations = allProposalsResult.Value
-                .Where(p => p.ClientId == currentUserId || p.CarId != 0) // Ajustar lógica conforme a tua BD
-                .GroupBy(p => p.CarId);
-
-            foreach (var group in userNegotiations)
+            var negotiationsResult = await _saleService.GetUserNegotiationsAsync(currentUserId, myCarIds);
+            if (!negotiationsResult.IsSuccessful || !negotiationsResult.Value.Any())
             {
-                int idCarro = group.Key;
-                var carResult = await _carService.GetCarByIdAsync(idCarro, currentUserId);
-                if (!carResult.IsSuccessful) continue;
+                // Debug
+                Console.WriteLine("[DEBUG] Nenhuma proposta encontrada para o utilizador.");
+                return Page();
+            }
+
+            var grouped = negotiationsResult.Value
+                .GroupBy(s => s.CarId);
+
+            foreach (var group in grouped)
+            {
+                int carIdGrupo = group.Key;
+
+                var carResult = await _carService.GetCarByIdAsync(carIdGrupo, currentUserId);
+                if (!carResult.IsSuccessful || carResult.Value == null) continue;
 
                 var car = carResult.Value;
                 var lastProposal = group.OrderByDescending(p => p.SaleDate).First();
 
-                // Procurar histórico de mensagens para este carro
-                var chatResult = await _messageService.GetChatHistoryAsync(idCarro, currentUserId);
+                bool isSeller = myCarIds.Contains(carIdGrupo);
 
-                var item = new NegotiationItemViewModel
+                var otherPartyName = isSeller
+                    ? (lastProposal.Client?.ClientName ?? lastProposal.Client?.User?.UserName ?? "Comprador")
+                    : (car.Provider?.NameProvider ?? "Vendedor");
+
+                var chatResult = await _messageService.GetChatHistoryAsync(carIdGrupo, currentUserId);
+
+                var item = new NegotiationGroup
                 {
-                    SaleId = lastProposal.SaleId,
-                    CarId = idCarro,
+                    CarId = carIdGrupo,
                     CarName = $"{car.Model?.Brand?.BrandName} {car.Model?.ModelName}",
-                    CarImage = car.ImageUrl ?? "/images/cars/default.jpg",
-                    OtherPartyName = car.Provider?.User?.Name ?? "Vendedor",
+                    CarImage = car.ImageUrl ?? "/img/cars/default-car.jpg",
+                    OtherPartyName = otherPartyName,
                     LastOfferValue = lastProposal.FinalPrice,
-                    IsAccepted = false, // Podes adicionar lógica de estado na entidade Sale
+                    IsSeller = isSeller,
+                    LastActivity = lastProposal.SaleDate,
 
                     ProposalData = new _proposalBoxModel
                     {
-                        CarId = idCarro,
+                        CarId = carIdGrupo,
                         CurrentUserId = currentUserId,
-                        IsSellerView = car.Provider?.UserId == currentUserId,
+                        IsSellerView = isSeller,
                         ProposalHistory = group.OrderByDescending(p => p.SaleDate).ToList(),
                         ReadOnly = false,
-                        OtherPartyName = car.Provider?.UserId == currentUserId ? "Cliente" : car.Provider?.User?.Name
+                        OtherPartyName = otherPartyName
                     },
 
                     MessageBoxData = new _messageBoxModel
                     {
-                        CarId = idCarro,
-                        ChatHistory = chatResult.IsSuccessful ? chatResult.Value.ToList() : new List<MessageBox>(),
-                        OtherPartyName = car.Provider?.UserId == currentUserId ? "Cliente" : car.Provider?.User?.Name,
+                        CarId = carIdGrupo,
+                        ChatHistory = chatResult.IsSuccessful ? chatResult.Value.ToList() : new(),
+                        OtherPartyName = otherPartyName,
                         ReadOnly = false
                     }
                 };
@@ -83,32 +114,22 @@ namespace SaleCarWebPage_Project.Pages
                 Negotiations.Add(item);
             }
 
-            // Se um carId foi passado, garantimos que essa negociação aparece primeiro
+            Negotiations = Negotiations
+                .OrderByDescending(n => n.LastActivity)
+                .ToList();
+
             if (carId.HasValue)
             {
-                Negotiations = Negotiations.OrderByDescending(n => n.CarId == carId.Value).ToList();
+                var selected = Negotiations.FirstOrDefault(n => n.CarId == carId.Value);
+                if (selected != null)
+                {
+                    Negotiations.Remove(selected);
+                    Negotiations.Insert(0, selected);
+                }
             }
 
+            Console.WriteLine($"[DEBUG] Negociações carregadas: {Negotiations.Count}");
             return Page();
-        }
-
-        public class NegotiationItemViewModel
-        {
-            public int SaleId { get; set; }
-            public int CarId { get; set; }
-            public string CarName { get; set; }
-            public string CarImage { get; set; }
-            public string OtherPartyName { get; set; }
-            public decimal LastOfferValue { get; set; }
-            public bool IsAccepted { get; set; }
-            public bool IsRead { get; set; }
-
-            // Propriedades para as Partials
-            public _proposalBoxModel ProposalData { get; set; } = new();
-
-            public _messageBoxModel MessageBoxData { get; set; } = new();
-
-            public List<Core.Model.Sale> Offers => ProposalData.ProposalHistory;
-        }
+        }       
     }    
 }
