@@ -1,262 +1,297 @@
-﻿/* ====================== PROPOSAL BOX - LUXURY ====================== */
+﻿/* --- proposal.css --- */
 
-.proposal-card-luxury {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(212, 175, 55, 0.18);
-    border-radius: 16px;
-    padding: 22px;
-    height: 100%;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+.proposal-timeline-luxury {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
 }
 
-.proposal-header-luxury {
+/* --- Linha de proposta --- */
+.prop-row {
+    display: flex;
+    gap: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    padding: 4px 0;
+}
+
+    .prop-row.prop-latest:hover .prop-content {
+        background: rgba(212, 175, 55, 0.08);
+        border-color: rgba(212, 175, 55, 0.5);
+    }
+
+.prop-dot-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 32px;
+}
+
+.prop-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 22px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+    justify-content: center;
+    font-size: 0.8rem;
+    flex-shrink: 0;
 }
 
-.luxury-label {
-    color: var(--gold);
-    font-size: 0.95rem;
-    font-weight: 800;
-    letter-spacing: 1.8px;
-    text-transform: uppercase;
-    margin: 0;
+.dot-active {
+    background: var(--gold-gradient);
+    color: var(--black);
+    box-shadow: 0 0 14px var(--gold-glow);
 }
 
-.gold-icon {
+.dot-inactive {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.prop-line {
+    width: 2px;
+    flex: 1;
+    min-height: 16px;
+    background: linear-gradient(to bottom, rgba(212, 175, 55, 0.2), transparent);
+    margin: 4px 0;
+}
+
+/* --- Conteúdo --- */
+.prop-content {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    transition: all 0.25s ease;
+}
+
+.prop-latest .prop-content {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.07), rgba(0, 0, 0, 0.3));
+    border-color: rgba(212, 175, 55, 0.25);
+}
+
+/* --- Efeito Rasurado --- */
+.prop-struck .prop-content {
+    opacity: 0.55;
+}
+
+.struck-value {
+    text-decoration: line-through;
+    text-decoration-color: rgba(212, 175, 55, 0.6);
+    text-decoration-thickness: 2px;
+    filter: grayscale(0.8);
+}
+
+.prop-value-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 5px;
+}
+
+.prop-value {
+    font-weight: 900;
+    font-size: 1.15rem;
+    color: var(--white);
+    letter-spacing: -0.5px;
+}
+
+.prop-latest .prop-value:not(.struck-value) {
     color: var(--gold);
+    filter: drop-shadow(0 0 8px var(--gold-glow));
     font-size: 1.3rem;
 }
 
-/* ====================== TIMELINE ====================== */
-.luxury-timeline {
-    position: relative;
-    padding-left: 28px;
-}
-
-    .luxury-timeline::before {
-        content: '';
-        position: absolute;
-        left: 11px;
-        top: 8px;
-        bottom: 10px;
-        width: 3px;
-        background: linear-gradient(to bottom, var(--gold), rgba(212, 175, 55, 0.08));
-        border-radius: 3px;
-    }
-
-.proposal-item {
-    position: relative;
-    margin-bottom: 26px;
-}
-
-.proposal-dot {
-    position: absolute;
-    left: -28px;
-    top: 7px;
-    width: 16px;
-    height: 16px;
-    background: var(--gold);
-    border: 3px solid #111;
-    border-radius: 50%;
-    z-index: 2;
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-}
-
-/* ====================== CONTEÚDO DA PROPOSTA ====================== */
-.proposal-content {
-    background: var(--dark-bg);
-    padding: 16px 20px;
-    border-radius: 12px;
-    border: 1px solid var(--border-gold);
-    transition: all 0.3s ease;
-}
-
-/* Destaque para a proposta mais recente */
-.proposal-item.latest .proposal-content {
-    border-left: 4px solid var(--gold);
-    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15);
-    background: rgba(212, 175, 55, 0.03);
-}
-
-.proposal-item:hover .proposal-content {
-    border-color: var(--gold);
-    background: rgba(212, 175, 55, 0.06);
-    transform: translateX(6px);
-}
-
-.proposal-main {
-    margin-bottom: 8px;
-}
-
-.proposal-value {
-    font-size: 1.45rem;
-    font-weight: 800;
-    color: #fff;
-    display: block;
-}
-
-.proposal-date {
-    font-size: 0.78rem;
-    color: #999;
-}
-
-/* ====================== BADGES & STATUS ====================== */
-.renegotiated-badge {
-    display: inline-block;
-    background: rgba(212, 175, 55, 0.1);
-    color: var(--gold);
-    font-size: 0.65rem;
-    padding: 2px 10px;
-    border-radius: 6px;
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    text-transform: uppercase;
-    margin-top: 5px;
-    font-weight: 700;
-}
-
-.latest-badge {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 3px 12px;
-    background: #22c55e;
-    color: #000;
+.prop-date {
     font-size: 0.72rem;
-    font-weight: 700;
-    border-radius: 30px;
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
 }
 
-/* ====================== PAINEL DE AÇÕES ====================== */
-.quick-actions-panel {
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px dashed rgba(212, 175, 55, 0.2);
-    animation: slideDown 0.3s ease-out;
+/* --- Painel de Ações e Botões --- */
+.prop-actions-container {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(212, 175, 55, 0.12);
+    animation: fadeSlide 0.2s ease;
 }
 
-.proposal-actions {
+.prop-btn-row {
     display: flex;
     gap: 10px;
-    flex-wrap: wrap;
+    margin-bottom: 10px;
 }
 
-/* Botões de Luxo */
-.btn-luxury-accept,
-.btn-luxury-decline,
-.btn-luxury-counter {
-    padding: 10px 20px;
-    font-size: 0.8rem;
+.btn-prop-accept {
+    flex: 1;
+    background: var(--gold-gradient) !important;
+    border: 1px solid var(--gold-light) !important;
+    color: #ffffff !important;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 0.78rem;
     font-weight: 800;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.4s ease;
-    text-transform: uppercase;
     letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
     display: flex;
     align-items: center;
-    gap: 8px;
-}
-
-/* Aceitar & Contra-proposta (Dourado) */
-.btn-luxury-accept, .btn-luxury-counter {
-    background: var(--gold-gradient);
-    color: #000;
+    justify-content: center;
+    gap: 6px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
     box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
-    .btn-luxury-accept:hover, .btn-luxury-counter:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
-    }
-
-/* Recusar (Dark Gold) */
-.btn-luxury-decline {
-    background: #111;
-    color: var(--gold);
-    border: 1px solid var(--gold);
+.btn-prop-accept:hover {
+    background: var(--gold-hover) !important;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.45);
+    transform: translateY(-1px);
+    filter: brightness(1.1);
 }
 
-    .btn-luxury-decline:hover {
-        background: #1a1a1a;
-        color: #fff;
-        border-color: #fff;
-    }
-
-/* ====================== INPUT INLINE ====================== */
-.inline-counter-input {
-    margin-top: 15px;
-    display: flex;
-    gap: 8px;
-    animation: fadeIn 0.3s ease;
-}
-
-.luxury-input {
-    flex: 1;
-    background: #000;
-    border: 1px solid var(--gold);
-    color: #fff;
+/* --- Botão Recusar (Preto Metálico / Letras Douradas) --- */
+.btn-prop-decline {
+    flex: 1;    
+    background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 50%, #1a1a1a 100%) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    color: var(--gold) !important;
     padding: 10px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-}
-
-    .luxury-input:focus {
-        outline: none;
-        box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
-    }
-
-.btn-send-inline {
-    background: var(--gold-gradient);
-    border: none;
-    padding: 0 15px;
-    border-radius: 8px;
+    border-radius: 10px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     cursor: pointer;
-    color: #000;
-    transition: transform 0.2s;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-    .btn-send-inline:hover {
-        transform: scale(1.05);
-    }
+.btn-prop-decline:hover {
+    border-color: var(--gold) !important;
+    background: linear-gradient(135deg, #222 0%, #111 50%, #222 100%) !important;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.15);
+    transform: translateY(-1px);
+    color: var(--gold-light) !important;
+}
 
-/* ====================== ANIMAÇÕES & VAZIO ====================== */
-.luxury-empty {
+.btn-prop-counter {
+    width: 100%;
+    background: rgba(212, 175, 55, 0.1) !important;
+    border: 1px solid var(--gold) !important;
+    color: var(--gold) !important;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.btn-prop-counter:hover {
+    background: var(--gold) !important;
+    color: var(--black) !important;
+}
+
+/* --- Slider --- */
+.counter-slider-panel {
+    margin-top: 14px;
+    padding: 18px;
+    background: rgba(212, 175, 55, 0.04);
+    border: 1px solid rgba(212, 175, 55, 0.18);
+    border-radius: 12px;
+}
+
+.slider-current-value {
     text-align: center;
-    padding: 50px 20px;
-    color: rgba(255, 255, 255, 0.35);
-    font-style: italic;
+    font-size: 2.2rem;
+    font-weight: 900;
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px var(--gold-glow));
+    margin-bottom: 14px;
 }
 
-    .luxury-empty i {
-        font-size: 2.2rem;
-        margin-bottom: 12px;
-        display: block;
-        opacity: 0.4;
+.luxury-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+}
+
+    .luxury-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--gold-gradient);
+        cursor: pointer;
+        border: 2px solid var(--black);
     }
 
-@keyframes slideDown {
+.counter-input-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.counter-number {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid var(--border-gold) !important;
+    border-radius: 10px !important;
+    color: var(--gold) !important;
+    font-weight: 700 !important;
+    padding: 12px 16px !important;
+    text-align: center;
+}
+
+.btn-send-counter {
+    background: var(--gold-gradient);
+    color: var(--black);
+    border: none;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.prop-empty {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-muted);
+}
+
+@keyframes fadeSlide {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(-6px);
     }
 
     to {
         opacity: 1;
         transform: translateY(0);
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
     }
 }

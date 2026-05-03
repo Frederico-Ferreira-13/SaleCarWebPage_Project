@@ -194,24 +194,31 @@ namespace Services
             try
             {
                 var sale = await _unitOfWork.Sales.GetByIdAsync(saleId);
-                if (sale == null)
-                    return Result.Failure(Error.InternalServer("Proposta não encontrada."));
+                if (sale == null) return Result.Failure(Error.NotFound(ErrorCodes.NotFound, "Proposta não encontrada."));
 
                 var car = await _unitOfWork.Cars.GetByIdAsync(sale.CarId);
-                if (car == null || car.Provider?.UserId != userId)
-                    return Result.Failure(Error.InternalServer("Não tem permissão para aceitar esta proposta."));
 
-                // Aqui podes marcar a proposta como aceite e desativar o carro
-                // Exemplo:
+                // Verificação de segurança: Apenas o dono do carro (Provider) pode aceitar
+                if (car == null || car.Provider?.UserId != userId)
+                    return Result.Failure(Error.Forbidden(ErrorCodes.AuthUnauthorized, "Apenas o vendedor pode aceitar propostas."));
+
+                await _unitOfWork.BeginTransactionAsync();
+
+                // 1. Atualizar o estado da venda (ex: mudar PaymentMethod de "Contra-Proposta" para "Vendido")
+                sale.UpdatePaymentMethod("Venda Concluída");
+                await _unitOfWork.Sales.UpdateAsync(sale);
+
+                // 2. Desativar o carro
                 car.Deactivate();
                 await _unitOfWork.Cars.UpdateAsync(car);
-                await _unitOfWork.CommitAsync();
 
+                await _unitOfWork.CommitAsync();
                 return Result.Success();
             }
             catch (Exception ex)
             {
-                return Result.Failure(Error.InternalServer($"Erro ao aceitar proposta: {ex.Message}"));
+                _unitOfWork.Rollback();
+                return Result.Failure(Error.InternalServer($"Erro ao aceitar: {ex.Message}"));
             }
         }
 
@@ -242,34 +249,34 @@ namespace Services
 
         public async Task<Result> CreateCounterOfferAsync(int saleId, int userId, decimal counterValue)
         {
+            var original = await _unitOfWork.Sales.GetByIdAsync(saleId);
+            if (original == null)
+                return Result.Failure(Error.NotFound(ErrorCodes.NotFound, "Proposta não encontrada."));
+
+            await _unitOfWork.BeginTransactionAsync();
             try
             {
-                var originalSale = await _unitOfWork.Sales.GetByIdAsync(saleId);
-                if (originalSale == null)
-                    return Result.Failure(Error.InternalServer("Proposta original não encontrada."));
-
-                var car = await _unitOfWork.Cars.GetByIdAsync(originalSale.CarId);
-                if (car == null || car.Provider?.UserId != userId)
-                    return Result.Failure(Error.InternalServer("Não tem permissão para fazer contra-proposta."));
-
-                var newSale = new Sale(
-                    originalSale.CarId,
-                    originalSale.ClientId ?? 0,
-                    DateTime.UtcNow,
-                    counterValue,
-                    DateTime.UtcNow,
-                    "Contra-proposta",
-                    $"Contra-proposta à oferta anterior de {originalSale.FinalPrice:C0}"
+                var counter = new Sale(
+                    carId: original.CarId,
+                    clientId: original.ClientId,
+                    saleDate: DateTime.UtcNow,
+                    finalPrice: counterValue,
+                    purchaseDate: DateTime.UtcNow,
+                    paymentMethod: "Contra-Proposta",
+                    observations: $"Contra-proposta de userId:{userId} sobre saleId:{saleId}"
                 );
 
-                await _unitOfWork.Sales.AddAsync(newSale);
-                await _unitOfWork.CommitAsync();
+                counter.UpdateObservations($"Oferta submetida por utilizador ID: {userId}");
 
+                await _unitOfWork.Sales.AddAsync(counter);
+                await _unitOfWork.CommitAsync();
                 return Result.Success();
             }
             catch (Exception ex)
             {
-                return Result.Failure(Error.InternalServer($"Erro ao criar contra-proposta: {ex.Message}"));
+                _unitOfWork.Rollback();
+                Console.WriteLine($"[ERRO SERVICE] CreateCounterOffer: {ex.Message}");
+                return Result.Failure(Error.InternalServer(ex.Message));
             }
         }
     }

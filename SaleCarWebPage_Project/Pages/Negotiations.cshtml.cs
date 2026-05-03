@@ -40,6 +40,12 @@ namespace SaleCarWebPage_Project.Pages
             public _messageBoxModel MessageBoxData { get; set; } = new();
         }
 
+        public class ProposalActionRequest
+        {
+            public int SaleId { get; set; }
+            public decimal? CounterValue { get; set; }
+        }
+
         public async Task<IActionResult> OnGetAsync(int? carId)
         {
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
@@ -132,49 +138,45 @@ namespace SaleCarWebPage_Project.Pages
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAcceptAsync(int saleId)
+        public async Task<IActionResult> OnPostAcceptAsync([FromBody] ProposalActionRequest request)
         {
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
             if (!userIdResult.IsSuccessful) return Unauthorized();
 
-            var result = await _saleService.AcceptProposalAsync(saleId, userIdResult.Value);
+            if (request == null || request.SaleId == 0) return BadRequest();
 
-            if (result.IsSuccessful)
-                TempData["Success"] = "Proposta aceite com sucesso!";
-            else
-                TempData["Error"] = result.Message ?? "Erro ao aceitar proposta.";
-
-            return RedirectToPage();
+            var result = await _saleService.AcceptProposalAsync(request.SaleId, userIdResult.Value);
+            return result.IsSuccessful ? new JsonResult(new { success = true }) : new JsonResult(new { success = false, message = result.Message });
         }
 
-        public async Task<IActionResult> OnPostDeclineAsync(int saleId)
+        public async Task<IActionResult> OnPostDeclineAsync([FromBody] ProposalActionRequest request)
         {
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
             if (!userIdResult.IsSuccessful) return Unauthorized();
 
-            var result = await _saleService.DeclineProposalAsync(saleId, userIdResult.Value);
+            if (request == null || request.SaleId == 0) return BadRequest();
 
-            if (result.IsSuccessful)
-                TempData["Success"] = "Proposta recusada.";
-            else
-                TempData["Error"] = result.Message ?? "Erro ao recusar proposta.";
-
-            return RedirectToPage();
+            var result = await _saleService.DeclineProposalAsync(request.SaleId, userIdResult.Value);
+            return result.IsSuccessful ? new JsonResult(new { success = true }) : new JsonResult(new { success = false, message = result.Message });
         }
 
-        public async Task<IActionResult> OnPostCounterOfferAsync(int saleId, decimal counterValue)
+        public async Task<IActionResult> OnPostCounterOfferAsync([FromBody] ProposalActionRequest request)
         {
+            // DEBUG para o log do servidor
+            Console.WriteLine($"[DEBUG] Recebido CounterOffer: SaleId={request?.SaleId}, Value={request?.CounterValue}");
+
             var userIdResult = await _tokenService.GetUserIdFromContextAsync();
             if (!userIdResult.IsSuccessful) return Unauthorized();
 
-            var result = await _saleService.CreateCounterOfferAsync(saleId, userIdResult.Value, counterValue);
+            if (request == null || request.SaleId == 0 || !request.CounterValue.HasValue)
+                return BadRequest(new { message = "Dados inválidos recebidos no servidor." });
+
+            var result = await _saleService.CreateCounterOfferAsync(request.SaleId, userIdResult.Value, request.CounterValue.Value);
 
             if (result.IsSuccessful)
-                TempData["Success"] = $"Contra-proposta de {counterValue:C0} enviada!";
-            else
-                TempData["Error"] = result.Message ?? "Erro ao criar contra-proposta.";
+                return new JsonResult(new { success = true });
 
-            return RedirectToPage();
+            return new JsonResult(new { success = false, message = result.Message });
         }
     }    
 }

@@ -18,242 +18,217 @@
 <main class="car-view-container">
     @if (Model.Car == null)
     {
-        <div class="inbox-container">
-            <header class="inbox-premium-header">
-                <h2 class="section-title">
-                    <i class="fa-solid fa-envelope-open-text"></i> Centro de Mensagens
-                </h2>
-                <p class="section-subtitle">Acompanhe as suas negociações e conversas ativas</p>
-            </header>
-            <div class="inbox-content">
-                <partial name="_messageBox" model="Model.MessageBoxData" />
-            </div>
+        <div class="alert alert-warning shadow-sm">
+            <i class="fa-solid fa-circle-exclamation"></i> Veículo não encontrado ou indisponível.
         </div>
     }
     else
     {
         <div class="car-main-layout">
-
-            <!-- ESQUERDA: Imagem + Detalhes -->
+            <!-- COLUNA ESQUERDA: APRESENTAÇÃO E DADOS TÉCNICOS -->
             <div class="car-content-area">
-                <div class="car-image-frame">
-                    <img src="@(Model.Car?.ImageUrl ?? "/img/cars/default-car.jpg")"
-                         alt="@Model.Car?.Model?.ModelName" class="main-car-img" />
-                    <div class="car-status-badges">
-                        @if (Model.Car?.IsApproved == true)
-                        {
-                            <span class="badge-approved">
-                                <i class="fa-solid fa-check-double"></i> Verificado
-                            </span>
-                        }
-                        <span class="badge-category">@Model.Car?.Category</span>
+                
+                <!-- Galeria Principal -->
+                <div class="car-hero-section">
+                    <div class="car-image-frame">
+                        <img src="@(Model.Car?.ImageUrl ?? "/img/cars/default-car.jpg")" alt="Imagem do Veículo" class="main-car-img" />
+                        <div class="car-badges-overlay">
+                            @if (Model.Car?.IsApproved == true)
+                            {
+                                <span class="badge-premium gold"><i class="fa-solid fa-crown"></i> Verificado</span>
+                            }
+                            <span class="badge-premium dark">@Model.Car?.Category</span>
+                        </div>
                     </div>
                 </div>
 
-                <section class="details-section">
-                    <h3 class="section-title">
-                        <i class="fa-solid fa-microchip"></i> Especificações Técnicas
-                    </h3>
-                    <div class="details-grid">
-                        <div class="detail-box">
-                            <span class="detail-label">Matrícula</span>
-                            <span class="detail-value">@Model.Car?.PlateNumber</span>
+                <!-- Grelha de Especificações Detalhada -->
+                <section class="info-section">
+                    <h3 class="section-title"><i class="fa-solid fa-gears"></i> Ficha Técnica</h3>
+                    <div class="specs-full-grid">
+                        <div class="spec-item">
+                            <i class="fa-solid fa-fingerprint"></i>
+                            <div class="spec-data">
+                                <label>Matrícula</label>
+                                <span>@Model.Car?.PlateNumber</span>
+                            </div>
                         </div>
-                        <div class="detail-box">
-                            <span class="detail-label">Cor Exterior</span>
-                            <span class="detail-value">@Model.Car?.CarColor</span>
+                        <div class="spec-item">
+                            <i class="fa-solid fa-gauge"></i>
+                            <div class="spec-data">
+                                <label>Cilindrada</label>
+                                <span>@Model.Car?.EngineCapacity cc</span>
+                            </div>
                         </div>
-                        <div class="detail-box">
-                            <span class="detail-label">Tara (Peso)</span>
-                            <span class="detail-value">@Model.Car?.CarTare.ToString("N0") kg</span>
+                        <div class="spec-item">
+                            <i class="fa-solid fa-palette"></i>
+                            <div class="spec-data">
+                                <label>Cor Exterior</label>
+                                <span>@Model.Car?.CarColor</span>
+                            </div>
                         </div>
-                        <div class="detail-box">
-                            <span class="detail-label">Cilindrada</span>
-                            <span class="detail-value">@Model.Car?.EngineCapacity cc</span>
+                        <div class="spec-item">
+                            <i class="fa-solid fa-weight-hanging"></i>
+                            <div class="spec-data">
+                                <label>Peso (Tara)</label>
+                                <span>@Model.Car?.CarTare.ToString("N0") kg</span>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <div class="spec-data">
+                                <label>Ano de Registo</label>
+                                <span>@Model.Car?.Year</span>
+                            </div>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fa-solid fa-road"></i>
+                            <div class="spec-data">
+                                <label>Quilometragem</label>
+                                <span>@Model.Car?.Kilometers.ToString("N0") km</span>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                <section class="details-section">
-                    <h3 class="section-title">
-                        <i class="fa-solid fa-location-dot"></i> Localização do Veículo
-                    </h3>
-                    <div class="address-card">
+                <!-- Localização Estilizada -->
+                <section class="info-section">
+                    <h3 class="section-title"><i class="fa-solid fa-map-location-dot"></i> Localização</h3>
+                    <div class="location-card-premium">
                         @if (Model.Car?.Provider?.Address != null)
                         {
-                            <p class="address-main">@Model.Car.Provider.Address.Locate</p>
-                            <p class="address-sub">
-                                @Model.Car.Provider.Address.City, @Model.Car.Provider.Address.Country
-                            </p>
-                            <small class="postal-code">C.P: @Model.Car.Provider.Address.PostalCode</small>
+                            <div class="loc-icon"><i class="fa-solid fa-location-dot"></i></div>
+                            <div class="loc-text">
+                                <p class="city">@Model.Car.Provider.Address.City, @Model.Car.Provider.Address.Country</p>
+                                <p class="street">@Model.Car.Provider.Address.Locate</p>
+                                <span class="zip">CP: @Model.Car.Provider.Address.PostalCode</span>
+                            </div>
                         }
                         else
                         {
-                            <p class="no-location">Localização sob consulta</p>
+                            <p class="no-data">Localização disponível sob pedido ao vendedor.</p>
                         }
                     </div>
                 </section>
             </div>
 
-            <!-- DIREITA: Sidebar -->
+            <!-- COLUNA DIREITA: SIDEBAR DE INTERAÇÃO -->
             <aside class="car-specs-sidebar">
-                <header class="specs-header">
-                    <span class="brand-label">@Model.Car?.Model?.Brand?.BrandName</span>
-                    <h1 class="car-title">@Model.Car?.Model?.ModelName</h1>
-                    <div class="price-container">
-                        <span class="currency">€</span>
-                        <span class="amount">@Model.Car?.CarPrice.ToString("N0")</span>
-                    </div>
-                </header>
-
-                <div class="quick-specs-grid">
-                    <div class="q-spec">
-                        <i class="fa-solid fa-calendar-check"></i>
-                        <div class="q-spec-data"><label>Ano</label><span>@Model.Car?.Year</span></div>
-                    </div>
-                    <div class="q-spec">
-                        <i class="fa-solid fa-gauge-high"></i>
-                        <div class="q-spec-data"><label>Kms</label><span>@Model.Car?.Kilometers.ToString("N0")</span></div>
-                    </div>
-                </div>
-
-                <div class="seller-card">
-                    <div class="seller-header">
-                        <span class="seller-type">Vendedor</span>
-                        <span class="seller-name">@(Model.Car?.Provider?.NameProvider ?? "Particular")</span>
+                <div class="sidebar-sticky-content">
+                    
+                    <!-- Cabeçalho de Preço -->
+                    <div class="price-header-card">
+                        <span class="brand-tag">@Model.Car?.Model?.Brand?.BrandName</span>
+                        <h1 class="model-title">@Model.Car?.Model?.ModelName</h1>
+                        <div class="main-price">@Model.Car?.CarPrice.ToString("N0") <small>€</small></div>
                     </div>
 
                     @if (User.Identity!.IsAuthenticated)
                     {
-                        @if (Model.CanEdit && Model.Car?.Proposals?.Any() == true)
-                        {
-                            <div class="owner-panel">
-                                <h4 class="owner-title">
-                                    <i class="fa-solid fa-bell"></i> Propostas Recebidas
-                                </h4>
-                                <div class="proposals-list">
-                                    @foreach (var proposta in Model.Car.Proposals)
-                                    {
-                                        <div class="proposal-card-mini">
-                                            <div class="prop-main-info">
-                                                <span class="prop-user">
-                                                    <i class="fa-solid fa-user-tag"></i>
-                                                    @(proposta.Client?.ClientName ?? proposta.Client?.User?.UserName ?? "Utilizador")
-                                                </span>
-                                                <span class="prop-price">@proposta.FinalPrice.ToString("N0") €</span>
-                                            </div>
-                                            <div class="prop-meta">
-                                                <span class="prop-detail">
-                                                    <i class="fa-solid fa-wallet"></i> @proposta.PaymentMethod
-                                                </span>
-                                                <span class="prop-detail">
-                                                    <i class="fa-solid fa-calendar-day"></i>
-                                                    @proposta.SaleDate.ToString("dd/MM/yyyy")
-                                                </span>
-                                            </div>
+                        <div class="interaction-stack">
+                            
+                            <!-- SECÇÃO DE PROPOSTA -->
+                            <div class="action-card proposal-zone shadow-sm">
+                                <h4 class="card-subtitle"><i class="fa-solid fa-hand-holding-dollar"></i> Negociar Valor</h4>
+                                
+                                @if (!Model.CanEdit)
+                                {
+                                    <div class="quick-proposal-box">
+                                        <div class="input-group-premium">
+                                            <input type="number" id="quick-offer-input" class="form-control-premium" value="@Model.Car.CarPrice" step="500" />
+                                            <button class="btn-action-gold" onclick="submitQuickOffer()">Enviar Oferta</button>
                                         </div>
-                                    }
+                                    </div>
+                                }
+                                
+                                <div class="history-container mt-3">
+                                    <partial name="_proposalBox" model="Model.ProposalBoxData" />
                                 </div>
                             </div>
-                        }
-                        else if (!Model.CanEdit)
-                        {
-                            <div class="offer-container">
-                                <button type="button" class="btn-make-offer" data-bs-toggle="modal" data-bs-target="#offerModal">
-                                    <i class="fa-solid fa-hand-holding-dollar"></i>
-                                    FAZER PROPOSTA OFICIAL
-                                </button>
+
+                            <!-- SECÇÃO DE MENSAGENS -->
+                            <div class="action-card message-zone shadow-sm">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="card-subtitle m-0"><i class="fa-solid fa-comments"></i> Mensagens de Apoio</h4>
+                                    <button class="btn-new-chat" title="Nova Mensagem" onclick="focusChat()">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="chat-container-fixed">
+                                    <partial name="_messageBox" model="Model.MessageBoxData" />
+                                </div>
                             </div>
-                        }
 
-                        <hr class="luxury-divider" />
-
-                        <div class="view-negotiations-link">
-                            <a asp-page="/Negotiations" asp-route-carId="@Model.Car?.CarId" class="btn-manage-negotiations">
-                                <i class="fa-solid fa-handshake"></i>
-                                <span>GERIR NEGOCIAÇÕES</span>
+                            <a asp-page="/Negotiations" asp-route-carId="@Model.Car.CarId" class="btn-outline-manage w-100 mt-2">
+                                <i class="fa-solid fa-handshake"></i> Gestão de Negociações
                             </a>
-                        </div>
-
-                        <hr class="luxury-divider" />
-
-                        <div class="chat-section">
-                            <h4 class="owner-title">
-                                <i class="fa-solid fa-comments"></i> Mensagens Privadas
-                            </h4>
-                            <partial name="_messageBox" model="Model.MessageBoxData" />
                         </div>
                     }
                     else
                     {
-                        <div class="login-notice">
-                            <p>Faça login para propor valores ou contactar o vendedor.</p>
-                            <a href="/auth" class="btn-luxury-submit">LOGIN / REGISTO</a>
+                        <div class="auth-required-card">
+                            <p>Autentique-se para negociar este veículo ou contactar o vendedor.</p>
+                            <a href="/auth" class="btn-action-gold">Login / Registo</a>
                         </div>
                     }
-                </div>
 
-                <div class="favorite-action-premium">
-                    <button class="btn-garage @(Model.Car?.IsFavorite == true ? "is-in-garage" : "")"
-                            onclick="toggleGarage(@(Model.Car?.CarId ?? 0), this)">
-                        <i class="@(Model.Car?.IsFavorite == true ? "fa-solid fa-gem" : "fa-regular fa-gem")"></i>
-                        <span>@(Model.Car?.IsFavorite == true ? "Na minha Garagem" : "Guardar na Garagem")</span>
-                    </button>
+                    <!-- Favorito (Garagem) -->
+                    <div class="favorite-wrapper mt-3">
+                        <button class="btn-garage-toggle @(Model.Car?.IsFavorite == true ? "active" : "")"
+                                onclick="toggleGarage(@Model.Car.CarId)">
+                            <i class="fa-solid fa-gem"></i>
+                            <span>@(Model.Car?.IsFavorite == true ? "Na minha Garagem" : "Guardar na Garagem")</span>
+                        </button>
+                    </div>
                 </div>
             </aside>
         </div>
     }
 </main>
 
-<!-- MODAL -->
-@if (Model.Car != null && !Model.CanEdit)
-{
-    <div class="modal fade" id="offerModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-sm-custom">
-            <div class="modal-content luxury-modal-slim">
-                <div class="modal-body">
-                    <button type="button" class="btn-close-luxury" data-bs-dismiss="modal">×</button>
-                    <div class="luxury-form-header">
-                        <h2 class="luxury-title">Enviar Proposta</h2>
-                    </div>
-                    <div class="luxury-input-group">
-                        <label>Valor (€)</label>
-                        <input type="number" id="offerValue" class="luxury-input main-value" value="@Model.Car.CarPrice" step="500">
-                    </div>
-                    <div class="luxury-input-group">
-                        <label>Contacto</label>
-                        <input type="tel" id="offerContact" class="luxury-input" placeholder="9xx xxx xxx">
-                    </div>
-                    <button type="button" class="btn-luxury-submit" onclick="submitOffer()">ENVIAR PROPOSTA</button>
-                </div>
-            </div>
-        </div>
-    </div>
-}
-
 @Html.AntiForgeryToken()
 
 @section Scripts {
     <script>
-        async function toggleGarage(carId, btn) {
-            const isAuthenticated = @(User.Identity.IsAuthenticated.ToString().ToLower());
-            if (!isAuthenticated) {
-                toastr.warning("Inicie sessão primeiro.");
-                return;
+        async function submitQuickOffer() {
+            const val = document.getElementById('quick-offer-input').value;
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+            if(val <= 0) return alert("Insira um valor válido.");
+
+            const response = await fetch('?handler=SubmitProposal', { // Handler ajustado para o nome do C#
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify({ carId: @Model.Car?.CarId, offerValue: parseFloat(val), contact: "Via Web" })
+            });
+
+            if (response.ok) {
+                location.reload();
             }
-            try {
-                const response = await fetch(`?handler=ToggleFavorite`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                    },
-                    body: JSON.stringify(carId)
-                });
-                if (response.ok) { location.reload(); }
-            } catch (error) { console.error(error); }
+        }
+
+        function focusChat(subject = "") {
+            const chatInput = document.querySelector('#txtMessage'); // ID específico do textarea da messageBox
+            if(chatInput) {
+                if(subject) chatInput.value = subject + ": ";
+                chatInput.focus();
+                chatInput.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        async function toggleGarage(id) {
+            // Lógica de AJAX para favoritos
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            const res = await fetch('?handler=ToggleFavorite', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': token },
+                body: JSON.stringify(id)
+            });
+            if(res.ok) location.reload();
         }
     </script>
-    <script src="~/js/submitOffer.js" asp-append-version="true"></script>
-}
 }

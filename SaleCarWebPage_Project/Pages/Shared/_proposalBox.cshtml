@@ -1,78 +1,215 @@
 ﻿@model SaleCarWebPage_Project.Pages.Shared._proposalBoxModel
+@using Core.Model
 
-<div class="proposal-card-luxury">
-    <div class="proposal-header-luxury">
-        <i class="fa-solid fa-clock-rotate-left gold-icon"></i>
-        <h4 class="luxury-label">HISTÓRICO DE OFERTAS</h4>
-    </div>
+@{
+    var history = (Model.ProposalHistory as IEnumerable<Sale> ?? new List<Sale>())
+        .OrderByDescending(p => p.SaleDate)
+        .ToList();
+}
 
-    <div class="proposal-body-luxury">
-        @if (Model.ProposalHistory != null && Model.ProposalHistory.Any())
+<div class="proposal-timeline-luxury">
+    @if (history.Any())
+    {
+        for (int i = 0; i < history.Count; i++)
         {
-            <div class="luxury-timeline">
-                @{
-                    var sortedHistory = Model.ProposalHistory.OrderByDescending(p => p.SaleDate).ToList();
-                    var oldestProposal = sortedHistory.Last();
-                }
+            var proposal = history[i];
+            bool isLatest = i == 0;
+            bool isCounter = proposal.PaymentMethod == "Contra-Proposta";
+            bool isStruck = !isLatest;
 
-                @foreach (var proposal in sortedHistory)
-                {
-                    bool isLatest = proposal == sortedHistory.First();
-                    // Se não for a proposta mais antiga do histórico, é uma contra-proposta
-                    bool isCounterOffer = proposal != oldestProposal;
+            <div class="prop-row @(isLatest ? "prop-latest" : "prop-old") @(isStruck ? "prop-struck" : "")"
+                 id="prop-row-@proposal.SaleId"
+                @(isLatest && !Model.ReadOnly ? $"onclick=togglePropActions({proposal.SaleId})" : "")>
 
-                    <div class="proposal-item @(isLatest ? "latest" : "")" id="item-@proposal.SaleId">
-                        <div class="proposal-dot"></div>
-                        <div class="proposal-content">
-                            <div class="proposal-main" @(isLatest && !Model.ReadOnly ? $"onclick=\"toggleActions({proposal.SaleId}, true)\"" : "")>
-                                
-                                @if (isCounterOffer)
-                                {
-                                    <span class="proposal-value counter-value">@proposal.FinalPrice.ToString("N0") €</span>
-                                    <span class="renegotiated-badge"><i class="fa-solid fa-rotate"></i> Renegociado</span>
-                                }
-                                else
-                                {
-                                    <span class="proposal-value">@proposal.FinalPrice.ToString("N0") €</span>
-                                }
-                                
-                                <span class="proposal-date">@proposal.SaleDate.ToString("dd/MM/yyyy HH:mm")</span>
-                            </div>
-
-                            @if (isLatest && !Model.ReadOnly)
-                            {
-                                <div class="quick-actions-panel" id="actions-@proposal.SaleId" style="display: none;">
-                                    <div class="proposal-actions">
-                                        <button type="button" class="btn-luxury-accept" onclick="handleAction(@proposal.SaleId, 'accept')">
-                                            <i class="fa-solid fa-check"></i> ACEITAR
-                                        </button>
-                                        <button type="button" class="btn-luxury-decline" onclick="handleAction(@proposal.SaleId, 'decline')">
-                                            <i class="fa-solid fa-xmark"></i> RECUSAR
-                                        </button>
-                                        <button type="button" class="btn-luxury-counter" onclick="showInlineCounter(@proposal.SaleId)">
-                                            <i class="fa-solid fa-hand-holding-dollar"></i> CONTRA-PROPOSTA
-                                        </button>
-                                    </div>
-                                    
-                                    <div class="inline-counter-input" id="inline-counter-@proposal.SaleId" style="display: none;">
-                                        <input type="number" class="luxury-input" id="val-@proposal.SaleId"
-                                               placeholder="Novo valor em €" step="500">
-                                        <button type="button" class="btn-send-inline" onclick="submitInlineCounter(@proposal.SaleId)">
-                                            <i class="fa-solid fa-paper-plane"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            }
-                        </div>
+                <div class="prop-dot-line">
+                    <div class="prop-dot @(isLatest ? "dot-active" : "dot-inactive")">
+                        <i class="fa-solid @(isLatest ? "fa-star" : "fa-circle-dot")"></i>
                     </div>
-                }
+                    @if (i < history.Count - 1)
+                    {
+                        <div class="prop-line"></div>
+                    }
+                </div>
+
+                <div class="prop-content">
+                    <div class="prop-value-row">
+                        <span class="prop-value @(isStruck ? "struck-value" : "") @(isCounter ? "counter-value" : "")">
+                            @proposal.FinalPrice.ToString("N0") €
+                        </span>
+                
+                        @if (isLatest)
+                        {
+                            <span class="badge-latest">Ativa</span>
+                            @if (!Model.ReadOnly)
+                            {
+                                <i class="fa-solid fa-chevron-down prop-row-chevron" id="chevron-@proposal.SaleId"></i>
+                            }
+                        }
+                    </div>
+                    
+                    <span class="prop-date">@proposal.SaleDate.ToString("dd/MM/yyyy HH:mm")</span>
+
+                    @if (isLatest && !Model.ReadOnly)
+                    {
+                        <div class="prop-actions-container" id="actions-@proposal.SaleId" style="display:none;">
+                            <div class="prop-btn-row">
+                                <button type="button" class="btn-prop-accept" onclick="event.stopPropagation(); handleAction(@proposal.SaleId, 'accept')">
+                                    <i class="fa-solid fa-check"></i> ACEITAR
+                                </button>
+                                <button type="button" class="btn-prop-decline" onclick="event.stopPropagation(); handleAction(@proposal.SaleId, 'decline')">
+                                    <i class="fa-solid fa-xmark"></i> RECUSAR
+                                </button>
+                            </div>
+                    
+                            <button type="button" class="btn-prop-counter" onclick="event.stopPropagation(); toggleCounterSlider(@proposal.SaleId)">
+                                <i class="fa-solid fa-arrows-rotate"></i> CONTRA-PROPOSTA
+                            </button>
+
+                            <div class="counter-slider-panel" id="slider-@proposal.SaleId" style="display:none;" onclick="event.stopPropagation()">
+                                <div class="slider-current-value" id="slider-val-@proposal.SaleId">
+                                    @proposal.FinalPrice.ToString("N0") €
+                                </div>
+
+                                <input type="range" class="luxury-slider" id="slider-input-@proposal.SaleId"
+                                       min="@((int)(proposal.FinalPrice * 0.7m))" max="@((int)(proposal.FinalPrice * 1.5m))"
+                                       value="@((int)proposal.FinalPrice)" step="500"
+                                       oninput="syncSliderVal(@proposal.SaleId, this.value)" />
+
+                                <div class="counter-input-row">
+                                    <input type="number" class="luxury-input counter-number" id="counter-num-@proposal.SaleId"
+                                           value="@((int)proposal.FinalPrice)" oninput="syncSliderInput(@proposal.SaleId, this.value)" />
+                                    <button type="button" class="btn-send-counter" onclick="submitCounter(@proposal.SaleId)">
+                                        ENVIAR
+                                    </button>
+                                </div>
+
+                                <button type="button" class="btn-prop-question"
+                                        onclick="focusChat('Dúvida sobre a proposta de @proposal.FinalPrice.ToString("N0")€')">
+                                    <i class="fa-solid fa-comment-dots"></i> PERGUNTAR
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         }
-        else
-        {
-            <div class="luxury-empty">
-                <p>Sem propostas efetuadas.</p>
-            </div>
-        }
-    </div>
+    }
+    else
+    {
+        <div class="prop-empty">
+            <i class="fa-solid fa-box-open"></i>
+            <p>Ainda não existem propostas registadas.</p>
+        </div>
+    }
 </div>
+
+<script>
+    
+    function togglePropActions(saleId) {
+        console.log("Toggle Actions para SaleId:", saleId);
+        const panel = document.getElementById('actions-' + saleId);
+        const chevron = document.getElementById('chevron-' + saleId);
+        
+       if (!panel) {
+            console.error("Painel de ações não encontrado para ID:", saleId);
+            return;
+        }
+
+        const isOpening = panel.style.display === 'none';        
+        
+        document.querySelectorAll('.prop-actions-container').forEach(p => p.style.display = 'none');
+        document.querySelectorAll('.prop-row-chevron').forEach(c => c.style.transform = 'rotate(0deg)');
+
+        if (isOpening) {
+            panel.style.display = 'block';
+            if (chevron) chevron.style.transform = 'rotate(180deg)';
+        }
+    }
+   
+    function toggleCounterSlider(saleId) {
+        console.log("Toggle Slider para SaleId:", saleId);
+        const slider = document.getElementById('slider-' + saleId);
+        const isOpening = slider.style.display === 'none';
+        slider.style.display = isOpening ? 'block' : 'none';
+    }
+
+    function syncSliderVal(saleId, value) {
+        console.log(`Slider Movido [ID ${saleId}]: Novo valor ->`, value);
+
+        const valFormatted = parseInt(value).toLocaleString('pt-PT') + ' €';
+        document.getElementById('slider-val-' + saleId).textContent = valFormatted;
+        document.getElementById('counter-num-' + saleId).value = value;
+
+        if(display) display.textContent = valFormatted;
+        if(inputNum) inputNum.value = value;
+    }
+
+    function syncSliderInput(saleId, value) {
+        console.log(`Input Numérico Digitado [ID ${saleId}]: Novo valor ->`, value);
+
+        document.getElementById('slider-input-' + saleId).value = value;
+        document.getElementById('slider-val-' + saleId).textContent = parseInt(value).toLocaleString('pt-PT') + ' €';
+
+        if(slider) slider.value = value;
+        if(display) display.textContent = parseInt(value).toLocaleString('pt-PT') + ' €';
+    }
+
+    function handleAction(saleId, action) {
+        console.log(`Ação Iniciada: ${action} para SaleId: ${saleId}`);
+
+        const msg = action === 'accept' ? 'aceitar' : 'recusar';
+        if (!confirm(`Deseja realmente ${msg} esta proposta?`)) return;
+
+        const handler = action === 'accept' ? 'Accept' : 'Decline';
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+        
+        fetch(`?handler=${handler}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            },
+            body: JSON.stringify({ saleId: saleId })
+        }).then(r => {
+            console.log(`Resposta do Servidor (${handler}):`, r.status);
+            if (r.ok) location.reload();
+        }).catch(err => console.error("Erro no Fetch:", err));
+    }
+
+    function submitCounter(saleId) {
+        const inputElement = document.getElementById('counter-num-' + saleId);
+        const value = inputElement ? inputElement.value : null;
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+        console.log("--- SUBMIT COUNTER ---");
+        console.log("SaleId:", saleId);
+        console.log("Valor capturado do input:", value);
+        console.log("Token presente:", !!token);
+
+        if (!value || isNaN(parseFloat(value))) {
+            console.error("Erro: Valor inválido detetado antes do envio!");
+            alert("Por favor, insira um valor válido.");
+            return;
+        }
+
+        const payload = { saleId: saleId, counterValue: parseFloat(value) };
+        console.log("Payload Final:", payload);
+        
+       fetch('?handler=CounterOffer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            },
+            body: JSON.stringify(payload)
+        }).then(r => {
+            console.log("Resposta do Servidor (CounterOffer):", r.status);
+            if (r.ok) {
+                console.log("Sucesso! Recarregando página...");
+                location.reload();
+            } else {
+                console.error("Erro no servidor ao processar contra-proposta.");
+            }
+        }).catch(err => console.error("Erro crítico no envio:", err));
+    }
+</script>

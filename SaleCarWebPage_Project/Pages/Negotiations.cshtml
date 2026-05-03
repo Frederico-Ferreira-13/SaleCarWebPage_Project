@@ -112,41 +112,74 @@
             arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
         }
 
-        let currentSaleId = 0;
+        function togglePropActions(saleId) {
+            console.log("Página Pai: Abrir ações para SaleId", saleId);
+            const panel = document.getElementById('actions-' + saleId);
+            const chevron = document.getElementById('chevron-' + saleId);
+            
+            if (!panel) return;
+
+            const isOpening = panel.style.display === 'none';
+            
+            document.querySelectorAll('.prop-actions-container').forEach(p => p.style.display = 'none');
+            document.querySelectorAll('.prop-row-chevron').forEach(c => c.style.transform = 'rotate(0deg)');
+
+            if (isOpening) {
+                panel.style.display = 'block';
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        function toggleCounterSlider(saleId) {
+            const slider = document.getElementById('slider-' + saleId);
+            const isOpening = slider.style.display === 'none';
+            slider.style.display = isOpening ? 'block' : 'none';
+        }
+
+        function syncSliderVal(saleId, value) {
+            const valFormatted = parseInt(value).toLocaleString('pt-PT') + ' €';
+            document.getElementById('slider-val-' + saleId).textContent = valFormatted;
+            document.getElementById('counter-num-' + saleId).value = value;
+        }
+
+        function syncSliderInput(saleId, value) {
+            document.getElementById('slider-input-' + saleId).value = value;
+            document.getElementById('slider-val-' + saleId).textContent = parseInt(value).toLocaleString('pt-PT') + ' €';
+        }
+
+        // --- 3. ENVIO DE DADOS (CUIDADO: UNIFICADO) ---
 
         function handleAction(saleId, action) {
-            currentSaleId = saleId;
+            console.log(`Pai: handleAction iniciada -> ${action} em ${saleId}`);
+            const msg = action === 'accept' ? 'aceitar' : 'recusar';
+            if (!confirm(`Deseja realmente ${msg} esta proposta?`)) return;
 
-            if (action === 'counter') {
-                document.getElementById('counterValueInput').value = '';
-                document.getElementById('counterModal').style.display = 'flex';
-            }
-            else {
-                const text = action === 'accept' ? 'ACEITAR' : 'RECUSAR';
-                if (confirm(`Tem certeza que deseja ${text} esta proposta?`)) {
-                    const handler = action === 'accept' ? 'Accept' : 'Decline';
-                    fetch(`?handler=${handler}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                        },
-                        body: JSON.stringify({ saleId: saleId })
-                    }).then(r => {
-                        if (r.ok) location.reload();
-                    });
-                }
-            }
+            const handler = action === 'accept' ? 'Accept' : 'Decline';
+            
+            fetch(`?handler=${handler}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({ saleId: saleId })
+            }).then(r => {
+                console.log("Resposta status:", r.status);
+                if (r.ok) location.reload();
+            });
         }
 
-        function closeCounterModal() {
-            document.getElementById('counterModal').style.display = 'none';
-        }
+        function submitCounter(saleId) {
+            // Vamos buscar o valor ao input que o componente _proposalBox criou
+            const inputElement = document.getElementById('counter-num-' + saleId);
+            const value = inputElement ? inputElement.value : null;
+            
+            console.log("--- DEBUG SUBMIT PAI ---");
+            console.log("SaleId:", saleId);
+            console.log("Valor a enviar:", value);
 
-        function submitCounterOffer() {
-            const value = parseFloat(document.getElementById('counterValueInput').value);
-            if (!value || value <= 0) {
-                alert("Por favor insira um valor válido!");
+            if (!value || isNaN(parseFloat(value))) {
+                alert("Por favor, insira um valor válido.");
                 return;
             }
 
@@ -156,60 +189,21 @@
                     'Content-Type': 'application/json',
                     'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
                 },
-                body: JSON.stringify({ saleId: currentSaleId, counterValue: value })
+                body: JSON.stringify({
+                    saleId: parseInt(saleId),
+                    counterValue: parseFloat(value)
+                })
             }).then(r => {
-                if (r.ok) {
-                    closeCounterModal();
-                    location.reload();
-                }
-            });
+                console.log("Resposta do CounterOffer:", r.status);
+                if (r.ok) location.reload();
+                else alert("Erro ao enviar contra-proposta.");
+            }).catch(err => console.error("Erro no fetch:", err));
         }
 
-        // Fechar modal ao clicar fora
-        document.getElementById('counterModal').addEventListener('click', function(e) {
-            if (e.target === this) closeCounterModal();
-        });
-
-        function toggleActions(saleId, isLatest) {
-            if (!isLatest) return; // Só permite ações na proposta mais recente
-
-            const panel = document.getElementById(`actions-${saleId}`);
-            const isVisible = panel.style.display === 'block';
-
-            // Fechar todos os outros painéis primeiro para manter limpo
-            document.querySelectorAll('.quick-actions-panel').forEach(p => p.style.display = 'none');
-
-            // Toggle do atual
-            panel.style.display = isVisible ? 'none' : 'block';
-        }
-
-        function showInlineCounter(saleId) {
-            // Esconde os botões normais e mostra o input de valor
-            document.querySelector(`#actions-${saleId} .proposal-actions`).style.display = 'none';
-            document.getElementById(`inline-counter-${saleId}`).style.display = 'flex';
-            document.getElementById(`val-${saleId}`).focus();
-        }
-
-        async function submitInlineCounter(saleId) {
-            const newValue = document.getElementById(`val-${saleId}`).value;
-            if (!newValue || newValue <= 0) {
-                alert("Insira um valor válido!");
-                return;
-            }
-
-            // Aqui usas a tua lógica de fetch que já tinhas no modal
-            const response = await fetch('?handler=CounterOffer', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                },
-                body: JSON.stringify({ saleId: saleId, counterValue: parseFloat(newValue) })
-            });
-
-            if (response.ok) {
-                location.reload(); // Ao recarregar, o novo valor aparecerá com o estilo "counter-value"
-            }
+        // Mantemos o modal apenas se o quiseres usar como fallback,
+        // mas a lógica nova está no submitCounter acima.
+        function closeCounterModal() {
+            document.getElementById('counterModal').style.display = 'none';
         }
     </script>
 }

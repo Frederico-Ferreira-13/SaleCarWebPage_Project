@@ -24,6 +24,9 @@ namespace Core.Model
         [ForeignKey("ClientId")]
         public virtual Client? Client { get; private set; }
 
+        [NotMapped]
+        public bool ProposedByClient { get; private set; } = true;
+
         public Sale() { }
 
         public Sale(int carId, int? clientId, DateTime saleDate, decimal finalPrice, DateTime purchaseDate, string paymentMethod, string observations = "")
@@ -87,6 +90,24 @@ namespace Core.Model
             {
                 throw new ArgumentException("O PaymentMethod é obrigatório.", nameof(paymentMethod));
             }
+        }
+
+        public void UpdatePaymentMethod(string newMethod)
+        {
+            if (string.IsNullOrWhiteSpace(newMethod))
+                throw new ArgumentException("O método de pagamento não pode estar vazio.");
+
+            PaymentMethod = newMethod;
+        }
+
+        public void UpdateObservations(string newObservations)
+        {
+            Observations = newObservations;
+        }
+
+        public void MarkAsCounterOffer()
+        {
+            ProposedByClient = false;
         }
 
         public int GetId() => SaleId;
