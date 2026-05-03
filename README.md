@@ -36,16 +36,16 @@ A "Luxury" UI/UX that handles complex data (IDs, Prices, Dates) without overwhel
 👥 Authors
 Frederico Ferreira
 
-LinkedIn
+[LinkedIn](https://www.linkedin.com/in/frederico-ferreira-31834249/)
 
-GitHub
+[GitHub](https://github.com/Frederico-Ferreira-13)
 
 Email: fredericocrf87@hotmail.com
 
 Fábio Salgado
 
-LinkedIn
+linkedin.com/in/fábio-salgado-4a7302135
 
-GitHub
+[GitHub](https://github.com/Fsalgado-dotnet)
 
 Email: fabio.salgado23@gmail.com
