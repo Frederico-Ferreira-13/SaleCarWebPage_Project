@@ -199,3 +199,30 @@
     font-size: 1.2rem;
     font-weight: 300;
 }
+
+/* --- Botão Ver Detalhes --- */
+.btn-silver-small {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    background: transparent;
+    color: var(--gold);
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    transition: var(--transition-speed);
+    border: 1px solid var(--border-gold);
+}
+
+.btn-silver-small:hover {
+    background: var(--gold-gradient);
+    color: var(--black);
+    box-shadow: 0 5px 15px var(--gold-glow);
+    transform: translateY(-2px);
+}

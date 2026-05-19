@@ -14,12 +14,16 @@
     </header>
 
     @* --- NAVEGAÇÃO DE ABAS --- *@
-    <div class="approval-tabs">
+     <div class="approval-tabs">
         <button class="tab-btn active" onclick="openTab(event, 'carsTab')">
-            <i class="fa-solid fa-car"></i> Anúncios (@Model.PendingCars.Count)
+            <i class="fa-solid fa-car"></i>
+            Anúncios
+            <span class="tab-count">@Model.PendingCars.Count</span>
         </button>
         <button class="tab-btn" onclick="openTab(event, 'usersTab')">
-            <i class="fa-solid fa-users"></i> Utilizadores (@Model.PendingUsers.Count)
+            <i class="fa-solid fa-users"></i>
+            Utilizadores
+            <span class="tab-count">@Model.PendingUsers.Count</span>
         </button>
     </div>
 
@@ -31,7 +35,6 @@
                 @foreach (var car in Model.PendingCars)
                 {
                     <article class="car-card-premium pending">
-                        @* ... Teu código atual do card de carro ... *@
                         <form method="post" asp-page-handler="ApproveCar">
                             <input type="hidden" name="id" value="@car.CarId" />
                             <button type="submit" class="btn-approve-action">Aprovar Carro</button>
@@ -41,14 +44,15 @@
             </div>
         }
         else
-        {
-
-            <p class="empty-msg">Nenhum carro pendente.</p>
+         {
+            <p class="empty-msg">
+                <i class="fa-solid fa-car-side"></i>&nbsp; Nenhum anúncio pendente de aprovação.
+            </p>
         }
     </div>
 
     @* --- CONTEÚDO: UTILIZADORES --- *@
-    <div id="usersTab" class="tab-content">
+    <div id="usersTab" class="tab-content" style="display:none;">
         @if (Model.PendingUsers.Any())
         {
             <div class="users-list-premium">
@@ -71,8 +75,9 @@
         }
         else
         {
-
-            <p class="empty-msg">Nenhum utilizador a aguardar aprovação.</p>
+            <p class="empty-msg">
+                <i class="fa-solid fa-users"></i>&nbsp; Nenhum utilizador a aguardar aprovação.
+            </p>
         }
     </div>
 </div>
@@ -80,13 +85,10 @@
 @section Scripts {
     <script>
         function openTab(evt, tabName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
-            tablinks = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
-            document.getElementById(tabName).style.display = "block";
-            evt.currentTarget.className += " active";
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabName).style.display = 'block';
+            evt.currentTarget.classList.add('active');
         }
     </script>
 }

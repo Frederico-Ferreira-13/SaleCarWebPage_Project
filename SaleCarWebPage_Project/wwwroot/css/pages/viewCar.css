@@ -4,9 +4,10 @@
    1. ESTRUTURA PRINCIPAL (LAYOUT)
    ========================================================================== */
 .car-view-container {
-    max-width: 1300px;
-    margin: 60px auto;
-    padding: 0 20px;
+   max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 30px;
+    background: var(--bg-dark);
 }
 
 .car-main-layout {
@@ -15,24 +16,28 @@
     align-items: flex-start;
 }
 
-/* Coluna da Esquerda (Conteúdo) */
 .car-content-area {
     flex: 1.6;
 }
 
-/* Coluna da Direita (Sidebar) */
 .car-specs-sidebar {
     flex: 0.9;
     position: sticky;
     top: 110px;
     background: var(--black-card);
     backdrop-filter: blur(20px);
-    padding: 40px;
-    border-radius: 30px;
+    padding: 35px;
+    border-radius: 24px;
     border: 1px solid var(--border-subtle);
     box-shadow: 0 20px 50px rgba(0,0,0,0.4);
     display: flex;
     flex-direction: column;
+}
+
+.interaction-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 /* ==========================================================================
@@ -40,11 +45,12 @@
    ========================================================================== */
 .car-image-frame {
     position: relative;
-    border-radius: 30px;
+    border-radius: 24px;
     overflow: hidden;
     background: var(--black-deep);
     box-shadow: 0 25px 60px rgba(0,0,0,0.6);
     border: 1px solid var(--border-subtle);
+    margin-bottom: 35px;
 }
 
 .main-car-img {
@@ -56,22 +62,50 @@
 }
 
 .car-image-frame:hover .main-car-img {
-    transform: scale(1.03);
+    transform: scale(1.02);
 }
 
 .car-status-badges {
     position: absolute;
-    top: 25px;
-    left: 25px;
+    top: 20px;
+    left: 20px;
     display: flex;
-    gap: 12px;
+    gap: 10px;
     z-index: 10;
+}
+
+.badge-premium {
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.badge-premium.gold {
+    background: var(--gold-gradient);
+    color: #000;
+    box-shadow: 0 4px 15px rgba(212,175,55,0.3);
+}
+
+.badge-premium.dark {
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
 /* ==========================================================================
    3. CABEÇALHO DE INFORMAÇÃO (SIDEBAR)
    ========================================================================== */
-.brand-label {
+.price-header-card {
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 20px;
+}
+
+.brand-tag {
     color: var(--gold);
     text-transform: uppercase;
     letter-spacing: 3px;
@@ -79,180 +113,343 @@
     font-size: 0.85rem;
 }
 
-.car-title {
+.model-title {
     color: var(--white);
-    font-size: 2.8rem;
-    margin: 10px 0 20px;
+    font-size: 2.4rem;
+    margin: 8px 0 12px;
     font-weight: 800;
-    line-height: 1.05;
+    line-height: 1.1;
 }
 
-.price-container {
-    margin: 25px 0;
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    color: var(--gold);
-}
-
-.amount {
-    font-size: 3.5rem;
+.main-price {
+    font-size: 3rem;
     font-weight: 900;
-    letter-spacing: -2px;
+    color: var(--gold);
+    letter-spacing: -1px;
+}
+
+.main-price small {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-left: 2px;
 }
 
 /* ==========================================================================
    4. PROPOSTAS RECEBIDAS (MELHORADO)
    ========================================================================== */
-.owner-panel {
-    margin: 25px 0 30px;
+.info-section {
+    margin-bottom: 40px;
 }
 
-.owner-title {
-    color: var(--gold);
-    font-size: 1.15rem;
-    margin-bottom: 16px;
+.section-title {
+    color: var(--white);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.proposals-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-proposal-card-mini {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(212, 175, 55, 0.2);
-    border-radius: 16px;
-    padding: 18px;
-    transition: all 0.3s ease;
-}
-
-.proposal-card-mini:hover {
-    border-color: var(--gold);
-    background: rgba(212, 175, 55, 0.06);
-    transform: translateY(-2px);
-}
-
-.prop-main-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-}
-
-.prop-user {
-    color: #ddd;
-    font-weight: 600;
-}
-
-    .prop-user i {
-        color: var(--gold);
-        margin-right: 6px;
-    }
-
-.prop-price {
-    font-size: 1.35rem;
-    font-weight: 800;
+.section-title i {
     color: var(--gold);
 }
 
-.prop-meta {
-    display: flex;
-    gap: 16px;
-    font-size: 0.82rem;
-    color: #aaa;
+.specs-full-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
 }
 
-.prop-detail {
+.spec-item {
+    background: var(--black-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 20px;
     display: flex;
     align-items: center;
-    gap: 5px;
-}
-
-/* ==========================================================================
-   5. OUTROS ELEMENTOS
-   ========================================================================== */
-.quick-specs-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
-    margin: 35px 0;
-    padding: 30px 0;
-    border-top: 1px solid var(--border-subtle);
-    border-bottom: 1px solid var(--border-subtle);
-}
-
-.detail-box {
-    background: var(--black-card);
-    padding: 22px;
-    border-radius: 18px;
-    border: 1px solid var(--border-subtle);
+    gap: 15px;
     transition: all 0.3s ease;
 }
 
-    .detail-box:hover {
-        transform: translateY(-8px);
-        border-color: var(--gold);
-    }
+.spec-item:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+}
 
-.address-card {
+.spec-item i {
+    color: var(--gold);
+    font-size: 1.5rem;
+    width: 30px;
+    text-align: center;
+}
+
+.spec-data {
+    display: flex;
+    flex-direction: column;
+}
+
+.spec-data label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.spec-data span {
+    color: var(--white);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Localização */
+.location-card-premium {
     background: var(--black-card);
     border: 1px solid var(--border-subtle);
     border-left: 4px solid var(--gold);
     border-radius: 16px;
-    padding: 22px 26px;
+    padding: 22px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
 }
 
-.luxury-divider {
+.loc-icon i {
+    color: var(--gold);
+    font-size: 1.8rem;
+}
+
+.loc-text p {
+    margin: 0;
+}
+
+.loc-text .city {
+    color: var(--white);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.loc-text .street {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 4px 0;
+}
+
+.loc-text .zip {
+    color: var(--gold);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   5. ZONAS DE AÇÃO
+   ========================================================================== */
+.action-card {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-subtle);
+    border-radius: 18px;
+    padding: 20px;
+}
+
+.card-subtitle {
+    color: var(--white);
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-subtitle i {
+    color: var(--gold);
+}
+
+/* Inputs Unificados */
+.input-group-premium {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.input-group-premium.vertical {
+    flex-direction: column;
+    gap: 0;
+}
+
+.form-control-premium {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid var(--border-subtle) !important;
+    color: var(--white) !important;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.form-control-premium:focus {
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+}
+
+.text-area-fix {
+    min-height: 80px;
+    resize: none;
+}
+
+/* Botões de Ação */
+.btn-action-gold {
+    background: var(--gold-gradient);
+    color: #000 !important;
     border: none;
-    border-top: 1px solid var(--border-subtle);
-    margin: 25px 0;
+    padding: 12px 20px;
+    font-weight: 700;
+    border-radius: 10px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.btn-manage-negotiations {
+.btn-action-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212,175,55,0.3);
+}
+
+/* ==========================================================================
+   6. TABS DE LUXO (MENSAGENS)
+   ========================================================================== */
+.luxury-tabs-row {
+    display: flex;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 5px;
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 15px;
+    gap: 4px;
+}
+
+.luxury-tab {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.luxury-tab:hover {
+    color: var(--white);
+}
+
+.luxury-tab.active {
+    background: var(--gold-gradient);
+    color: #000 !important;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+}
+
+.tab-content {
+    animation: fadeInLuxury 0.4s ease forwards;
+}
+
+@keyframes fadeInLuxury {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   7. BOTÃO DE FAVORITOS (GARAGEM) - MELHORADO
+   ========================================================================= */
+.favorite-wrapper {
+    width: 100%;
+}
+
+.btn-garage-toggle {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    width: 100%;
     padding: 14px;
-    background: rgba(212, 175, 55, 0.05);
-    border: 1px solid var(--border-gold);
-    color: var(--gold) !important;
-    text-decoration: none;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    border-radius: 12px;
     font-weight: 700;
     font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    border-radius: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
     transition: all 0.3s ease;
 }
 
-    .btn-manage-negotiations:hover {
-        background: var(--gold-gradient);
-        color: #000 !important;
-        border-color: transparent;
-    }
+.btn-garage-toggle i {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
 
-/* Responsividade */
-@media (max-width: 992px) {
+.btn-garage-toggle:hover {
+    border-color: rgba(212, 175, 55, 0.5);
+    color: var(--white);
+    background: rgba(212, 175, 55, 0.02);
+}
+
+/* Quando o carro já está nos favoritos (Ativo) */
+.btn-garage-toggle.active {
+    background: rgba(212, 175, 55, 0.08);
+    border-color: var(--gold);
+    color: var(--gold);
+    box-shadow: inset 0 0 15px rgba(212, 175, 55, 0.05);
+}
+
+.btn-garage-toggle.active i {
+    animation: gemShine 1s ease-in-out infinite alternate;
+}
+
+@keyframes gemShine {
+    0% { transform: scale(1); filter: drop-shadow(0 0 2px var(--gold)); }
+    100% { transform: scale(1.15); filter: drop-shadow(0 0 8px var(--gold)); }
+}
+
+/* Card de Login Obrigatório */
+.auth-required-card {
+    background: rgba(212, 175, 55, 0.03);
+    border: 1px dashed var(--border-gold);
+    padding: 25px;
+    border-radius: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.auth-required-card p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   8. RESPONSIVIDADE
+   ========================================================================== */
+@media (max-width: 1100px) {
     .car-main-layout {
         flex-direction: column;
+        gap: 30px;
     }
 
     .car-specs-sidebar {
         position: static;
-    }
-
-    .car-title {
-        font-size: 2.3rem;
-    }
-
-    .amount {
-        font-size: 2.8rem;
+        width: 100%;
     }
 }

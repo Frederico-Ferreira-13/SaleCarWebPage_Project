@@ -95,7 +95,7 @@ namespace SaleCarWebPage_Project.Pages
                     {
                         CarId = group.Key.CarId,
                         ProviderId = car?.ProviderId,
-                        ChatHistory = filteredHistory,
+                        ChatHistory = historyResult.Value?.ToList() ?? new List<MessageBox>(),
                         ReadOnly = false,
                         OtherPartyName = otherPartyName
                     }

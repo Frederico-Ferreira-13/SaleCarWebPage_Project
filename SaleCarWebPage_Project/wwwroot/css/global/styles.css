@@ -7,6 +7,7 @@
     --gold: #d4af37;
     --gold-light: #f2d06b;
     --gold-dark: #aa8928;
+    --bg-dark: #0a0a0a;
     --gold-gradient: linear-gradient(135deg, #aa8928 0%, #d4af37 50%, #f2d06b 100%);
     --gold-hover: linear-gradient(135deg, #f2d06b 0%, #d4af37 50%, #aa8928 100%);
     --gold-glow: rgba(212, 175, 55, 0.25);

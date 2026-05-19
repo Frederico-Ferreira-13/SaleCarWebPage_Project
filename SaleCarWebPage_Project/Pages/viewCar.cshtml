@@ -25,10 +25,8 @@
     else
     {
         <div class="car-main-layout">
-            <!-- COLUNA ESQUERDA: APRESENTAÇÃO E DADOS TÉCNICOS -->
             <div class="car-content-area">
                 
-                <!-- Galeria Principal -->
                 <div class="car-hero-section">
                     <div class="car-image-frame">
                         <img src="@(Model.Car?.ImageUrl ?? "/img/cars/default-car.jpg")" alt="Imagem do Veículo" class="main-car-img" />
@@ -42,9 +40,8 @@
                     </div>
                 </div>
 
-                <!-- Grelha de Especificações Detalhada -->
                 <section class="info-section">
-                    <h3 class="section-title"><i class="fa-solid fa-gears"></i> Ficha Técnica</h3>
+                    <h3 class="section-title"><i class="fa-solid fa-gears"></i> Ficha Técnico</h3>
                     <div class="specs-full-grid">
                         <div class="spec-item">
                             <i class="fa-solid fa-fingerprint"></i>
@@ -91,7 +88,6 @@
                     </div>
                 </section>
 
-                <!-- Localização Estilizada -->
                 <section class="info-section">
                     <h3 class="section-title"><i class="fa-solid fa-map-location-dot"></i> Localização</h3>
                     <div class="location-card-premium">
@@ -112,11 +108,9 @@
                 </section>
             </div>
 
-            <!-- COLUNA DIREITA: SIDEBAR DE INTERAÇÃO -->
             <aside class="car-specs-sidebar">
                 <div class="sidebar-sticky-content">
                     
-                    <!-- Cabeçalho de Preço -->
                     <div class="price-header-card">
                         <span class="brand-tag">@Model.Car?.Model?.Brand?.BrandName</span>
                         <h1 class="model-title">@Model.Car?.Model?.ModelName</h1>
@@ -127,7 +121,6 @@
                     {
                         <div class="interaction-stack">
                             
-                            <!-- SECÇÃO DE PROPOSTA -->
                             <div class="action-card proposal-zone shadow-sm">
                                 <h4 class="card-subtitle"><i class="fa-solid fa-hand-holding-dollar"></i> Negociar Valor</h4>
                                 
@@ -135,7 +128,7 @@
                                 {
                                     <div class="quick-proposal-box">
                                         <div class="input-group-premium">
-                                            <input type="number" id="quick-offer-input" class="form-control-premium" value="@Model.Car.CarPrice" step="500" />
+                                            <input type="number" id="quick-offer-input" class="form-control-premium" value="@Model.Car?.CarPrice" step="500" />
                                             <button class="btn-action-gold" onclick="submitQuickOffer()">Enviar Oferta</button>
                                         </div>
                                     </div>
@@ -146,23 +139,30 @@
                                 </div>
                             </div>
 
-                            <!-- SECÇÃO DE MENSAGENS -->
                             <div class="action-card message-zone shadow-sm">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h4 class="card-subtitle m-0"><i class="fa-solid fa-comments"></i> Mensagens de Apoio</h4>
-                                    <button class="btn-new-chat" title="Nova Mensagem" onclick="focusChat()">
-                                        <i class="fa-solid fa-plus"></i>
+                                <div class="luxury-tabs-row">
+                                    <button class="luxury-tab active" onclick="switchLuxuryTab('history', this)">
+                                        <i class="fa-solid fa-history"></i> Histórico
+                                    </button>
+                                    <button class="luxury-tab" onclick="switchLuxuryTab('new-msg', this)">
+                                        <i class="fa-solid fa-pen-to-square"></i> Nova Mensagem
                                     </button>
                                 </div>
                                 
-                                <div class="chat-container-fixed">
-                                    <partial name="_messageBox" model="Model.MessageBoxData" />
+                                <div id="tab-history" class="tab-content">
+                                    <div class="chat-container-fixed">
+                                        <partial name="_messageBox" model="Model.MessageBoxData" />
+                                    </div>
+                                </div>
+
+                                <div id="tab-new-msg" class="tab-content" style="display: none;">
+                                    <div class="input-group-premium vertical">
+                                        <textarea id="txtMessage" class="form-control-premium" placeholder="Ex: Bom dia, o carro está disponível para test-drive esta semana?"></textarea>
+                                        <button class="btn-action-gold mt-2 w-100" onclick="submitNewMessage()">Enviar Mensagem</button>
+                                    </div>
                                 </div>
                             </div>
 
-                            <a asp-page="/Negotiations" asp-route-carId="@Model.Car.CarId" class="btn-outline-manage w-100 mt-2">
-                                <i class="fa-solid fa-handshake"></i> Gestão de Negociações
-                            </a>
                         </div>
                     }
                     else
@@ -173,14 +173,14 @@
                         </div>
                     }
 
-                    <!-- Favorito (Garagem) -->
                     <div class="favorite-wrapper mt-3">
                         <button class="btn-garage-toggle @(Model.Car?.IsFavorite == true ? "active" : "")"
-                                onclick="toggleGarage(@Model.Car.CarId)">
+                                onclick="toggleGarage(@Model.Car?.CarId)">
                             <i class="fa-solid fa-gem"></i>
                             <span>@(Model.Car?.IsFavorite == true ? "Na minha Garagem" : "Guardar na Garagem")</span>
                         </button>
                     </div>
+
                 </div>
             </aside>
         </div>
@@ -229,6 +229,14 @@
                 body: JSON.stringify(id)
             });
             if(res.ok) location.reload();
+        }
+
+        function switchLuxuryTab(tabId, element) {
+            document.getElementById('tab-history').style.display = 'none';
+            document.getElementById('tab-new-msg').style.display = 'none';
+            element.parentElement.querySelectorAll('.luxury-tab').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab-' + tabId).style.display = 'block';
+            element.classList.add('active');
         }
     </script>
 }
